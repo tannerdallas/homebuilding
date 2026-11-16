@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lookout Farmhouse | Two plans for St. Charles County</title>
+<meta name="description" content="Two white farmhouse plans with a third-floor lookout room: 3,928 and 2,792 sq ft. Renders, floor plans and a room-by-room 3D walkthrough.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&amp;family=Barlow+Semi+Condensed:wght@600;700&amp;display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f6f4ef;
+  --card: #ffffff;
+  --ink: #17212b;
+  --muted: #4b5a67;
+  --line: #d9d5cb;
+  --accent: #1b56b3;
+  --dark: #141b22;
+  --display: "Barlow Semi Condensed", "Arial Narrow", Arial, sans-serif;
+  --body: Barlow, "Helvetica Neue", Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55; }
+img { display: block; width: 100%; height: auto; }
+a { color: var(--accent); }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+.bar { position: sticky; top: 0; z-index: 5; background: rgba(246, 244, 239, 0.94); border-bottom: 1px solid var(--line); backdrop-filter: blur(6px); }
+.bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; }
+.brand { white-space: nowrap; font-family: var(--display); font-weight: 700; font-size: 20px; letter-spacing: 0.4px; text-transform: uppercase; color: var(--ink); text-decoration: none; }
+.bar nav { display: flex; gap: 18px; }
+.bar nav a { white-space: nowrap; color: var(--ink); text-decoration: none; font-weight: 500; font-size: 15px; padding: 8px 0; }
+.bar nav a:hover { color: var(--accent); }
+.hero { position: relative; background: var(--dark); color: #ffffff; }
+.hero img { height: min(74vh, 640px); object-fit: cover; opacity: 0.92; }
+.hero .over { position: absolute; left: 0; right: 0; bottom: 0; padding: 90px 0 28px; background: linear-gradient(to top, rgba(12, 17, 22, 0.86), rgba(12, 17, 22, 0)); }
+.eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 1.6px; text-transform: uppercase; margin: 0 0 6px; }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(34px, 6vw, 60px); line-height: 1.04; margin: 0 0 10px; text-wrap: balance; }
+.hero p.lead { margin: 0 0 18px; max-width: 620px; font-size: 18px; }
+.btn { display: inline-block; font: inherit; font-weight: 600; text-decoration: none; border-radius: 8px; padding: 12px 20px; border: 1px solid transparent; cursor: pointer; min-height: 46px; }
+.btn.fill { background: var(--accent); color: #ffffff; }
+.btn.line { background: transparent; color: #ffffff; border-color: rgba(255, 255, 255, 0.7); }
+.btn.dark { background: var(--ink); color: #ffffff; }
+.btns { display: flex; flex-wrap: wrap; gap: 10px; }
+section { padding: 56px 0; }
+h2 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 4vw, 40px); line-height: 1.1; margin: 0 0 8px; text-wrap: balance; }
+.intro { color: var(--muted); max-width: 700px; margin: 0 0 26px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.facts div { background: var(--card); padding: 16px 14px; }
+.facts b { display: block; font-family: var(--display); font-size: 24px; line-height: 1.1; }
+.facts span { color: var(--muted); font-size: 14px; }
+.plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; }
+.plan { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+.plan .pad { padding: 18px 18px 20px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.plan h3 { font-family: var(--display); font-size: 26px; line-height: 1.1; margin: 0; }
+.plan .size { color: var(--muted); font-weight: 500; margin: 0; }
+.spec { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; font-size: 15px; }
+.spec li { border-top: 1px solid var(--line); padding-top: 6px; }
+.spec b { display: block; font-weight: 600; }
+.plan .btns { margin-top: auto; }
+.dark-band { background: var(--dark); color: #ffffff; }
+.dark-band .intro { color: #c3ccd5; }
+.tabs { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--card); margin-bottom: 14px; flex-wrap: wrap; }
+.tabs button { font: inherit; font-weight: 500; border: 0; border-right: 1px solid var(--line); background: var(--card); color: var(--ink); padding: 10px 14px; min-height: 44px; cursor: pointer; }
+.tabs button:last-child { border-right: 0; }
+.tabs button[aria-pressed="true"] { background: var(--accent); color: #ffffff; }
+.dark-band .tabs { border-color: #38434e; }
+.walk { position: relative; border-radius: 12px; overflow: hidden; background: #dfe7ee; border: 1px solid #38434e; height: min(78vh, 720px); }
+.walk iframe { width: 100%; height: 100%; border: 0; display: block; }
+.walk .poster { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; padding: 20px; color: #ffffff; background: linear-gradient(rgba(12, 17, 22, 0.5), rgba(12, 17, 22, 0.7)), url("img/big-living.jpg") center / cover; }
+.walk .poster p { margin: 0; max-width: 440px; }
+.note { font-size: 14px; color: #c3ccd5; margin: 12px 0 0; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+figure { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+figcaption { padding: 10px 12px; font-size: 14px; color: var(--muted); }
+.planview { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
+.planview img { max-width: 900px; margin: 0 auto; }
+.feat { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; padding: 0; margin: 0; list-style: none; }
+.feat li { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+.feat b { display: block; font-family: var(--display); font-size: 19px; }
+.feat span { color: var(--muted); font-size: 15px; }
+footer { border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--muted); font-size: 14px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+@media (max-width: 560px) {
+  .bar nav { gap: 12px; }
+  .bar nav a { font-size: 14px; }
+  .brand { font-size: 17px; }
+  section { padding: 40px 0; }
+  .walk { height: 82vh; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top">Lookout Farmhouse</a>
+    <nav aria-label="Sections">
+      <a href="#plans">Plans</a>
+      <a href="#walkthrough">Walkthrough</a>
+      <a href="#floorplans">Floor plans</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <img src="img/big-front.jpg" alt="White modern farmhouse with black windows, a covered front porch, wood garage doors and a third-floor lookout room" width="1600" height="1000">
+    <div class="over">
+      <div class="wrap">
+        <p class="eyebrow">Concept plans · St. Charles County, Missouri</p>
+        <h1>A white farmhouse with a room above the roofline</h1>
+        <p class="lead">Two plans built on the same simple, efficient frame: 3,928 or 2,792 sq ft, each with a 14 × 16 lookout room wrapped in windows.</p>
+        <div class="btns">
+          <a class="btn fill" href="#walkthrough">Walk through the house</a>
+          <a class="btn line" href="#plans">Compare the two plans</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="facts">
+        <div><b>10 ft</b><span>main-floor ceilings</span></div>
+        <div><b>14 × 16</b><span>third-floor lookout room</span></div>
+        <div><b>14 × 16</b><span>covered back deck</span></div>
+        <div><b>Double door</b><span>front entry and porch</span></div>
+        <div><b>Safe room</b><span>in the basement</span></div>
+        <div><b>Fireplace</b><span>in the living room</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="plans" style="padding-top: 0;">
+    <div class="wrap">
+      <h2>Two sizes, one design</h2>
+      <p class="intro">Both plans are two-story rectangles with living space over the garage, stacked stairs and a short plumbing run. That keeps the framing simple and puts the budget into the rooms you see.</p>
+      <div class="plans">
+        <article class="plan">
+          <img src="img/big-aerial.jpg" alt="Aerial view of the larger farmhouse showing the metal porch roof, the lookout room and the covered deck" width="1600" height="1000" loading="lazy">
+          <div class="pad">
+            <h3>The Lookout 3900</h3>
+            <p class="size">3,928 sq ft · 58 × 38 ft footprint</p>
+            <ul class="spec">
+              <li><b>4 bedrooms</b>plus a main-floor office</li>
+              <li><b>3.5 baths</b>13 × 22 primary bath</li>
+              <li><b>3-car garage</b>32 × 22</li>
+              <li><b>Loft</b>second living area upstairs</li>
+            </ul>
+            <div class="btns">
+              <button class="btn dark" type="button" data-walk="3928">Walk through this plan</button>
+            </div>
+          </div>
+        </article>
+        <article class="plan">
+          <img src="img/small-front.jpg" alt="Front view of the smaller farmhouse with six second-floor windows, two wood garage doors, a covered porch and the lookout room" width="1600" height="1000" loading="lazy">
+          <div class="pad">
+            <h3>The Lookout 2800</h3>
+            <p class="size">2,792 sq ft · 42 × 38 ft footprint</p>
+            <ul class="spec">
+              <li><b>3 bedrooms</b>plus a pocket office</li>
+              <li><b>2.5 baths</b>13 × 20 primary bath</li>
+              <li><b>Extended 2-car garage</b>26 × 24</li>
+              <li><b>Loft</b>at the top of the stairs</li>
+            </ul>
+            <div class="btns">
+              <button class="btn dark" type="button" data-walk="2792">Walk through this plan</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="walkthrough" class="dark-band">
+    <div class="wrap">
+      <h2>Walk through it room by room</h2>
+      <p class="intro">Start in the foyer, tap where you want to go and drag to look around. Room buttons take you through the doorways, and the floor buttons take the stairs up to the lookout.</p>
+      <div class="tabs" role="group" aria-label="Plan to walk through">
+        <button type="button" id="w-3928" aria-pressed="true">3,928 sq ft</button>
+        <button type="button" id="w-2792" aria-pressed="false">2,792 sq ft</button>
+      </div>
+      <div class="walk" id="walk">
+        <div class="poster" id="poster">
+          <p>The 3D model is about 2 MB. It loads when you start.</p>
+          <button class="btn fill" type="button" id="start">Start the walkthrough</button>
+        </div>
+      </div>
+      <p class="note">Prefer a full screen? <a id="full" href="walkthrough/index.html#walk-3928" style="color: #9cc0ff;">Open the walkthrough on its own page</a>.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Inside and out</h2>
+      <p class="intro">Renderings from the same 3D model, furnished in a simple farmhouse style.</p>
+      <div class="gallery">
+        <figure><img src="img/big-kitchen.jpg" alt="Kitchen with a 10 ft island, white cabinets and a second cabinet run under the rear windows" width="1600" height="1000" loading="lazy"><figcaption>Kitchen with a 10 ft island and a second cabinet run under the windows</figcaption></figure>
+        <figure><img src="img/big-living.jpg" alt="Living room with a fireplace, sofa and the slider to the covered deck" width="1600" height="1000" loading="lazy"><figcaption>Living room with fireplace, open to the dining area and deck</figcaption></figure>
+        <figure><img src="img/big-suite.jpg" alt="Primary suite seen from above with the bedroom, bath and dressing room" width="1600" height="1000" loading="lazy"><figcaption>Primary suite: bedroom, bath with walk-in shower and freestanding tub, dressing room</figcaption></figure>
+        <figure><img src="img/big-lookout.jpg" alt="Third-floor lookout room with windows on all four sides" width="1600" height="1000" loading="lazy"><figcaption>The lookout: windows on all four sides</figcaption></figure>
+        <figure><img src="img/big-rear.jpg" alt="Rear of the larger farmhouse with the covered deck" width="1600" height="1000" loading="lazy"><figcaption>Rear elevation and covered deck, 3,928 sq ft plan</figcaption></figure>
+        <figure><img src="img/small-rear.jpg" alt="Rear of the smaller farmhouse with the covered deck" width="1600" height="1000" loading="lazy"><figcaption>Rear elevation, 2,792 sq ft plan</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="floorplans" style="padding-top: 0;">
+    <div class="wrap">
+      <h2>Floor plans</h2>
+      <p class="intro">Pick a plan and a level.</p>
+      <div class="tabs" role="group" aria-label="Plan">
+        <button type="button" data-plan="big" aria-pressed="true">3,928 sq ft</button>
+        <button type="button" data-plan="small" aria-pressed="false">2,792 sq ft</button>
+      </div>
+      <div class="tabs" role="group" aria-label="Level">
+        <button type="button" data-level="1" aria-pressed="true">Main floor</button>
+        <button type="button" data-level="2" aria-pressed="false">Second floor</button>
+        <button type="button" data-level="3" aria-pressed="false">Lookout and roof</button>
+        <button type="button" data-level="0" aria-pressed="false">Basement</button>
+      </div>
+      <div class="planview"><img id="planimg" src="img/big-plan-1.png" alt="Main floor plan, 3,928 sq ft plan" loading="lazy"></div>
+    </div>
+  </section>
+
+  <section style="padding-top: 0;">
+    <div class="wrap">
+      <h2>What comes with both</h2>
+      <ul class="feat">
+        <li><b>White farmhouse exterior</b><span>Board-and-batten siding, black windows, metal porch and deck roofs, wood-look garage doors.</span></li>
+        <li><b>Open main floor</b><span>Kitchen, dining and living in one run, with a clear sightline from the front door to the back deck.</span></li>
+        <li><b>Primary suite upstairs</b><span>Walk-in shower, freestanding tub and a dressing room, with the laundry a door away.</span></li>
+        <li><b>Lookout room</b><span>A third-floor room reached by its own stair, glazed on every side.</span></li>
+        <li><b>Basement safe room</b><span>A reinforced room under the entry wing, plus a bath rough-in and storage.</span></li>
+        <li><b>Built to be efficient</b><span>Simple rooflines, stacked plumbing and standard spans keep framing and labor in check.</span></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Mock listing site. These are concept plans and renderings for discussion, not construction documents and not an offer to sell. Dimensions are approximate, furniture is illustrative, and final design depends on site, engineering and local code review.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var walk = document.getElementById('walk'), poster = document.getElementById('poster'), full = document.getElementById('full'), frame = null, plan = '3928';
+  function press(sel, el) { Array.prototype.forEach.call(document.querySelectorAll(sel), function (b) { b.setAttribute('aria-pressed', b === el ? 'true' : 'false'); }); }
+  function src() { return 'walkthrough/index.html#walk-' + plan; }
+  function setPlan(p) {
+    plan = p; press('#w-3928, #w-2792', document.getElementById('w-' + p)); full.href = src();
+    if (frame) { frame.src = 'about:blank'; setTimeout(function () { frame.src = src(); }, 30); }     /* a hash-only change would not reload the frame */
+  }
+  function start() {
+    if (frame) return;
+    frame = document.createElement('iframe'); frame.title = 'Room-by-room 3D walkthrough'; frame.src = src();
+    walk.appendChild(frame); poster.remove();
+  }
+  document.getElementById('start').addEventListener('click', start);
+  document.getElementById('w-3928').addEventListener('click', function () { setPlan('3928'); });
+  document.getElementById('w-2792').addEventListener('click', function () { setPlan('2792'); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-walk]'), function (b) {
+    b.addEventListener('click', function () { setPlan(b.getAttribute('data-walk')); start(); document.getElementById('walkthrough').scrollIntoView(); });
+  });
+  var fp = 'big', lv = '1', img = document.getElementById('planimg');
+  var LV = { 1: 'Main floor plan', 2: 'Second floor plan', 3: 'Lookout and roof plan', 0: 'Basement plan' }, PL = { big: '3,928 sq ft plan', small: '2,792 sq ft plan' };
+  function show() { img.src = 'img/' + fp + '-plan-' + lv + '.png'; img.alt = LV[lv] + ', ' + PL[fp]; }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-plan]'), function (b) { b.addEventListener('click', function () { fp = b.getAttribute('data-plan'); press('[data-plan]', b); show(); }); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-level]'), function (b) { b.addEventListener('click', function () { lv = b.getAttribute('data-level'); press('[data-level]', b); show(); }); });
+})();
+</script>
+</body>
+</html>
