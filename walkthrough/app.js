@@ -241,7 +241,7 @@
   Object.keys(CODE).forEach(function (k) { NAME[CODE[k]] = k; });
   var built = {}, cur = null, curName = '', level = 'exterior', pool = 0, garage = 'front', family = 'big', ver = 1, showLabels = true, tags = [], mode = 'orbit', pendingWalk = false;
   var opt = { g: 'f', lk: '1', st: 'brick', b: 'u', su: '0' }, optsOpen = false;
-  var su = false, side = null, sdrive = null, backTo = '';      // in-law suite add-on: a second building (suite + two-car garage) beside the house; backTo: the house a suite walk was started from       // options: garage entry (front, side), lookout add-on, exterior style, basement (unfinished, finished)
+  var su = false, side = null, backTo = '';      // in-law suite add-on: a second building (suite + two-car garage) beside the house; backTo: the house a suite walk was started from       // options: garage entry (front, side), lookout add-on, exterior style, basement (unfinished, finished)
   var dirty = true, tween = null, booting = true, loading = {};
   var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
@@ -252,7 +252,7 @@
     return L[0];
   }
   function view(kind) {
-    var m = cur.meta, xl = m.xl - (suiteOn() ? 36 : 0), xr = m.xr, cx = (xl + xr) / 2, D = suiteOn() ? Math.max(m.D, 58) : m.D, k = Math.max(1, (xr - xl) / 60), z = lv().lift || 0, t = m.tower, low = m.stories === 1;
+    var m = cur.meta, sg = suiteOn() ? sideGeo() : null, xl = sg ? Math.min(m.xl, sg.cx) : m.xl, xr = m.xr, cx = (xl + xr) / 2, D = sg ? Math.max(m.D, sg.yb + 58) : m.D, k = Math.max(1, (xr - xl) / 60), z = lv().lift || 0, t = m.tower, low = m.stories === 1;
     if (kind === 'front') return suiteOn() ? { p: [cx + 10 * k, 13, 104 * k], t: [cx, low ? 9 : 12, -10] } : { p: [xr + 34 * k, 11, 98 * k], t: [cx + 0.5, low ? 10 : 14, -10] };
     if (kind === 'back') return { p: [xr + 54 * k, 15, -(D + 86 * k)], t: [cx + 2, low ? 9 : 13, -(pool ? D + 24 : 24)] };
     if (kind === 'above') return { p: [cx, 150 * k + z, -(D / 2 - 30)], t: [cx, z, -(D / 2 + 3)] };
@@ -299,33 +299,34 @@
   function suiteOn() { return su && !!side && curName !== 'suite'; }
   function sideCut() { var hd = lv().hide; return mode !== 'walk' && hd.indexOf('ROOF') >= 0 && hd.indexOf('L2') >= 0; }      // the house is open to its main floor or basement: the suite opens too
   function aimSun() {
-    var m = cur.meta, cx = (m.xl - (suiteOn() ? 36 : 0) + m.xr) / 2;
+    var m = cur.meta, cx = ((suiteOn() ? Math.min(m.xl, sideGeo().cx) : m.xl) + m.xr) / 2;
     sun.position.set(cx + 80, 150, 70 - m.D / 2); sun.target.position.set(cx, 0, -m.D / 2 - 12); sun.target.updateMatrixWorld();
   }
-  function applySide() {                                // the in-law suite add-on: a second two-car garage beside the house garage, joined by a breezeway, with the suite behind the garage
-    var onNow = suiteOn(), m = cur.meta, X0 = m.xl - 12;
+  function sideGeo() {                                  // where the add-on stands: at the back of the house's side-entry garage court
+    var m = cur.meta, c = m.court || [m.xl - 32, -5, m.xl, 29], wing = m.gkind === 'wing';
+    return { x0: c[2] + (wing ? 3 : 0), yb: c[3] - (wing ? 5 : 2), cx: c[0] };      // x0: its wall on the house side; yb: its front wall, set back behind the court; cx: the court's outer edge
+  }
+  function applySide() {                                // the in-law suite add-on: the house garage is entered from the side, off a court; the second garage stands at the back of that court, the suite behind it
+    var onNow = suiteOn(), m = cur.meta, g = sideGeo();
     if (side) { if (onNow) { if (side.root.parent !== scene) scene.add(side.root); } else if (side.root.parent === scene) scene.remove(side.root); }
-    cur.plants.forEach(function (o) { var p = o.userData.p; o.visible = !(onNow && p[0] < m.xl + 1.5 && p[0] > m.xl - 46 && p[1] > -66 && p[1] < 64); });      // planting that would stand where the garage, the suite and the drive go
-    if (sdrive) sdrive.visible = onNow;
+    cur.plants.forEach(function (o) { var p = o.userData.p; o.visible = !(onNow && p[0] < g.x0 + 9 && p[0] > g.x0 - 27 && p[1] > g.yb - 2 && p[1] < g.yb + 60); });      // planting that would stand where the second garage and the suite go
     if (!onNow) return;
     var s = side, sopt = { g: 's', lk: '0', st: opt.st, b: 'u', su: '1' }, hide = sideCut() ? s.cutHide : [];
-    s.root.rotation.y = Math.PI / 2;                    // its garage end faces the street; the suite runs back from it
-    s.root.position.set(X0, m.zg - s.meta.zg, -24);     // garage fronts in line; its slab sits at the house's grade
+    s.root.rotation.y = Math.PI / 2;                    // its garage door faces the street, across the court; the suite runs back from it
+    s.root.position.set(g.x0, m.zg - s.meta.zg, -(24 + g.yb));      // its slab sits at the house's grade
     Object.keys(s.layers).forEach(function (k) {
       var at = k.indexOf('@'), base = at < 0 ? k : k.slice(0, at), on = hide.indexOf(base) < 0 && base !== 'GS' && base !== 'GF' && base !== 'CF';
       if (on && at >= 0) on = NAV.holds(k.slice(at + 1), sopt);
       s.layers[k].visible = on;
     });
-    s.plants.forEach(function (o) { var p = o.userData.p; o.visible = !(p[0] < 0.5 && p[1] < 26); });      // its planting on the street and house sides gives way to the drive, the breezeway and the house
+    s.plants.forEach(function (o) { var p = o.userData.p; o.visible = !(p[0] < 0.5 && p[1] < 30); });      // its planting on the court and house sides gives way
     s.streets.forEach(function (o) { o.visible = false; });                       // one sidewalk along the street, the house's
     applyStyle(s);
-    if (!sdrive) { sdrive = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), s.concMat || cur.concMat || new THREE.MeshLambertMaterial({ color: 0xc9c6bf })); sdrive.receiveShadow = true; scene.add(sdrive); }
-    sdrive.scale.set(18, 0.3, 62); sdrive.position.set(X0 - 12, m.zg - 0.1, 31);       // a straight drive from the street to the second garage
   }
   function setSuite(on, move) {
     su = !!on; $('t-suite').setAttribute('aria-pressed', su ? 'true' : 'false');
-    $('g-side').disabled = su && curName !== 'suite';                     // the breezeway to the second garage meets the garage's end wall, so the garage doors face the street
-    if (su && curName !== 'suite' && garage === 'side' && cur) setGarage('front', false);
+    $('g-front').disabled = su && curName !== 'suite';                    // with the suite the garage is entered from the side, off the court it shares with the second garage
+    if (su && curName !== 'suite' && garage !== 'side' && cur) setGarage('side', false);
     function fin() { aimSun(); refresh(); setLabels(); setHash(); if (move && mode === 'orbit') go(su && level !== 'exterior' ? 'above' : homeView()); }
     if (su && !side) {
       loadModel('suitea', function () {
@@ -374,7 +375,7 @@
     titleEl.textContent = PLAN[curName];
     statsEl.hidden = false; statsEl.textContent = fmt(sq) + ' sq ft \u00b7 ' + s.beds + ' bed \u00b7 ' + ba + ' bath';
     if (suiteOn()) titleEl.textContent += ' + In-Law Suite';
-    subEl.textContent = (suiteOn() ? 'Plus a second two-car garage beside the first, with the in-law suite behind it: 768 sq ft, 1 bed, 1 bath. ' : '') + (!cur.meta.bsmt ? 'One level on a slab, no steps anywhere. Attached two-car garage' : fin ? 'Includes ' + fmt(s.bsmt.fin) + ' sq ft of finished basement' : 'Plus ' + fmt(s.bsmt.total) + ' sq ft of unfinished basement') + '. Concept model, not for construction.';
+    subEl.textContent = (suiteOn() ? 'Plus the in-law suite: the garage turns to a side-entry court, a second two-car garage stands at the back of it, and the suite sits behind that. 768 sq ft, 1 bed, 1 bath. ' : '') + (!cur.meta.bsmt ? 'One level on a slab, no steps anywhere. Attached two-car garage' : fin ? 'Includes ' + fmt(s.bsmt.fin) + ' sq ft of finished basement' : 'Plus ' + fmt(s.bsmt.total) + ' sq ft of unfinished basement') + '. Concept model, not for construction.';
   }
   function refresh() { cur.nav.setState(opt); applyVis(); showPlate(); }
   function setLabels() {
@@ -389,7 +390,7 @@
     });
     if (suiteOn() && sideCut()) (side.meta.labels[side.cutLabels] || []).forEach(function (l) {
       var d = document.createElement('div'); d.className = 'tag'; d.textContent = l.t;
-      labelsEl.appendChild(d); tags.push({ el: d, v: new THREE.Vector3(side.root.position.x - l.y, l.z + 1.5 + side.root.position.y, -(l.x + 24)), w: 0 });
+      labelsEl.appendChild(d); tags.push({ el: d, v: new THREE.Vector3(side.root.position.x - l.y, l.z + 1.5 + side.root.position.y, side.root.position.z - l.x), w: 0 });
     });
     tags.forEach(function (t) { t.w = t.el.offsetWidth || 60; });
   }
@@ -411,7 +412,7 @@
     if (move && mode === 'orbit' && k) { if (level !== 'exterior') setLevel('exterior', false); go('pool'); }
   }
   function setGarage(g, move) {
-    if (g === 'side' && su && curName !== 'suite') g = 'front';
+    if (g !== 'side' && su && curName !== 'suite' && cur && cur.meta.garage) g = 'side';
     garage = g; opt.g = g === 'side' ? 's' : 'f'; press('g-', g); refresh();
     if (move && mode === 'orbit') { if (level !== 'exterior') setLevel('exterior', false); go(g === 'side' ? 'garage' : 'front'); }
   }
@@ -461,6 +462,7 @@
       cur = built[name]; curName = name; scene.add(cur.root);
       family = name.replace(/2$/, ''); ver = /2$/.test(name) ? 2 : 1; press('m-', family); press('ver-', String(ver));
       $('garage-grp').hidden = !cur.meta.garage; press('g-', garage); press('st-', opt.st); press('b-', opt.b);
+      $('g-front').disabled = su && name !== 'suite';
       $('vers').hidden = !HAS2[family]; $('t-lookout').textContent = cur.meta.top || 'Lookout';
       try { $('m-' + family).scrollIntoView({ block: 'nearest', inline: 'center' }); } catch (e) { /* older browsers: the row still scrolls by hand */ }
       var hasPools = !!(cur.meta.pools && cur.meta.pools.length);                        // a building with no lookout, basement or pool hides those choices
