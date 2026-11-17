@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schematic Plan Sets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Layout idea: a drafting table. A narrow control strip on top, the sheet on white paper in the middle, the written notes under it. */
+  :root {
+    --bg: #eef1f4; --panel: #ffffff; --ink: #18222d; --muted: #5b6875; --line: #d3d9e0; --accent: #0b6e99; --accent-ink: #ffffff; --chip: #e3e8ee; --warn: #9a3412;
+    --display: "IBM Plex Sans Condensed", "Arial Narrow", Arial, sans-serif; --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #12171c; --panel: #1b2229; --ink: #e7ecf1; --muted: #9aa7b4; --line: #2e3842; --accent: #4fb3dc; --accent-ink: #06222e; --chip: #26303a; --warn: #fdba74; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --bg: #12171c; --panel: #1b2229; --ink: #e7ecf1; --muted: #9aa7b4; --line: #2e3842; --accent: #4fb3dc; --accent-ink: #06222e; --chip: #26303a; --warn: #fdba74; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; -webkit-text-size-adjust: 100%; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 18px 16px 48px; display: flex; flex-direction: column; gap: 14px; }
+  header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 20px; }
+  h1 { font-family: var(--display); font-size: 30px; line-height: 1.1; font-weight: 700; margin: 0; letter-spacing: 0.01em; text-wrap: balance; }
+  .lede { margin: 4px 0 0; color: var(--muted); max-width: 62ch; }
+  .pick { display: flex; flex-direction: column; gap: 4px; min-width: 240px; }
+  .pick label, .cap { font-family: var(--display); font-size: 12px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+  select { font: inherit; font-weight: 600; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; min-height: 44px; }
+  .tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+  .tabs button { flex: 0 0 auto; font: inherit; font-family: var(--display); font-weight: 600; font-size: 15px; color: var(--ink); background: var(--chip); border: 1px solid transparent; border-radius: 8px; padding: 9px 13px; min-height: 44px; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; }
+  .tabs button small { font-family: var(--body); font-weight: 500; font-size: 11.5px; color: var(--muted); }
+  .tabs button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+  .tabs button[aria-selected="true"] small { color: var(--accent-ink); opacity: 0.85; }
+  button:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .chips button, .zoom button { font: inherit; font-size: 13.5px; font-weight: 600; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; min-height: 38px; cursor: pointer; }
+  .chips button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); color: var(--accent); }
+  .zoom { display: flex; gap: 6px; align-items: center; }
+  .zoom button { min-width: 44px; font-size: 18px; line-height: 1; padding: 6px 0; }
+  .zoom span { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; min-width: 3.4em; text-align: center; }
+  .paper { background: #ffffff; border: 1px solid var(--line); border-radius: 10px; overflow: auto; -webkit-overflow-scrolling: touch; max-height: 78vh; }
+  .paper svg { display: block; height: auto; }
+  .status { padding: 40px 16px; text-align: center; color: #52606d; background: #ffffff; }
+  .plate { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: baseline; }
+  .plate h2 { font-family: var(--display); font-size: 21px; margin: 0; font-weight: 700; }
+  .plate p { margin: 0; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .card h3 { font-family: var(--display); font-size: 16px; font-weight: 700; margin: 0 0 6px; text-wrap: balance; }
+  .card ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+  .card li { max-width: 68ch; }
+  .card li.check { color: var(--warn); font-weight: 600; }
+  .tables { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; align-items: start; }
+  .tw { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+  th { font-family: var(--display); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  tr.total td { font-weight: 700; }
+  td.num, th.num { text-align: right; }
+  .basis p { max-width: 70ch; margin: 0 0 10px; }
+  .basis a { color: var(--accent); }
+  footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 12px; max-width: 80ch; }
+  [hidden] { display: none !important; }
+  @media (max-width: 560px) { h1 { font-size: 25px; } .pick { min-width: 100%; } .paper { max-height: 70vh; } }
+</style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23121416%27/%3E%3Cpath d=%27M6 17 16 8l10 9v8H6z%27 fill=%27%23fff%27/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p style="margin: 0 0 6px;"><a href="../" style="color: inherit; font-weight: 600;">Back to Design Your Home</a></p>
+      <h1>Schematic plan sets</h1>
+      <p class="lede">Architecture, electrical, plumbing and mechanical sheets for every plan in the line, drawn from the same 3D models and laid out to the residential code's minimums.</p>
+    </div>
+    <div class="pick">
+      <label for="plan">Plan</label>
+      <select id="plan"></select>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Sheets" id="tabs"></div>
+
+  <section id="sheetview">
+    <div class="plate" id="plate"><h2 id="p-title"></h2><p id="p-stats"></p></div>
+    <div class="bar" style="margin: 10px 0 8px">
+      <div class="chips" id="levels" role="group" aria-label="Show a level"></div>
+      <div class="zoom" role="group" aria-label="Zoom">
+        <button type="button" id="z-out" aria-label="Zoom out">&minus;</button><span id="z-val">100%</span><button type="button" id="z-in" aria-label="Zoom in">+</button>
+      </div>
+    </div>
+    <div class="paper" id="paper" tabindex="0" aria-label="Drawing sheet. Scroll to move around it."><div class="status" id="status">Loading the sheet…</div><div id="svgwrap"></div></div>
+    <p class="cap" style="margin: 16px 0 8px">Notes for this sheet</p>
+    <div class="notes" id="notes"></div>
+    <p class="cap" style="margin: 16px 0 8px">Schedules and counts</p>
+    <div class="tables" id="tables"></div>
+  </section>
+
+  <section id="basis" class="basis" hidden>
+    <div class="card">
+      <h3>One set of rules for four permit offices</h3>
+      <p>The four communities sit under four different code books. The sets are drawn to the newest of them, the 2021 International Residential Code with the 2020 National Electrical Code, and to the unamended 2021 energy code for Climate Zone 4A. Where an older local edition asks for less, the sheets still show the newer rule, so one plan set, one framing package and one trade scope work on every lot.</p>
+      <p>Editions were read from each jurisdiction's own page on November 17, 2026. Local amendments change details; the permit office has the last word.</p>
+    </div>
+    <div class="card" style="margin-top: 12px">
+      <h3>Codes in force</h3>
+      <div class="tw"><table>
+        <thead><tr><th>Community</th><th>Permit office</th><th>Residential</th><th>Electrical</th><th>Plumbing</th><th>Energy</th></tr></thead>
+        <tbody>
+          <tr><td>Wentzville</td><td><a href="https://www.wentzvillemo.gov/departments/community-development/building-codes">City of Wentzville</a></td><td>2021 IRC</td><td>See the city's list</td><td>See the city's list</td><td>See the city's list</td></tr>
+          <tr><td>Near New Town</td><td><a href="https://ecode360.com/32531452">St. Charles County</a>, or the <a href="https://www.ecode360.com/27703165">City of St. Charles</a> inside city limits</td><td>2021 county residential code; 2021 codes inside the city</td><td>NFPA 70 as the county adopts it</td><td>County plumbing code</td><td>County energy conservation code</td></tr>
+          <tr><td>Imperial</td><td><a href="https://www.jeffcomo.gov/372/Building-Code">Jefferson County</a></td><td>2015 IRC</td><td>2014 NEC with the county's 2017 electrical code</td><td>2015 IPC</td><td>2015 IECC; the county's amendments delete its residential chapter</td></tr>
+          <tr><td>Fountain Park</td><td><a href="https://www.stlouis-mo.gov/government/departments/public-safety/building/building-codes.cfm">City of St. Louis</a></td><td>2018 IRC</td><td>2017 NEC</td><td>2021 Uniform Plumbing Code</td><td>2018 IECC, amended</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="notes" style="margin-top: 12px">
+      <div class="card"><h3>Where the differences bite</h3><ul>
+        <li>Plumbing in the City of St. Louis follows the Uniform Plumbing Code. Vent sizing, trap arms and air admittance valves differ from the other three; the plumber lays out the venting there.</li>
+        <li>Ground-fault protection for a finished basement comes from the 2020 electrical code. The sheets show it everywhere.</li>
+        <li>Whole-house ventilation and the 3 ACH50 air-leakage test come from the 2021 codes. The sheets show both everywhere.</li>
+        <li>Insulation levels differ most of all. The sets use the 2021 values so one wall, roof and window package serves all four.</li>
+      </ul></div>
+      <div class="card"><h3>What a permit set still needs</h3><ul>
+        <li>Structural drawings sealed by a Missouri engineer or architect: foundation, framing, beams and headers, braced walls, truss and floor system layouts.</li>
+        <li>The site plan on a survey: setbacks, grades, drainage, utilities, driveway.</li>
+        <li>Energy compliance by the path the jurisdiction accepts.</li>
+        <li>Room-by-room heating and cooling loads and the duct design.</li>
+        <li>Local design criteria from the permit office: snow, wind, seismic category, frost depth, flood zone.</li>
+        <li>Sewer, water and utility approvals, and any subdivision or historic-district review.</li>
+      </ul></div>
+      <div class="card"><h3>How the sheets were made</h3><ul>
+        <li>Each sheet is generated from the 3D model's own walls, openings and fixtures, so the drawings and the walkthrough cannot drift apart.</li>
+        <li>Devices are placed by rule: outlet spacing, alarms, exhaust, drains and registers follow the code sections named in each sheet's notes.</li>
+        <li>Counts and loads in the tables are added up from what is drawn. Equipment sizes are planning figures and say so.</li>
+        <li>Four plans come in two versions, Standard and Upgraded. Each version has its own set.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <footer>Schematic design for discussion and pricing. Not for construction and not a permit set. A licensed design professional has to complete and seal the drawings, and the local building department reviews them.</footer>
+</div>
+<script>
+(function () {
+  'use strict';
+  var PLANS = [['big', '3,928 Plan, Standard'], ['big2', '3,928 Plan, Upgraded'], ['small', '2,792 Plan, Standard'], ['small2', '2,792 Plan, Upgraded'], ['half', '1.5-Story Plan, Standard'], ['half2', '1.5-Story Plan, Upgraded'],
+    ['ranch', 'Ranch Plan, Standard'], ['ranch2', 'Ranch Plan, Upgraded'], ['p18', '1,856 Plan'], ['p14', '1,420 Plan'], ['suite', 'In-Law Suite with Garage']];
+  var TABS = [['A', 'A1', 'Architecture'], ['E', 'E1', 'Electrical'], ['P', 'P1', 'Plumbing and gas'], ['M', 'M1', 'Heating and air'], ['G', 'G0', 'Code basis']];
+  var $ = function (id) { return document.getElementById(id); };
+  var plan = 'p14', sheet = 'A', level = 'all', zoom = 1, loading = {}, svgEl = null;
+  window.SETS = window.SETS || {};
+
+  function fmt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function el(tag, text, cls) { var e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; }
+
+  PLANS.forEach(function (p) { var o = el('option', p[1]); o.value = p[0]; $('plan').appendChild(o); });
+  TABS.forEach(function (t) {
+    var b = el('button'); b.type = 'button'; b.id = 'tab-' + t[0]; b.setAttribute('role', 'tab'); b.appendChild(el('span', t[1] + '  ' + t[2])); b.appendChild(el('small', t[0] === 'G' ? 'Which codes, where' : 'Sheet ' + t[1]));
+    b.addEventListener('click', function () { go(plan, t[0]); }); $('tabs').appendChild(b);
+  });
+  $('plan').addEventListener('change', function () { go(this.value, sheet); });
+  $('z-in').addEventListener('click', function () { setZoom(zoom * 1.5); });
+  $('z-out').addEventListener('click', function () { setZoom(zoom / 1.5); });
+
+  function load(name, cb) {
+    if (window.SETS[name]) return cb();
+    if (loading[name]) { loading[name].push(cb); return; }
+    loading[name] = [cb];
+    var s = document.createElement('script'); s.src = 'set-' + name + '.js';
+    s.onload = function () { var q = loading[name]; delete loading[name]; q.forEach(function (f) { f(); }); };
+    s.onerror = function () { delete loading[name]; $('status').hidden = false; $('status').textContent = 'That plan set did not load. Check your connection and choose the plan again.'; $('svgwrap').textContent = ''; };
+    document.head.appendChild(s);
+  }
+  function go(p, s) {
+    plan = p; sheet = s; level = 'all'; zoom = 1;
+    try { history.replaceState(null, '', '#' + plan + '-' + sheet); } catch (e) { /* the hash is a convenience only */ }
+    render();
+  }
+  function setZoom(z) {
+    zoom = Math.max(1, Math.min(6, z)); if (zoom < 1.05) zoom = 1;
+    $('z-val').textContent = Math.round(zoom * 100) + '%';
+    if (svgEl) svgEl.style.width = (zoom * 100) + '%';
+  }
+  function setLevel(id) {
+    level = id; var sh = window.SETS[plan].sheets[sheet];
+    Array.prototype.forEach.call($('levels').children, function (b) { b.setAttribute('aria-pressed', b.dataset.id === id ? 'true' : 'false'); });
+    var vb = [0, 0, sh.w, sh.h];
+    if (id !== 'all') sh.blocks.forEach(function (k) { if (k.id === id) vb = [k.x, k.y, k.w, k.h]; });
+    svgEl.setAttribute('viewBox', vb.join(' ')); svgEl.removeAttribute('height'); svgEl.removeAttribute('width'); setZoom(1); $('paper').scrollTop = 0; $('paper').scrollLeft = 0;
+  }
+  function render() {
+    $('plan').value = plan;
+    TABS.forEach(function (t) { $('tab-' + t[0]).setAttribute('aria-selected', t[0] === sheet ? 'true' : 'false'); });
+    var isG = sheet === 'G'; $('basis').hidden = !isG; $('sheetview').hidden = isG;
+    if (isG) return;
+    $('status').hidden = false; $('status').textContent = 'Loading the sheet…'; $('svgwrap').textContent = '';
+    var want = plan + '-' + sheet;
+    load(plan, function () {
+      if (want !== plan + '-' + sheet || !window.SETS[plan]) return;
+      var d = window.SETS[plan], sh = d.sheets[sheet], st = d.stats;
+      $('p-title').textContent = d.title + ' · ' + sh.num + ' ' + sh.title;
+      $('p-stats').textContent = fmt(st.sqft) + ' sq ft · ' + st.beds + ' bed · ' + st.baths + ' bath' + (st.cars ? ' · ' + st.cars + '-car garage' : '') + (st.bsmt && st.bsmt.total ? ' · ' + fmt(st.bsmt.total) + ' sq ft basement' : ' · slab on grade');
+      $('svgwrap').innerHTML = sh.svg; svgEl = $('svgwrap').firstElementChild; $('status').hidden = true;
+      svgEl.setAttribute('role', 'img'); svgEl.setAttribute('aria-label', d.title + ', ' + sh.title + ' sheet');
+      var lv = $('levels'); lv.textContent = '';
+      [{ id: 'all', name: 'Whole sheet' }].concat(sh.blocks).forEach(function (k) {
+        var b = el('button', k.name); b.type = 'button'; b.dataset.id = k.id; b.setAttribute('aria-pressed', 'false'); b.addEventListener('click', function () { setLevel(k.id); }); lv.appendChild(b);
+      });
+      setLevel(sh.blocks.length === 1 || window.innerWidth >= 900 ? 'all' : (sh.blocks.filter(function (k) { return k.id === '1'; })[0] || sh.blocks[0]).id);
+      var nt = $('notes'); nt.textContent = '';
+      sh.notes.forEach(function (n) {
+        var c = el('div', null, 'card'); c.appendChild(el('h3', n[0])); var ul = el('ul');
+        n[1].forEach(function (t) { ul.appendChild(el('li', t, t.indexOf('Check:') === 0 ? 'check' : '')); }); c.appendChild(ul); nt.appendChild(c);
+      });
+      var tb = $('tables'); tb.textContent = '';
+      sh.tables.forEach(function (t) {
+        var c = el('div', null, 'card'); c.appendChild(el('h3', t[0])); var w = el('div', null, 'tw'), tab = el('table'), th = el('thead'), tr = el('tr');
+        var numcol = t[1].map(function (h, i) { return i > 0 && t[2].every(function (r) { return r[i] === '' || /^[\d.,]+( kVA.*| minimum)?$/.test(r[i]); }); });
+        t[1].forEach(function (h, i) { tr.appendChild(el('th', h, numcol[i] ? 'num' : '')); }); th.appendChild(tr); tab.appendChild(th);
+        var bd = el('tbody');
+        t[2].forEach(function (r) { var row = el('tr', null, /^(Total|Calculated load)$/.test(r[0]) ? 'total' : ''); r.forEach(function (v, i) { row.appendChild(el('td', v, numcol[i] ? 'num' : '')); }); bd.appendChild(row); });
+        tab.appendChild(bd); w.appendChild(tab); c.appendChild(w); tb.appendChild(c);
+      });
+    });
+  }
+  function fromHash() {
+    var m = /^#([a-z0-9]+)-([AEPMG])$/.exec(location.hash || '');
+    if (m && PLANS.some(function (p) { return p[0] === m[1]; })) { plan = m[1]; sheet = m[2]; }
+    level = 'all'; zoom = 1; render();
+  }
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
+})();
+</script>
+</body>
+</html>

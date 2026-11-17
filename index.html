@@ -3,273 +3,703 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Lookout Farmhouse | Two plans for St. Charles County</title>
-<meta name="description" content="Two white farmhouse plans with a third-floor lookout room: 3,928 and 2,792 sq ft. Renders, floor plans and a room-by-room 3D walkthrough.">
+<title>Design Your Home</title>
+<meta name="description" content="Design a concept home: six plans, five looks, floor plans for every level, options, lots and a running estimate.">
+<meta property="og:title" content="Design Your Home">
+<meta property="og:description" content="Six plans, five looks, every floor plan and option, with the price in view the whole way.">
+<meta property="og:image" content="https://homebuilding-jet.vercel.app/img/hero_brick.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#121416">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&amp;family=Barlow+Semi+Condensed:wght@600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --paper: #f6f4ef;
-  --card: #ffffff;
-  --ink: #17212b;
-  --muted: #4b5a67;
-  --line: #d9d5cb;
-  --accent: #1b56b3;
-  --dark: #141b22;
-  --display: "Barlow Semi Condensed", "Arial Narrow", Arial, sans-serif;
-  --body: Barlow, "Helvetica Neue", Arial, sans-serif;
-}
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55; }
-img { display: block; width: 100%; height: auto; }
-a { color: var(--accent); }
-.wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
-.bar { position: sticky; top: 0; z-index: 5; background: rgba(246, 244, 239, 0.94); border-bottom: 1px solid var(--line); backdrop-filter: blur(6px); }
-.bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; }
-.brand { white-space: nowrap; font-family: var(--display); font-weight: 700; font-size: 20px; letter-spacing: 0.4px; text-transform: uppercase; color: var(--ink); text-decoration: none; }
-.bar nav { display: flex; gap: 18px; }
-.bar nav a { white-space: nowrap; color: var(--ink); text-decoration: none; font-weight: 500; font-size: 15px; padding: 8px 0; }
-.bar nav a:hover { color: var(--accent); }
-.hero { position: relative; background: var(--dark); color: #ffffff; }
-.hero img { height: min(74vh, 640px); object-fit: cover; opacity: 0.92; }
-.hero .over { position: absolute; left: 0; right: 0; bottom: 0; padding: 90px 0 28px; background: linear-gradient(to top, rgba(12, 17, 22, 0.86), rgba(12, 17, 22, 0)); }
-.eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 1.6px; text-transform: uppercase; margin: 0 0 6px; }
-h1 { font-family: var(--display); font-weight: 700; font-size: clamp(34px, 6vw, 60px); line-height: 1.04; margin: 0 0 10px; text-wrap: balance; }
-.hero p.lead { margin: 0 0 18px; max-width: 620px; font-size: 18px; }
-.btn { display: inline-block; font: inherit; font-weight: 600; text-decoration: none; border-radius: 8px; padding: 12px 20px; border: 1px solid transparent; cursor: pointer; min-height: 46px; }
-.btn.fill { background: var(--accent); color: #ffffff; }
-.btn.line { background: transparent; color: #ffffff; border-color: rgba(255, 255, 255, 0.7); }
-.btn.dark { background: var(--ink); color: #ffffff; }
-.btns { display: flex; flex-wrap: wrap; gap: 10px; }
-section { padding: 56px 0; }
-h2 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 4vw, 40px); line-height: 1.1; margin: 0 0 8px; text-wrap: balance; }
-.intro { color: var(--muted); max-width: 700px; margin: 0 0 26px; }
-.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-.facts div { background: var(--card); padding: 16px 14px; }
-.facts b { display: block; font-family: var(--display); font-size: 24px; line-height: 1.1; }
-.facts span { color: var(--muted); font-size: 14px; }
-.plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; }
-.plan { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
-.plan .pad { padding: 18px 18px 20px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
-.plan h3 { font-family: var(--display); font-size: 26px; line-height: 1.1; margin: 0; }
-.plan .size { color: var(--muted); font-weight: 500; margin: 0; }
-.spec { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; font-size: 15px; }
-.spec li { border-top: 1px solid var(--line); padding-top: 6px; }
-.spec b { display: block; font-weight: 600; }
-.plan .btns { margin-top: auto; }
-.dark-band { background: var(--dark); color: #ffffff; }
-.dark-band .intro { color: #c3ccd5; }
-.tabs { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--card); margin-bottom: 14px; flex-wrap: wrap; }
-.tabs button { font: inherit; font-weight: 500; border: 0; border-right: 1px solid var(--line); background: var(--card); color: var(--ink); padding: 10px 14px; min-height: 44px; cursor: pointer; }
-.tabs button:last-child { border-right: 0; }
-.tabs button[aria-pressed="true"] { background: var(--accent); color: #ffffff; }
-.dark-band .tabs { border-color: #38434e; }
-.walk { position: relative; border-radius: 12px; overflow: hidden; background: #dfe7ee; border: 1px solid #38434e; height: min(78vh, 720px); }
-.walk iframe { width: 100%; height: 100%; border: 0; display: block; }
-.walk .poster { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; padding: 20px; color: #ffffff; background: linear-gradient(rgba(12, 17, 22, 0.5), rgba(12, 17, 22, 0.7)), url("img/big-living.jpg") center / cover; }
-.walk .poster p { margin: 0; max-width: 440px; }
-.note { font-size: 14px; color: #c3ccd5; margin: 12px 0 0; }
-.gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
-figure { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-figcaption { padding: 10px 12px; font-size: 14px; color: var(--muted); }
-.planview { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
-.planview img { max-width: 900px; margin: 0 auto; }
-.feat { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; padding: 0; margin: 0; list-style: none; }
-.feat li { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
-.feat b { display: block; font-family: var(--display); font-size: 19px; }
-.feat span { color: var(--muted); font-size: 15px; }
-footer { border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--muted); font-size: 14px; }
-:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-@media (max-width: 560px) {
-  .bar nav { gap: 12px; }
-  .bar nav a { font-size: 14px; }
-  .brand { font-size: 17px; }
-  section { padding: 40px 0; }
-  .walk { height: 82vh; }
-}
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  /* Layout idea: a showroom. The house, map or lot fills a quiet stage; one decision at a time sits beside it; the price stays in view at the foot. */
+  :root {
+    --paper: #f3f4f1; --card: #ffffff; --ink: #141b18; --soft: #5d6862; --line: #d9ddd6; --spruce: #1f3d32; --spruce-ink: #f3f4f1; --bronze: #8f6f43; --tint: #e7ebe4; --no: #9b3c2e;
+    --display: "Instrument Serif", "Iowan Old Style", Georgia, serif; --body: "Figtree", "Helvetica Neue", Arial, sans-serif;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.45; -webkit-text-size-adjust: 100%; }
+  button { font: inherit; color: inherit; }
+  .app { min-height: 100%; display: flex; flex-direction: column; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; padding: 14px 20px; flex-wrap: wrap; }
+  .brand { font-weight: 700; letter-spacing: 0.22em; font-size: 12.5px; text-transform: uppercase; }
+  .brand span { color: var(--soft); font-weight: 500; }
+  .steps { list-style: none; display: flex; gap: 4px; margin: 0; padding: 0; flex-wrap: wrap; }
+  .steps button { background: none; border: 0; padding: 8px 10px; min-height: 40px; cursor: pointer; font-size: 13.5px; font-weight: 600; color: var(--soft); border-bottom: 2px solid transparent; }
+  .steps button[aria-current="step"] { color: var(--ink); border-bottom-color: var(--bronze); }
+  .steps button:disabled { opacity: 0.45; cursor: default; }
+  .steps .n { font-family: var(--display); font-size: 17px; margin-right: 5px; font-weight: 400; }
+  .concept { font-size: 12px; color: var(--soft); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; white-space: nowrap; }
+  main { flex: 1; display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(340px, 1fr); gap: 0; min-height: 0; }
+  .stage { position: sticky; top: 0; align-self: start; padding: 0 0 12px 20px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .frame.tall { aspect-ratio: 4 / 3; }
+  .frame { position: relative; background: #dfe4dc; border-radius: 14px; overflow: hidden; aspect-ratio: 16 / 9; }
+  .frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.35s ease; }
+  .frame img.on { opacity: 1; }
+  .frame .svgwrap { position: absolute; inset: 0; background: #eef1ec; }
+  .frame.tall .tag { display: none; }
+  .frame svg { width: 100%; height: 100%; display: block; }
+  .tag { position: absolute; left: 14px; bottom: 12px; background: rgba(20, 27, 24, 0.78); color: #f3f4f1; font-size: 12.5px; padding: 6px 10px; border-radius: 8px; max-width: calc(100% - 28px); }
+  .cap { display: flex; justify-content: space-between; align-items: baseline; gap: 6px 18px; flex-wrap: wrap; padding: 0 2px; }
+  .cap h1 { font-family: var(--display); font-weight: 400; font-size: clamp(34px, 4.6vw, 60px); line-height: 1; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+  .cap p { margin: 0; color: var(--soft); font-variant-numeric: tabular-nums; }
+  .thumbs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .thumbs button { border: 2px solid transparent; border-radius: 10px; padding: 0; background: #dfe4dc; cursor: pointer; overflow: hidden; width: 118px; aspect-ratio: 16 / 9; position: relative; }
+  .thumbs button[aria-pressed="true"] { border-color: var(--spruce); }
+  .thumbs img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumbs span { position: absolute; left: 0; right: 0; bottom: 0; font-size: 11px; font-weight: 600; color: #fff; background: linear-gradient(transparent, rgba(0, 0, 0, 0.62)); padding: 10px 6px 4px; text-align: left; }
+  .panel { padding: 4px 20px 24px 28px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .panel h2 { font-family: var(--display); font-weight: 400; font-size: 34px; line-height: 1.05; margin: 0; text-wrap: balance; }
+  .panel .lede { margin: 0; color: var(--soft); max-width: 46ch; }
+  .group { display: flex; flex-direction: column; gap: 8px; }
+  .group > h3 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--soft); margin: 8px 0 0; font-weight: 700; }
+  .opt { display: grid; grid-template-columns: 1fr auto; gap: 2px 14px; align-items: center; text-align: left; width: 100%; background: var(--card); border: 1.5px solid var(--line); border-radius: 12px; padding: 13px 15px; cursor: pointer; min-height: 56px; }
+  .opt:hover { border-color: #b9c1b7; }
+  .opt[aria-checked="true"] { border-color: var(--spruce); box-shadow: inset 0 0 0 1px var(--spruce); }
+  .opt[aria-disabled="true"] { cursor: not-allowed; background: transparent; color: var(--soft); }
+  .opt .t { font-weight: 600; }
+  .opt .d { grid-column: 1; color: var(--soft); font-size: 14px; white-space: pre-line; }
+  .opt .p { grid-row: 1 / span 2; grid-column: 2; font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; text-align: right; font-size: 15px; }
+  .opt .p small { display: block; color: var(--soft); font-weight: 500; font-size: 12.5px; }
+  .opt .why { grid-column: 1 / -1; color: var(--no); font-size: 13.5px; font-weight: 600; }
+  .opt .why.info { color: var(--soft); font-weight: 500; }
+  .opt.home { grid-template-columns: 92px 1fr auto; }
+  .opt.home img { width: 92px; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 8px; grid-row: 1 / span 2; background: #dfe4dc; }
+  .opt.home .t { font-family: var(--display); font-size: 25px; font-weight: 400; line-height: 1; }
+  .opt.home .p { grid-column: 3; }
+  .opt.home .t, .opt.home .d { grid-column: 2; }
+  .note { font-size: 13.5px; color: var(--soft); margin: 0; max-width: 52ch; }
+  .facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .facts div { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .facts b { display: block; font-family: var(--display); font-weight: 400; font-size: 24px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .facts span { font-size: 12.5px; color: var(--soft); }
+  .sum { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  .sum td { padding: 9px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .sum td:last-child { text-align: right; white-space: nowrap; font-weight: 600; padding-left: 12px; }
+  .sum small { display: block; color: var(--soft); font-size: 13px; }
+  .sum tr.tot td { border-bottom: 0; font-size: 18px; padding-top: 14px; }
+  .sum tr.tot td:last-child { font-family: var(--display); font-weight: 400; font-size: 34px; line-height: 1; }
+  .links { display: flex; flex-wrap: wrap; gap: 8px; }
+  .links a, .links button { display: inline-flex; align-items: center; min-height: 46px; padding: 10px 16px; border-radius: 999px; border: 1.5px solid var(--ink); background: transparent; color: var(--ink); font-weight: 600; text-decoration: none; cursor: pointer; }
+  .time { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+  .time li { display: grid; grid-template-columns: 96px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+  .time li span:first-child { color: var(--soft); font-variant-numeric: tabular-nums; }
+  .bar { position: sticky; bottom: 0; z-index: 5; background: rgba(243, 244, 241, 0.94); backdrop-filter: blur(8px); border-top: 1px solid var(--line); padding: 10px 20px calc(10px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .total { display: grid; grid-template-columns: auto; line-height: 1.15; }
+  .total .lbl { font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--soft); font-weight: 700; }
+  .total .amt { font-family: var(--display); font-size: 38px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .total .sub { font-size: 12.5px; color: var(--soft); }
+  .nav { display: flex; gap: 8px; align-items: center; }
+  .nav button { min-height: 50px; padding: 10px 18px; border-radius: 999px; border: 1.5px solid transparent; background: none; cursor: pointer; font-weight: 600; }
+  .nav .primary { background: var(--spruce); color: var(--spruce-ink); padding: 10px 26px; }
+  .nav .primary:disabled { background: #a9b3ab; cursor: not-allowed; }
+  .nav #back:disabled { visibility: hidden; }
+  button:focus-visible, a:focus-visible { outline: 3px solid var(--bronze); outline-offset: 2px; }
+  /* map and site plan */
+  .mp-water { fill: none; stroke: #9ec3cf; stroke-linecap: round; stroke-linejoin: round; }
+  .mp-road { fill: none; stroke: #c9cec6; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .mp-lbl { font-family: var(--body); fill: #7b857f; }
+  .mp-shield { font-family: var(--body); font-weight: 700; fill: #8a938d; }
+  .pin { cursor: pointer; }
+  .pin circle.dot { fill: var(--card); stroke: var(--spruce); stroke-width: 3; }
+  .pin.sel circle.dot { fill: var(--spruce); }
+  .pin text { font-family: var(--body); font-weight: 700; fill: var(--ink); paint-order: stroke; stroke: #eef1ec; stroke-linejoin: round; }
+  .pin.off { opacity: 0.5; }
+  .lot { stroke: #ffffff; stroke-width: 1.2; vector-effect: non-scaling-stroke; cursor: pointer; }
+  .lot.open { fill: #cfdccb; } .lot.nofit { fill: #e4e6e1; cursor: not-allowed; } .lot.held { fill: #e9dcc5; cursor: not-allowed; } .lot.sold { fill: #dcdedb; cursor: not-allowed; }
+  .lot.sel { fill: var(--spruce); }
+  .lotn { font-family: var(--body); font-weight: 700; fill: #33403a; pointer-events: none; text-anchor: middle; }
+  .lotn.sel { fill: #f3f4f1; } .lotn.dim { fill: #9aa39d; }
+  .sp-lbl { font-family: var(--body); fill: #7b857f; font-weight: 600; letter-spacing: 0.08em; }
+  .key { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--soft); padding: 0 2px; }
+  .key i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+  .plot { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
+  .plot svg { width: 100%; height: auto; display: block; max-height: 360px; }
+  [hidden] { display: none !important; }
+  @media (max-width: 900px) {
+    main { grid-template-columns: 1fr; }
+    .stage { position: static; padding: 0 14px; } .panel { padding: 14px 14px 20px; }
+    .top { padding: 10px 14px; } .steps button .w { display: none; } .steps button[aria-current="step"] .w { display: inline; }
+    .steps button { padding: 8px 7px; }
+    .bar { padding: 8px 14px calc(8px + env(safe-area-inset-bottom, 0px)); } .total .amt { font-size: 30px; } .total .sub { display: none; }
+    .nav .primary { padding: 10px 18px; } .panel h2 { font-size: 30px; }
+    .thumbs button { width: 96px; }
+    .opt.home { grid-template-columns: 96px 1fr; column-gap: 12px; }
+    .opt.home img { width: 96px; grid-row: 1 / span 3; align-self: start; }
+    .opt.home .t { grid-row: 1; } .opt.home .d { grid-row: 2; } .opt.home .p { grid-row: 3; grid-column: 2; text-align: left; font-size: 14px; color: var(--soft); }
+    .steps { order: 3; width: 100%; }
+    .frame.tall { aspect-ratio: 1 / 1; }
+  }
+  @media (prefers-reduced-motion: reduce) { .frame img { transition: none; } }
 </style>
+<style id="skin-v2">
+  /* v2 skin: a white showroom. The picture fills the left of the screen from the top bar to the price bar; one choice at a time sits in a narrow column beside it. */
+  :root { --paper: #ffffff; --card: #ffffff; --ink: #121416; --soft: #5a5f63; --line: #e2e3e0; --spruce: #121416; --spruce-ink: #ffffff; --bronze: #a8472e; --tint: #f4f4f2; --barh: 78px; --toph: 56px;
+    --display: "Outfit", "Helvetica Neue", Arial, sans-serif; }
+  body { background: #fff; }
+  .top { position: sticky; top: 0; z-index: 6; background: rgba(255, 255, 255, 0.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); padding: 0 24px; min-height: var(--toph); }
+  .brand { font-family: var(--display); font-weight: 600; letter-spacing: 0.3em; font-size: 12px; }
+  .steps button { font-weight: 500; font-size: 13.5px; transition: color 0.15s; } .steps button:hover:not(:disabled) { color: var(--ink); }
+  .steps .n { font-family: var(--body); font-size: 11.5px; font-weight: 600; opacity: 0.6; margin-right: 6px; }
+  .steps button[aria-current="step"] { border-bottom-color: var(--ink); }
+  .concept { font-size: 11.5px; letter-spacing: 0.04em; }
+  main { grid-template-columns: minmax(0, 1fr) minmax(360px, 460px); }
+  .stage { top: var(--toph); height: calc(100vh - var(--toph) - var(--barh)); height: calc(100dvh - var(--toph) - var(--barh)); padding: 0; gap: 0; background: var(--tint); }
+  .frame, .frame.tall { flex: 1 1 auto; aspect-ratio: auto; min-height: 0; border-radius: 0; background: var(--tint); }
+  .frame img { transition: opacity 0.5s ease; }
+  .frame .svgwrap { background: #f1f2ef; }
+  .tag { left: 20px; bottom: 16px; background: rgba(18, 20, 22, 0.62); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); font-size: 12px; border-radius: 999px; padding: 6px 12px; }
+  .cap { padding: 14px 24px 0; align-items: baseline; }
+  .cap h1 { font-weight: 500; font-size: clamp(26px, 2.5vw, 36px); letter-spacing: -0.015em; }
+  .cap p { font-size: 14.5px; }
+  .thumbs { padding: 10px 24px 16px; gap: 8px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } .thumbs::-webkit-scrollbar { display: none; }
+  .thumbs button { flex: 0 0 auto; width: 96px; border-radius: 8px; border-width: 1.5px; transition: border-color 0.15s, transform 0.1s; } .thumbs button:active { transform: scale(0.97); }
+  .thumbs button[aria-pressed="true"] { border-color: var(--ink); }
+  .key { padding: 0 24px 14px; }
+  .panel { padding: 26px 28px 30px 30px; gap: 16px; border-left: 1px solid var(--line); min-height: calc(100vh - var(--toph) - var(--barh)); }
+  .panel h2 { font-weight: 500; font-size: 30px; letter-spacing: -0.015em; }
+  .panel .lede { font-size: 15.5px; }
+  .opt { border: 1px solid var(--line); border-radius: 14px; padding: 15px 16px; transition: border-color 0.15s, box-shadow 0.15s, transform 0.08s; }
+  .opt:hover { border-color: #b9bcb8; } .opt:active { transform: scale(0.993); }
+  .opt[aria-checked="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+  .opt.home { grid-template-columns: 104px 1fr; column-gap: 14px; }
+  .opt.home img { width: 104px; border-radius: 8px; grid-row: 1 / span 3; align-self: center; }
+  .opt.home .t { font-weight: 500; font-size: 20px; letter-spacing: -0.01em; grid-row: 1; }
+  .opt.home .d { grid-row: 2; }
+  .opt.home .p { grid-row: 3; grid-column: 2; text-align: left; font-size: 14px; color: var(--ink); }
+  .facts b, .sum tr.tot td:last-child { font-weight: 500; letter-spacing: -0.01em; }
+  .bar { background: rgba(255, 255, 255, 0.94); min-height: var(--barh); padding: 8px 24px calc(8px + env(safe-area-inset-bottom, 0px)); }
+  .total .amt { font-weight: 500; font-size: 30px; letter-spacing: -0.015em; }
+  .nav .primary { background: var(--ink); color: #fff; min-width: 168px; transition: background 0.15s, transform 0.08s; } .nav .primary:hover:not(:disabled) { background: #2b2e31; } .nav .primary:active:not(:disabled) { transform: scale(0.98); }
+  .nav .primary:disabled { background: #b9bcb8; }
+  .links a, .links button { transition: background 0.15s, color 0.15s; } .links a:hover, .links button:hover { background: var(--ink); color: #fff; }
+  /* looks as swatches */
+  .swatches { display: flex; gap: 10px; justify-content: center; padding: 6px 0 0; }
+  .sw { width: 60px; height: 60px; border-radius: 50%; border: 0; padding: 5px; background: none; cursor: pointer; box-shadow: inset 0 0 0 2px transparent; transition: box-shadow 0.18s; }
+  .sw i { display: block; width: 100%; height: 100%; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14); }
+  .sw[aria-checked="true"] { box-shadow: inset 0 0 0 2px var(--ink); }
+  .lookcard { text-align: center; display: grid; gap: 6px; justify-items: center; padding: 4px 6px 0; }
+  .lookcard b { font-family: var(--display); font-weight: 500; font-size: 22px; letter-spacing: -0.01em; }
+  .lookcard .pr { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .lookcard p { margin: 0; color: var(--soft); max-width: 40ch; }
+  .lookcard small { color: var(--soft); letter-spacing: 0.12em; text-transform: uppercase; font-size: 11.5px; font-weight: 700; }
+  /* step change */
+  .panel.in > * { animation: rise 0.36s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+  .panel.in > *:nth-child(2) { animation-delay: 0.03s; } .panel.in > *:nth-child(3) { animation-delay: 0.06s; } .panel.in > *:nth-child(n+4) { animation-delay: 0.09s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+  /* opening screen */
+  .intro { position: fixed; inset: 0; z-index: 20; background: #cfd9e3; display: grid; grid-template-rows: auto 1fr auto; justify-items: center; transition: opacity 0.45s ease, visibility 0s linear 0.45s; }
+  .intro.gone { opacity: 0; visibility: hidden; pointer-events: none; }
+  .intro img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
+  .intro .in-top { position: relative; z-index: 1; text-align: center; padding: max(6vh, 44px) 24px 0; color: var(--ink); }
+  .intro .kick { font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 700; font-family: var(--display); margin: 0 0 14px; }
+  .intro h1 { font-family: var(--display); font-weight: 500; font-size: clamp(38px, 5.2vw, 68px); line-height: 1.02; letter-spacing: -0.025em; margin: 0 0 12px; text-wrap: balance; }
+  .intro p.sub { margin: 0; font-size: clamp(16px, 1.5vw, 19px); color: #23272b; }
+  .intro .cta { position: relative; z-index: 1; grid-row: 3; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; padding: 0 20px max(8vh, 40px); }
+  .intro .cta button, .intro .cta a { min-height: 52px; min-width: 232px; padding: 12px 22px; border-radius: 999px; border: 0; font: 600 16px var(--body); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: transform 0.08s, background 0.15s; }
+  .intro .cta .go { background: var(--ink); color: #fff; } .intro .cta .go:hover { background: #2b2e31; }
+  .intro .cta .alt { background: rgba(255, 255, 255, 0.92); color: var(--ink); } .intro .cta .alt:hover { background: #fff; }
+  .intro .cta button:active, .intro .cta a:active { transform: scale(0.98); }
+  .intro .fine { position: absolute; z-index: 1; left: 0; right: 0; bottom: 10px; text-align: center; font-size: 11.5px; color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); margin: 0; }
+  @media (max-width: 900px) {
+    main { grid-template-columns: 1fr; }
+    .top { position: static; padding: 10px 16px 0; }
+    .stage { position: static; height: auto; padding: 0; }
+    .frame { aspect-ratio: 16 / 10; flex: none; } .frame.tall { aspect-ratio: 1 / 1; flex: none; }
+    .cap { padding: 12px 16px 0; } .thumbs { padding: 10px 16px 6px; } .key { padding: 4px 16px 0; }
+    .panel { padding: 18px 16px 24px; border-left: 0; min-height: 0; } .panel h2 { font-size: 27px; }
+    .bar { padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px)); } .total .amt { font-size: 26px; }
+    .nav .primary { min-width: 0; }
+    .sw { width: 56px; height: 56px; }
+    .intro { background: linear-gradient(#89a5c0 0%, #8faac3 36%, #a3b9ce 100%); }
+    .intro img { inset: auto 0 0 0; height: 66%; object-position: 54% 100%; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 16%); mask-image: linear-gradient(to bottom, transparent 0, #000 16%); }
+    .intro .cta { flex-direction: column; align-items: center; gap: 10px; }
+    .total .lbl { white-space: nowrap; font-size: 10.5px; letter-spacing: 0.1em; } .nav button { white-space: nowrap; } .nav .primary .w { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .panel.in > * { animation: none; } .intro { transition: none; } .frame img, .opt, .sw, .nav .primary { transition: none; } }
+
+  /* tools under the picture title: all floor plans, compare */
+  .tools { display: flex; gap: 8px; padding: 8px 24px 0; flex-wrap: wrap; }
+  .tools button { font: inherit; font-size: 13.5px; font-weight: 600; min-height: 36px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: #fff; color: var(--ink); cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+  .tools button:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+  /* full-screen sheets: floor plans and options, compare the homes */
+  .sheet { position: fixed; inset: 0; z-index: 60; background: #fff; display: flex; flex-direction: column; }
+  .sheet[hidden] { display: none; }
+  .sheet-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 24px; border-bottom: 1px solid var(--line); min-height: 56px; }
+  .sheet-top h2 { font-family: var(--display); font-weight: 500; font-size: 21px; margin: 0; letter-spacing: -0.01em; }
+  .sheet-top button { font: inherit; font-weight: 600; min-height: 40px; padding: 8px 18px; border-radius: 999px; border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; }
+  .sheet-tabs { display: flex; gap: 8px; padding: 12px 24px; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--line); flex: none; } .sheet-tabs::-webkit-scrollbar { display: none; }
+  .sheet-tabs button { flex: none; font: inherit; font-size: 14px; font-weight: 600; min-height: 40px; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: #fff; color: var(--ink); cursor: pointer; white-space: nowrap; }
+  .sheet-tabs button[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .sheet-body { flex: 1; overflow-y: auto; padding: 20px 24px 56px; -webkit-overflow-scrolling: touch; }
+  .sheet-body h3 { font-family: var(--display); font-weight: 500; font-size: 20px; margin: 28px 0 4px; letter-spacing: -0.01em; } .sheet-body h3:first-child { margin-top: 0; font-size: 26px; }
+  .sheet-body .lede { margin: 0 0 14px; color: var(--soft); max-width: 78ch; font-size: 15px; }
+  .fpgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr)); gap: 16px; }
+  .fpcard { margin: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #fff; }
+  .fpcard img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: var(--tint); cursor: zoom-in; }
+  .fpcard figcaption { padding: 12px 14px 14px; display: grid; gap: 2px; }
+  .fpcard b { font-size: 15.5px; } .fpcard span { font-size: 13.5px; color: var(--soft); } .fpcard i { font-style: normal; font-size: 13.5px; font-weight: 600; }
+  .fpacts { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 6px; }
+  .fpacts a, .fpacts button, .share button { display: inline-flex; align-items: center; min-height: 42px; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--ink); background: #fff; color: var(--ink); font: inherit; font-weight: 600; font-size: 14px; text-decoration: none; cursor: pointer; }
+  .fpacts .solid { background: var(--ink); color: #fff; }
+  .zoom { position: fixed; inset: 0; z-index: 70; background: rgba(12, 14, 16, 0.94); display: grid; place-items: center; padding: 10px; cursor: zoom-out; } .zoom[hidden] { display: none; }
+  .zoom img { max-width: 100%; max-height: 100%; border-radius: 8px; }
+  .cmpwrap { overflow-x: auto; }
+  .cmp { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 760px; }
+  .cmp th, .cmp td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; white-space: nowrap; }
+  .cmp th { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--soft); font-weight: 600; }
+  .cmp td:first-child { white-space: normal; min-width: 200px; } .cmp td small { display: block; color: var(--soft); font-size: 12.5px; }
+  .cmp img { width: 96px; height: 60px; object-fit: cover; border-radius: 8px; display: block; margin-bottom: 6px; }
+  .cmp button { font: inherit; font-weight: 600; min-height: 38px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--ink); background: #fff; color: var(--ink); cursor: pointer; }
+  .share { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; } .share input { flex: 1; min-width: 200px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; font: inherit; font-size: 13.5px; color: var(--soft); background: var(--tint); }
+  @media (max-width: 860px) { .tools { padding: 8px 16px 0; } .sheet-top, .sheet-tabs { padding-left: 16px; padding-right: 16px; } .sheet-body { padding: 16px 16px 48px; } }
+</style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23121416%27/%3E%3Cpath d=%27M6 17 16 8l10 9v8H6z%27 fill=%27%23fff%27/%3E%3C/svg%3E">
 </head>
 <body>
-<header class="bar">
-  <div class="wrap">
-    <a class="brand" href="#top">Lookout Farmhouse</a>
-    <nav aria-label="Sections">
-      <a href="#plans">Plans</a>
-      <a href="#walkthrough">Walkthrough</a>
-      <a href="#floorplans">Floor plans</a>
-    </nav>
-  </div>
-</header>
-
-<main id="top">
-  <div class="hero">
-    <img src="img/big-front.jpg" alt="White modern farmhouse with black windows, a covered front porch, wood garage doors and a third-floor lookout room" width="1600" height="1000">
-    <div class="over">
-      <div class="wrap">
-        <p class="eyebrow">Concept plans · St. Charles County, Missouri</p>
-        <h1>A white farmhouse with a room above the roofline</h1>
-        <p class="lead">Two plans built on the same simple, efficient frame: 3,928 or 2,792 sq ft, each with a 14 × 16 lookout room wrapped in windows.</p>
-        <div class="btns">
-          <a class="btn fill" href="#walkthrough">Walk through the house</a>
-          <a class="btn line" href="#plans">Compare the two plans</a>
-        </div>
+<section class="intro gone" id="intro" aria-label="Welcome">
+  <img src="img/hero_brick.jpg" alt="A two-story brick home with a covered porch and a lookout room above the roof">
+  <div class="in-top"><p class="kick">Your Brand Homes</p><h1>Design your home.</h1><p class="sub">Six plans. Five looks. The price in view the whole way.</p></div>
+  <div class="cta"><button type="button" class="go" id="begin">Start designing</button><a class="alt" id="intro-fp" href="#plans">See the floor plans</a><a class="alt" id="intro-walk" href="#">Walk through in 3D</a></div>
+  <p class="fine">Concept preview. Rendering of the 3D model.</p>
+</section>
+<div class="app">
+  <header class="top">
+    <div class="brand">Your Brand <span>Homes</span></div>
+    <ol class="steps" id="steps" aria-label="Steps"></ol>
+    <div class="concept">Concept preview</div>
+  </header>
+  <main>
+    <section class="stage" aria-label="Your home">
+      <div class="frame" id="frame">
+        <img id="img-a" alt="" class="on"><img id="img-b" alt="">
+        <div class="svgwrap" id="svgwrap" hidden></div>
+        <div class="tag" id="tag"></div>
       </div>
-    </div>
-  </div>
-
-  <section>
-    <div class="wrap">
-      <div class="facts">
-        <div><b>10 ft</b><span>main-floor ceilings</span></div>
-        <div><b>14 × 16</b><span>third-floor lookout room</span></div>
-        <div><b>14 × 16</b><span>covered back deck</span></div>
-        <div><b>Double door</b><span>front entry and porch</span></div>
-        <div><b>Safe room</b><span>in the basement</span></div>
-        <div><b>Fireplace</b><span>in the living room</span></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="plans" style="padding-top: 0;">
-    <div class="wrap">
-      <h2>Two sizes, one design</h2>
-      <p class="intro">Both plans are two-story rectangles with living space over the garage, stacked stairs and a short plumbing run. That keeps the framing simple and puts the budget into the rooms you see.</p>
-      <div class="plans">
-        <article class="plan">
-          <img src="img/big-aerial.jpg" alt="Aerial view of the larger farmhouse showing the metal porch roof, the lookout room and the covered deck" width="1600" height="1000" loading="lazy">
-          <div class="pad">
-            <h3>The Lookout 3900</h3>
-            <p class="size">3,928 sq ft · 58 × 38 ft footprint</p>
-            <ul class="spec">
-              <li><b>4 bedrooms</b>plus a main-floor office</li>
-              <li><b>3.5 baths</b>13 × 22 primary bath</li>
-              <li><b>3-car garage</b>32 × 22</li>
-              <li><b>Loft</b>second living area upstairs</li>
-            </ul>
-            <div class="btns">
-              <button class="btn dark" type="button" data-walk="3928">Walk through this plan</button>
-            </div>
-          </div>
-        </article>
-        <article class="plan">
-          <img src="img/small-front.jpg" alt="Front view of the smaller farmhouse with six second-floor windows, two wood garage doors, a covered porch and the lookout room" width="1600" height="1000" loading="lazy">
-          <div class="pad">
-            <h3>The Lookout 2800</h3>
-            <p class="size">2,792 sq ft · 42 × 38 ft footprint</p>
-            <ul class="spec">
-              <li><b>3 bedrooms</b>plus a pocket office</li>
-              <li><b>2.5 baths</b>13 × 20 primary bath</li>
-              <li><b>Extended 2-car garage</b>26 × 24</li>
-              <li><b>Loft</b>at the top of the stairs</li>
-            </ul>
-            <div class="btns">
-              <button class="btn dark" type="button" data-walk="2792">Walk through this plan</button>
-            </div>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section id="walkthrough" class="dark-band">
-    <div class="wrap">
-      <h2>Walk through it room by room</h2>
-      <p class="intro">Start in the foyer, tap where you want to go and drag to look around. Room buttons take you through the doorways, and the floor buttons take the stairs up to the lookout.</p>
-      <div class="tabs" role="group" aria-label="Plan to walk through">
-        <button type="button" id="w-3928" aria-pressed="true">3,928 sq ft</button>
-        <button type="button" id="w-2792" aria-pressed="false">2,792 sq ft</button>
-      </div>
-      <div class="walk" id="walk">
-        <div class="poster" id="poster">
-          <p>The 3D model is about 2 MB. It loads when you start.</p>
-          <button class="btn fill" type="button" id="start">Start the walkthrough</button>
-        </div>
-      </div>
-      <p class="note">Prefer a full screen? <a id="full" href="walkthrough/index.html#walk-3928" style="color: #9cc0ff;">Open the walkthrough on its own page</a>.</p>
-    </div>
-  </section>
-
-  <section>
-    <div class="wrap">
-      <h2>Inside and out</h2>
-      <p class="intro">Renderings from the same 3D model, furnished in a simple farmhouse style.</p>
-      <div class="gallery">
-        <figure><img src="img/big-kitchen.jpg" alt="Kitchen with a 10 ft island, white cabinets and a second cabinet run under the rear windows" width="1600" height="1000" loading="lazy"><figcaption>Kitchen with a 10 ft island and a second cabinet run under the windows</figcaption></figure>
-        <figure><img src="img/big-living.jpg" alt="Living room with a fireplace, sofa and the slider to the covered deck" width="1600" height="1000" loading="lazy"><figcaption>Living room with fireplace, open to the dining area and deck</figcaption></figure>
-        <figure><img src="img/big-suite.jpg" alt="Primary suite seen from above with the bedroom, bath and dressing room" width="1600" height="1000" loading="lazy"><figcaption>Primary suite: bedroom, bath with walk-in shower and freestanding tub, dressing room</figcaption></figure>
-        <figure><img src="img/big-lookout.jpg" alt="Third-floor lookout room with windows on all four sides" width="1600" height="1000" loading="lazy"><figcaption>The lookout: windows on all four sides</figcaption></figure>
-        <figure><img src="img/big-rear.jpg" alt="Rear of the larger farmhouse with the covered deck" width="1600" height="1000" loading="lazy"><figcaption>Rear elevation and covered deck, 3,928 sq ft plan</figcaption></figure>
-        <figure><img src="img/small-rear.jpg" alt="Rear of the smaller farmhouse with the covered deck" width="1600" height="1000" loading="lazy"><figcaption>Rear elevation, 2,792 sq ft plan</figcaption></figure>
-      </div>
-    </div>
-  </section>
-
-  <section id="floorplans" style="padding-top: 0;">
-    <div class="wrap">
-      <h2>Floor plans</h2>
-      <p class="intro">Pick a plan and a level.</p>
-      <div class="tabs" role="group" aria-label="Plan">
-        <button type="button" data-plan="big" aria-pressed="true">3,928 sq ft</button>
-        <button type="button" data-plan="small" aria-pressed="false">2,792 sq ft</button>
-      </div>
-      <div class="tabs" role="group" aria-label="Level">
-        <button type="button" data-level="1" aria-pressed="true">Main floor</button>
-        <button type="button" data-level="2" aria-pressed="false">Second floor</button>
-        <button type="button" data-level="3" aria-pressed="false">Lookout and roof</button>
-        <button type="button" data-level="0" aria-pressed="false">Basement</button>
-      </div>
-      <div class="planview"><img id="planimg" src="img/big-plan-1.png" alt="Main floor plan, 3,928 sq ft plan" loading="lazy"></div>
-    </div>
-  </section>
-
-  <section style="padding-top: 0;">
-    <div class="wrap">
-      <h2>What comes with both</h2>
-      <ul class="feat">
-        <li><b>White farmhouse exterior</b><span>Board-and-batten siding, black windows, metal porch and deck roofs, wood-look garage doors.</span></li>
-        <li><b>Open main floor</b><span>Kitchen, dining and living in one run, with a clear sightline from the front door to the back deck.</span></li>
-        <li><b>Primary suite upstairs</b><span>Walk-in shower, freestanding tub and a dressing room, with the laundry a door away.</span></li>
-        <li><b>Lookout room</b><span>A third-floor room reached by its own stair, glazed on every side.</span></li>
-        <li><b>Basement safe room</b><span>A reinforced room under the entry wing, plus a bath rough-in and storage.</span></li>
-        <li><b>Built to be efficient</b><span>Simple rooflines, stacked plumbing and standard spans keep framing and labor in check.</span></li>
-      </ul>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <div class="wrap">
-    <p>Mock listing site. These are concept plans and renderings for discussion, not construction documents and not an offer to sell. Dimensions are approximate, furniture is illustrative, and final design depends on site, engineering and local code review.</p>
-  </div>
-</footer>
-
+      <div class="cap"><h1 id="cap-h"></h1><p id="cap-p"></p></div>
+      <div class="tools"><button type="button" id="open-fp">All floor plans</button><button type="button" id="open-cmp">Compare homes</button></div>
+      <div class="thumbs" id="thumbs"></div>
+      <div class="key" id="key" hidden></div>
+    </section>
+    <section class="panel" id="panel" aria-live="polite"></section>
+  </main>
+  <footer class="bar">
+    <div class="total"><span class="lbl" id="amt-lbl">Estimated total</span><span class="amt" id="amt">$0</span><span class="sub" id="amt-sub">Illustrative estimate, not a quote.</span></div>
+    <div class="nav"><button type="button" id="back">Back</button><button type="button" id="next" class="primary">Next</button></div>
+  </footer>
+</div>
+<section class="sheet" id="fp" hidden aria-label="Floor plans and options"><div class="sheet-top"><h2>Floor plans and options</h2><button type="button" id="fp-close">Close</button></div><div class="sheet-tabs" id="fp-tabs"></div><div class="sheet-body" id="fp-body"></div></section>
+<section class="sheet" id="cmp" hidden aria-label="Compare the homes"><div class="sheet-top"><h2>Compare the homes</h2><button type="button" id="cmp-close">Close</button></div><div class="sheet-body" id="cmp-body"></div></section>
+<div class="zoom" id="zoom" hidden><img id="zoom-img" alt=""></div>
 <script>
 (function () {
-  var walk = document.getElementById('walk'), poster = document.getElementById('poster'), full = document.getElementById('full'), frame = null, plan = '3928';
-  function press(sel, el) { Array.prototype.forEach.call(document.querySelectorAll(sel), function (b) { b.setAttribute('aria-pressed', b === el ? 'true' : 'false'); }); }
-  function src() { return 'walkthrough/index.html#walk-' + plan; }
-  function setPlan(p) {
-    plan = p; press('#w-3928, #w-2792', document.getElementById('w-' + p)); full.href = src();
-    if (frame) { frame.src = 'about:blank'; setTimeout(function () { frame.src = src(); }, 30); }     /* a hash-only change would not reload the frame */
+  'use strict';
+  var VIEWER = 'walkthrough/', SETS = 'plans/';
+  var HAVE = /*HAVE*/{"big_brick":1,"big_brick_s":1,"big_country":1,"big_craft":1,"big_farm":1,"big_trans":1,"fp_big2_bsmt_f":1,"fp_big2_bsmt_u":1,"fp_big2_look":1,"fp_big2_main_f":1,"fp_big2_main_s":1,"fp_big2_main_su":1,"fp_big2_upper":1,"fp_big_bsmt_f":1,"fp_big_bsmt_u":1,"fp_big_look":1,"fp_big_main_f":1,"fp_big_main_s":1,"fp_big_main_su":1,"fp_big_upper":1,"fp_half2_bsmt_f":1,"fp_half2_bsmt_u":1,"fp_half2_look":1,"fp_half2_main_f":1,"fp_half2_main_s":1,"fp_half2_main_su":1,"fp_half2_upper":1,"fp_half2_upper_lk0":1,"fp_half_bsmt_f":1,"fp_half_bsmt_u":1,"fp_half_look":1,"fp_half_main_f":1,"fp_half_main_s":1,"fp_half_main_su":1,"fp_half_upper":1,"fp_half_upper_lk0":1,"fp_p14_bsmt_f":1,"fp_p14_bsmt_u":1,"fp_p14_look":1,"fp_p14_main_f":1,"fp_p14_main_s":1,"fp_p14_main_su":1,"fp_p14_upper":1,"fp_p18_bsmt_f":1,"fp_p18_bsmt_u":1,"fp_p18_look":1,"fp_p18_main_f":1,"fp_p18_main_s":1,"fp_p18_main_su":1,"fp_p18_upper":1,"fp_ranch2_bsmt_f":1,"fp_ranch2_bsmt_u":1,"fp_ranch2_look":1,"fp_ranch2_main_f":1,"fp_ranch2_main_f_lk0":1,"fp_ranch2_main_s":1,"fp_ranch2_main_s_lk0":1,"fp_ranch2_main_su":1,"fp_ranch2_main_su_lk0":1,"fp_ranch_bsmt_f":1,"fp_ranch_bsmt_u":1,"fp_ranch_look":1,"fp_ranch_main_f":1,"fp_ranch_main_f_lk0":1,"fp_ranch_main_s":1,"fp_ranch_main_s_lk0":1,"fp_ranch_main_su":1,"fp_ranch_main_su_lk0":1,"fp_small2_bsmt_f":1,"fp_small2_bsmt_u":1,"fp_small2_look":1,"fp_small2_main_f":1,"fp_small2_main_s":1,"fp_small2_main_su":1,"fp_small2_upper":1,"fp_small2_upper_lk0":1,"fp_small_bsmt_f":1,"fp_small_bsmt_u":1,"fp_small_look":1,"fp_small_main_f":1,"fp_small_main_s":1,"fp_small_main_su":1,"fp_small_upper":1,"fp_small_upper_lk0":1,"half_brick":1,"half_brick_s":1,"half_country":1,"half_craft":1,"half_farm":1,"half_trans":1,"hero_brick":1,"in_brick_great":1,"in_brick_kit":1,"in_country_great":1,"in_country_kit":1,"in_craft_great":1,"in_craft_kit":1,"in_farm_great":1,"in_farm_kit":1,"in_trans_great":1,"in_trans_kit":1,"opt_big_gs_brick":1,"opt_big_gs_country":1,"opt_big_gs_craft":1,"opt_big_gs_farm":1,"opt_big_gs_trans":1,"opt_big_lk0_brick":1,"opt_big_lk0_country":1,"opt_big_lk0_craft":1,"opt_big_lk0_farm":1,"opt_big_lk0_trans":1,"opt_half_gs_brick":1,"opt_half_gs_country":1,"opt_half_gs_craft":1,"opt_half_gs_farm":1,"opt_half_gs_trans":1,"opt_half_lk0_brick":1,"opt_half_lk0_country":1,"opt_half_lk0_craft":1,"opt_half_lk0_farm":1,"opt_half_lk0_trans":1,"opt_p14_gs_brick":1,"opt_p14_gs_country":1,"opt_p14_gs_craft":1,"opt_p14_gs_farm":1,"opt_p14_gs_trans":1,"opt_p14_lk0_brick":1,"opt_p14_lk0_country":1,"opt_p14_lk0_craft":1,"opt_p14_lk0_farm":1,"opt_p14_lk0_trans":1,"opt_p18_gs_brick":1,"opt_p18_gs_country":1,"opt_p18_gs_craft":1,"opt_p18_gs_farm":1,"opt_p18_gs_trans":1,"opt_p18_lk0_brick":1,"opt_p18_lk0_country":1,"opt_p18_lk0_craft":1,"opt_p18_lk0_farm":1,"opt_p18_lk0_trans":1,"opt_ranch_gs_brick":1,"opt_ranch_gs_country":1,"opt_ranch_gs_craft":1,"opt_ranch_gs_farm":1,"opt_ranch_gs_trans":1,"opt_ranch_lk0_brick":1,"opt_ranch_lk0_country":1,"opt_ranch_lk0_craft":1,"opt_ranch_lk0_farm":1,"opt_ranch_lk0_trans":1,"opt_small_gs_brick":1,"opt_small_gs_country":1,"opt_small_gs_craft":1,"opt_small_gs_farm":1,"opt_small_gs_trans":1,"opt_small_lk0_brick":1,"opt_small_lk0_country":1,"opt_small_lk0_craft":1,"opt_small_lk0_farm":1,"opt_small_lk0_trans":1,"p14_brick":1,"p14_brick_s":1,"p14_country":1,"p14_craft":1,"p14_farm":1,"p14_trans":1,"p18_brick":1,"p18_brick_s":1,"p18_country":1,"p18_craft":1,"p18_farm":1,"p18_trans":1,"pair_big_brick":1,"pair_big_country":1,"pair_big_craft":1,"pair_big_farm":1,"pair_big_trans":1,"pair_half_brick":1,"pair_half_country":1,"pair_half_craft":1,"pair_half_farm":1,"pair_half_trans":1,"pair_p14_brick":1,"pair_p14_country":1,"pair_p14_craft":1,"pair_p14_farm":1,"pair_p14_trans":1,"pair_p18_brick":1,"pair_p18_country":1,"pair_p18_craft":1,"pair_p18_farm":1,"pair_p18_trans":1,"pair_ranch_brick":1,"pair_ranch_country":1,"pair_ranch_craft":1,"pair_ranch_farm":1,"pair_ranch_trans":1,"pair_small_brick":1,"pair_small_country":1,"pair_small_craft":1,"pair_small_farm":1,"pair_small_trans":1,"ranch_brick":1,"ranch_brick_s":1,"ranch_country":1,"ranch_craft":1,"ranch_farm":1,"ranch_trans":1,"small_brick":1,"small_brick_s":1,"small_country":1,"small_craft":1,"small_farm":1,"small_trans":1,"suite_bed":1,"suite_brick":1,"suite_country":1,"suite_craft":1,"suite_farm":1,"suite_kit":1,"suite_live":1,"suite_trans":1}/*END*/;                 // the renderings that ship with this version of the page
+  function have(src) { return !!HAVE[src.slice(4, -4)]; }
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, attrs, kids) {
+    var e = document.createElement(tag), k;
+    for (k in (attrs || {})) { if (k === 'text') e.textContent = attrs[k]; else if (k === 'on') { for (var ev in attrs.on) e.addEventListener(ev, attrs.on[ev]); } else if (attrs[k] !== null && attrs[k] !== undefined) e.setAttribute(k, attrs[k]); }
+    (kids || []).forEach(function (c) { if (c) e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return e;
   }
-  function start() {
-    if (frame) return;
-    frame = document.createElement('iframe'); frame.title = 'Room-by-room 3D walkthrough'; frame.src = src();
-    walk.appendChild(frame); poster.remove();
+  function sv(tag, attrs, text) { var e = document.createElementNS('http://www.w3.org/2000/svg', tag); for (var k in (attrs || {})) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e; }
+  function usd(n) { return (n < 0 ? '−$' : '$') + String(Math.abs(Math.round(n))).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function num(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function r100(n) { return Math.round(n / 100) * 100; }
+
+  /* ------------------------------------------------------------ the homes. Sizes and footprints come from the 3D models. */
+  var HOMES = [
+    { k: 'p14', name: '1,420 Plan', line: 'The smallest home, with a two-car garage standard', sq: 1420, top: 140, topName: 'Lookout', beds: 3, baths: 2.5, cars: 2, w: 42, d: 32, bT: 640, bF: 410, gs: 4500, plus: 30000, code: '1420', set: 'p14',
+      parts: [['garage', 0, 0, 22, 24], ['house', 22, 0, 42, 32], ['porch', 22, -6, 42, 0], ['deck', 29.5, 32, 41.5, 44]] },
+    { k: 'p18', name: '1,856 Plan', line: 'Two stories, a lookout and a two-car garage', sq: 1856, top: 224, topName: 'Lookout', beds: 3, baths: 2.5, cars: 2, w: 46, d: 34, bT: 816, bF: 590, gs: 4500, code: '1856', set: 'p18',
+      parts: [['garage', 0, 0, 22, 24], ['house', 22, 0, 46, 34], ['porch', 22, -6, 46, 0], ['deck', 31, 34, 45, 46]] },
+    { k: 'ranch', name: 'Ranch Plan', line: 'One level, with a lookout over the primary suite', sq: 2544, sq2: 2796, top: 224, topName: 'Lookout', beds: 3, baths: 2.5, cars: 3, w: 72, w2: 78, d: 42, bT: 2320, bF: 2000, bT2: 2572, bF2: 2260, v2: 1, gs: 9500, mult: 1.08, code: 'ranch', set: 'ranch',
+      parts: [['house', 0, 0, 72, 42], ['garage', 0, 0, 32, 22], ['porch', 33, -6, 56, 0], ['deck', 35, 42, 51, 56]] },
+    { k: 'small', name: '2,792 Plan', line: 'Two stories and a lookout', sq: 2792, top: 224, topName: 'Lookout', beds: 3, baths: 2.5, cars: 2, w: 42, d: 38, bT: 972, bF: 730, v2: 1, gs: 9500, code: '2792', set: 'small',
+      parts: [['house', 0, 0, 42, 38], ['garage', 0, 0, 22, 22], ['porch', 26, -6, 42, 0], ['deck', 25, 38, 41, 52]] },
+    { k: 'half', name: '1.5-Story Plan', line: 'Primary suite on the main level, three bedrooms up', sq: 3560, sq2: 3760, top: 224, topName: 'Lookout', beds: 4, baths: 3.5, cars: 3, w: 86, d: 36, d2: 46, bT: 1224, bF: 850, v2: 1, gs: 8000, code: '3560', set: 'half',
+      parts: [['garage', 0, 0, 32, 24], ['house', 32, 0, 66, 36], ['house', 66, 0, 86, 36], ['porch', 41.5, -6, 56.5, 0], ['deck', 49.5, 36, 65.5, 50]] },
+    { k: 'big', name: '3,928 Plan', line: 'Two stories, four bedrooms and a lookout', sq: 3928, top: 224, topName: 'Lookout', beds: 4, baths: 3.5, cars: 3, w: 58, d: 38, bT: 1500, bF: 1220, v2: 1, gs: 9500, code: '3928', set: 'big',
+      parts: [['house', 0, 0, 58, 38], ['garage', 0, 0, 32, 22], ['porch', 35, -6, 58, 0], ['deck', 31.25, 38, 47.25, 52]] }
+  ];
+  var LOOKS = [
+    { k: 'farm', sw: ['#efe9dc', '#3d3b38'], name: 'Modern Farmhouse', col: 'Meadow collection', d: 'Ivory board and batten, charcoal roof, one wood-toned entry. Inside: natural oak, muted olive, aged brass.', pct: 0 },
+    { k: 'craft', sw: ['#8d9b83', '#efe6d2'], name: 'Craftsman', col: 'Grove collection', d: 'Sage lap siding, cream trim, tapered columns on stone piers. Inside: medium oak, cream, bronze.', pct: 0.012 },
+    { k: 'trans', sw: ['#d8d0c2', '#6b5a48'], name: 'Transitional', col: 'Stone collection', d: 'Limestone-beige siding with a brick entry wall and bronze accents. Inside: light oak, limestone tones, satin nickel.', pct: 0.009 },
+    { k: 'brick', sw: ['#a4533f', '#efe9dc'], name: 'Traditional Brick', col: 'The lead look', d: 'Red-brown brick across the front with limestone lintels, ivory trim, shutters and a deep green door. Inside: updated traditional.', pct: 0.03 },
+    { k: 'country', sw: ['#a99b87', '#f0e8d8'], name: 'Country Farmhouse', col: '', d: 'Warm taupe siding, cream trim, timber posts on stone. Inside: refined country.', pct: 0.01 }
+  ];
+  var SUITE = { price: 152000, w: 24, d: 56, back: 83 }, DGAR = 38000, COURT = 32;      // with the suite: the garage is entered from the side, off a 32 ft court; the second garage stands at the back of the court and the suite behind it, about 83 ft back from the front wall
+  /* ------------------------------------------------------------ concept communities. Lots and prices are illustrative. */
+  function lots(rows) {                       // rows: [depth, base price, per-foot premium over the narrowest, [[width, status, tag, extra]...]]
+    var out = [], n = 0;
+    rows.forEach(function (row, ri) {
+      var minw = Math.min.apply(null, row[3].map(function (q) { return q[0]; })), x = 0;
+      row[3].forEach(function (q) { n += 1; out.push({ n: n, row: ri, x: x, w: q[0], d: row[0], st: q[1] || 'open', tag: q[2] || '', price: r100(row[1] + (q[0] - minw) * row[2] + (q[3] || 0)) }); x += q[0]; });
+    });
+    return out;
   }
-  document.getElementById('start').addEventListener('click', start);
-  document.getElementById('w-3928').addEventListener('click', function () { setPlan('3928'); });
-  document.getElementById('w-2792').addEventListener('click', function () { setPlan('2792'); });
-  Array.prototype.forEach.call(document.querySelectorAll('[data-walk]'), function (b) {
-    b.addEventListener('click', function () { setPlan(b.getAttribute('data-walk')); start(); document.getElementById('walkthrough').scrollIntoView(); });
-  });
-  var fp = 'big', lv = '1', img = document.getElementById('planimg');
-  var LV = { 1: 'Main floor plan', 2: 'Second floor plan', 3: 'Lookout and roof plan', 0: 'Basement plan' }, PL = { big: '3,928 sq ft plan', small: '2,792 sq ft plan' };
-  function show() { img.src = 'img/' + fp + '-plan-' + lv + '.png'; img.alt = LV[lv] + ', ' + PL[fp]; }
-  Array.prototype.forEach.call(document.querySelectorAll('[data-plan]'), function (b) { b.addEventListener('click', function () { fp = b.getAttribute('data-plan'); press('[data-plan]', b); show(); }); });
-  Array.prototype.forEach.call(document.querySelectorAll('[data-level]'), function (b) { b.addEventListener('click', function () { lv = b.getAttribute('data-level'); press('[data-level]', b); show(); }); });
+  var COMMS = [
+    { k: 'wentzville', name: 'Wentzville', where: 'St. Charles County, off I-70 and I-64', d: 'Family-size lots on a quiet street that ends at a pond.', lat: 38.811, lon: -90.853, front: 25, side: 7, rear: 25, alley: 0, amen: 'pond', street: 'Meadow lane',
+      lots: lots([[150, 78000, 550, [[84], [78, 'sold'], [78], [82, 'held'], [96, '', 'Widest on the north side'], [78, 'sold'], [78], [88], [128, '', 'Backs to the pond', 9000]]],
+                  [145, 76000, 550, [[80], [76, 'sold'], [76], [80], [80, 'sold'], [76], [92], [100, 'held'], [144, '', 'End of the street, beside the pond', 7000]]]]) },
+    { k: 'newtown', name: 'Near New Town', where: 'St. Charles, north of the city', d: 'Walkable blocks facing a canal green, garages off the alley.', lat: 38.846, lon: -90.497, front: 10, side: 4, rear: 3, alley: 1, amen: 'canal', street: 'Canal walk',
+      lots: lots([[112, 72000, 900, [[54], [50, 'sold'], [50], [50], [58, 'held'], [50], [50, 'sold'], [54], [66], [70, '', 'Corner, widest on the green', 5000]]],
+                  [108, 64000, 900, [[54], [50], [50, 'sold'], [54], [54], [50, 'held'], [50], [54, 'sold'], [62], [68, '', 'Corner lot', 3000]]]]) },
+    { k: 'fountain', name: 'Fountain Park', where: 'City of St. Louis, central corridor', d: 'City lots facing the oval park. Homes here stay under 3,000 sq ft.', lat: 38.657, lon: -90.258, front: 15, side: 3, rear: 3, alley: 1, amen: 'park', street: 'Park side', maxSq: 3000,
+      lots: lots([[138, 30000, 700, [[50], [48], [48, 'sold'], [48], [52], [48, 'held'], [48], [50, 'sold'], [54], [58, '', 'Corner, on the park', 4000]]],
+                  [130, 24000, 700, [[48], [48, 'sold'], [50], [48], [48], [52, 'sold'], [48], [48, 'held'], [50], [54, '', 'Corner lot', 2000]]]]) },
+    { k: 'imperial', name: 'Imperial', where: 'Jefferson County, off I-55', d: 'Half-acre and larger wooded lots, about 25 minutes south of downtown.', lat: 38.370, lon: -90.378, front: 40, side: 12, rear: 35, alley: 0, amen: 'woods', street: 'Ridge road',
+      lots: lots([[230, 62000, 260, [[130], [120, 'sold'], [120], [140, 'held'], [150], [165, '', 'Largest lot, backs to the woods', 6000]]],
+                  [210, 58000, 260, [[125], [120], [135, 'sold'], [120], [145], [160, '', 'End of the road', 4000]]]]) }
+  ];
+  var STEPS = [['home', 'Home'], ['look', 'Look'], ['options', 'Options'], ['community', 'Community'], ['lot', 'Lot'], ['summary', 'Summary']];
+  var SWORDER = ['brick', 'trans', 'farm', 'craft', 'country'];
+  var S = { step: 'home', home: 'p18', look: 'brick', ver: 1, top: 1, bsmt: 'u', gar: 'f', dgar: 0, suite: 0, comm: null, lot: null, shot: 'ext' };
+
+  function H() { return HOMES.filter(function (h) { return h.k === S.home; })[0]; }
+  function Lk() { return LOOKS.filter(function (l) { return l.k === S.look; })[0]; }
+  function C() { return COMMS.filter(function (c) { return c.k === S.comm; })[0] || null; }
+  function Lt() { var c = C(); return c ? c.lots.filter(function (l) { return l.n === S.lot; })[0] || null : null; }
+  function v2(h) { return h.v2 && S.ver === 2; }
+  function sideEntry(h) { h = h || H(); return !!(h.gs && (S.gar === 's' || S.suite)); }      // the in-law suite always comes with the side-entry garage: both garages open onto one court
+  function sqft(h) { return (v2(h) && h.sq2 ? h.sq2 : h.sq) - (S.top ? 0 : h.top) + (S.bsmt === 'f' ? (v2(h) && h.bF2 ? h.bF2 : h.bF) : 0); }
+  function baseOf(h, ver) { return r100((95000 + 135 * (ver === 2 && h.sq2 ? h.sq2 : h.sq)) * (h.mult || 1) + (h.plus || 0) + (ver === 2 ? 15000 : 0)); }      // plus: the attached garage on the smallest plan
+  function price() {
+    var h = H(), base = baseOf(h, 1), rows = [['Home', h.name + ', Standard' , base]];
+    if (v2(h)) rows.push(['Upgraded version', 'Larger primary suite', baseOf(h, 2) - base]);
+    var b = baseOf(h, v2(h) ? 2 : 1), lk = Lk();
+    rows.push(['Look', lk.name, r100(b * lk.pct)]);
+    if (!S.top) rows.push([h.topName, 'Left off', -r100(h.top * 85)]);
+    if (S.bsmt === 'f') rows.push(['Finished basement', 'Sauna, gym, bar, safe room, bath', r100((v2(h) && h.bF2 ? h.bF2 : h.bF) * 62 + 14000)]);
+    if (sideEntry(h)) rows.push(['Side-entry garage', S.suite ? 'Goes with the in-law suite' : '', h.gs]);
+    if (!h.cars && S.dgar && !S.suite) rows.push(['Detached two-car garage', '', DGAR]);
+    if (S.suite) rows.push(['In-law suite', '768 sq ft behind a second two-car garage, off the same court', SUITE.price]);
+    var lt = Lt(); if (lt) rows.push(['Lot ' + lt.n, C().name + ', ' + lt.w + ' × ' + lt.d + ' ft', lt.price]);
+    return { rows: rows, total: rows.reduce(function (a, r) { return a + r[2]; }, 0), lot: !!lt };
+  }
+  /* does the configured home fit a lot? returns { ok, why, suite: 'attached' | null } */
+  function fit(c, lt) {
+    var h = H(), hw = v2(h) && h.w2 ? h.w2 : h.w, hd = v2(h) && h.d2 ? h.d2 : h.d, side = sideEntry(h), needW = hw + 2 * c.side + (side ? COURT : 0), needD = c.front + 6 + hd + 14 + c.rear;
+    if (c.maxSq && (v2(h) && h.sq2 ? h.sq2 : h.sq) >= c.maxSq) return { ok: false, why: 'Homes here stay under ' + num(c.maxSq) + ' sq ft' };
+    if (lt.w < needW) return { ok: false, why: (S.suite ? 'With the in-law suite: needs' : side ? 'With the side-entry court: needs' : 'Needs') + ' a lot ' + Math.ceil(needW) + ' ft wide' };
+    if (S.suite) needD = Math.max(needD, c.front + 6 + SUITE.back + 4 + (c.alley ? 3 : c.rear));
+    if (lt.d < needD) return { ok: false, why: (S.suite ? 'With the in-law suite: needs' : 'Needs') + ' a lot ' + Math.ceil(needD) + ' ft deep' };
+    return { ok: true, why: '', suite: S.suite ? 'court' : null, side: side };
+  }
+  function openFits(c) { return c.lots.filter(function (l) { return l.st === 'open' && fit(c, l).ok; }); }
+
+  /* ------------------------------------------------------------ the stage */
+  var front = 'a', curSrc = '';
+  function show(src, alt) {
+    if (src === curSrc) return; curSrc = src;
+    var a = $('img-' + front), b = $('img-' + (front === 'a' ? 'b' : 'a'));
+    b.onload = function () { b.className = 'on'; a.className = ''; front = (front === 'a' ? 'b' : 'a'); };
+    b.alt = alt; b.src = src; if (b.complete && b.naturalWidth) b.onload();
+  }
+  function heroSrc(hk, lk) { return 'img/' + hk + '_' + lk + '.jpg'; }
+  function stage() {
+    var h = H(), lk = Lk(), isMap = S.step === 'community', isLot = S.step === 'lot';
+    $('svgwrap').hidden = !(isMap || isLot); $('key').hidden = !(isMap || isLot); $('frame').className = 'frame' + (isMap || isLot ? ' tall' : '');
+    $('cap-h').textContent = h.name; $('cap-p').textContent = num(sqft(h)) + ' sq ft · ' + h.beds + ' bed · ' + (h.baths + (S.bsmt === 'f' ? 1 : 0)) + ' bath' + (h.cars ? ' · ' + h.cars + '-car garage' : '') + ' · ' + lk.name;
+    var th = $('thumbs'); th.textContent = '';
+    if (isMap) { drawMap(); $('key').textContent = 'Metro St. Louis, drawn as a schematic. The four communities are concepts. Tap one.'; return; }
+    if (isLot) { drawSite(); return; }
+    var shots = [['ext', 'Outside', heroSrc(h.k, lk.k), h.name + ' in the ' + lk.name + ' look, from the street'],
+                 ['great', 'Great room', 'img/in_' + lk.k + '_great.jpg', 'Great room in the ' + lk.name + ' look'], ['kit', 'Kitchen', 'img/in_' + lk.k + '_kit.jpg', 'Kitchen in the ' + lk.name + ' look']];
+    var m = h.k + (v2(h) ? '2' : ''), side = sideEntry(h), two = h.k !== 'ranch', low = h.topName.toLowerCase();
+    if (S.suite) shots.push(['pair', 'With the suite', 'img/pair_' + h.k + '_' + lk.k + '.jpg', h.name + ' with the garage court, the second garage at the back of it and the in-law suite behind']);
+    else if (side) shots.push(['gs', 'Side entry', 'img/opt_' + h.k + '_gs_' + lk.k + '.jpg', h.name + ' with the garage entered from the side, off a court']);
+    if (!S.top) shots.push(['lk0', 'No ' + low, 'img/opt_' + h.k + '_lk0_' + lk.k + '.jpg', h.name + ' without the ' + low]);
+    shots.push(['fpm', 'Main floor', 'img/fp_' + m + '_main_' + (S.suite ? 'su' : side ? 's' : 'f') + (!two && !S.top ? '_lk0' : '') + '.jpg', 'Main floor of the ' + h.name + (S.suite ? ' with the in-law suite' : side ? ' with the side-entry garage' : '') + ', from above']);
+    if (two) shots.push(['fpu', 'Upstairs', 'img/fp_' + m + '_upper' + (!S.top && (h.k === 'small' || h.k === 'half') ? '_lk0' : '') + '.jpg', 'Upstairs of the ' + h.name + ', from above']);
+    if (S.top) shots.push(['fpl', h.topName, 'img/fp_' + m + '_look.jpg', h.topName + ' of the ' + h.name + ', from above']);
+    shots.push(['fpb', 'Basement', 'img/fp_' + m + '_bsmt_' + S.bsmt + '.jpg', (S.bsmt === 'f' ? 'Finished' : 'Unfinished') + ' basement of the ' + h.name + ', from above']);
+    if (S.shot === 'planv') S.shot = 'fpm';
+    if (S.suite) shots.push(['suite', 'In-law suite', 'img/suite_' + lk.k + '.jpg', 'In-law suite with its garage in the ' + lk.name + ' look'], ['suitein', 'Suite living', 'img/suite_live.jpg', 'Kitchen, dining and living room of the in-law suite'],
+      ['suitekit', 'Suite kitchen', 'img/suite_kit.jpg', 'Kitchen of the in-law suite'], ['suitebed', 'Suite bedroom', 'img/suite_bed.jpg', 'Bedroom of the in-law suite']);
+    var fallback = !have(shots[0][2]); if (fallback) shots[0][2] = heroSrc(h.k, 'farm');
+    shots = shots.filter(function (s, i) { return i === 0 || have(s[2]); });
+    if (!shots.some(function (s) { return s[0] === S.shot; })) S.shot = 'ext';
+    shots.forEach(function (s) {
+      th.appendChild(el('button', { type: 'button', 'aria-pressed': s[0] === S.shot ? 'true' : 'false', 'aria-label': 'Show: ' + s[1], on: { click: function () { S.shot = s[0]; stage(); } } }, [el('img', { src: s[2], alt: '', loading: 'lazy' }), el('span', { text: s[1] })]));
+      if (s[0] === S.shot) {
+        show(s[2], s[3]);
+        $('tag').textContent = s[0] === 'ext' ? (fallback ? 'Shown in Modern Farmhouse; the rendering in this look is not ready yet' : 'Rendering of the 3D model') + (S.top ? '' : ', shown with the ' + h.topName.toLowerCase()) + (h.gs && S.gar === 's' ? ', shown with the front-entry garage' : '')
+          : (s[0] === 'great' || s[0] === 'kit') ? 'Interior package for this look, shown in the 3,928 Plan' : s[0] === 'suite' ? 'The suite and its garage as one building' : (s[0] === 'pair' || s[0] === 'gs' || s[0] === 'lk0') ? 'View of the 3D model' + (s[0] !== 'lk0' && !S.top ? ', shown with the ' + h.topName.toLowerCase() : '') : s[0].slice(0, 2) === 'fp' ? 'Floor plan from the 3D model, as configured' + (v2(h) ? ', Upgraded' : '') : s[3] + ', Modern Farmhouse interior';
+      }
+    });
+  }
+  /* schematic metro map: positions from latitude and longitude */
+  function P(lat, lon) { return [((lon + 91.02) * 0.7815) * 1000, (38.97 - lat) * 1000]; }
+  function line(pts) { return 'M' + pts.map(function (q) { var p = P(q[0], q[1]); return p[0].toFixed(0) + ' ' + p[1].toFixed(0); }).join(' L'); }
+  var RIVERS = [[[38.99, -90.62], [38.97, -90.43], [38.93, -90.30], [38.885, -90.18], [38.83, -90.115], [38.76, -90.17], [38.69, -90.185], [38.63, -90.18], [38.56, -90.215], [38.50, -90.27], [38.44, -90.295], [38.39, -90.34], [38.31, -90.375], [38.22, -90.37]],
+                [[38.585, -91.02], [38.61, -90.90], [38.64, -90.78], [38.675, -90.67], [38.72, -90.565], [38.775, -90.485], [38.80, -90.44], [38.84, -90.38], [38.87, -90.30], [38.855, -90.22], [38.815, -90.125]],
+                [[38.47, -90.74], [38.50, -90.63], [38.545, -90.50], [38.515, -90.44], [38.46, -90.40], [38.42, -90.345], [38.39, -90.34]]];
+  var ROADS = [['70', [[38.81, -91.02], [38.81, -90.85], [38.80, -90.70], [38.79, -90.62], [38.78, -90.50], [38.745, -90.37], [38.70, -90.28], [38.635, -90.195], [38.62, -90.10]], [38.80, -90.70]],
+               ['64', [[38.80, -90.84], [38.77, -90.78], [38.71, -90.69], [38.68, -90.655], [38.65, -90.57], [38.63, -90.46], [38.63, -90.33], [38.63, -90.20]], [38.71, -90.69]],
+               ['44', [[38.43, -90.80], [38.50, -90.63], [38.55, -90.41], [38.59, -90.30], [38.615, -90.21]], [38.50, -90.63]],
+               ['55', [[38.61, -90.205], [38.52, -90.29], [38.43, -90.37], [38.37, -90.385], [38.28, -90.40], [38.20, -90.41]], [38.28, -90.40]],
+               ['270', [[38.50, -90.33], [38.55, -90.43], [38.63, -90.45], [38.70, -90.445], [38.765, -90.41], [38.775, -90.33], [38.77, -90.25], [38.765, -90.17]], [38.70, -90.445]]];
+  var PLACES = [['Downtown St. Louis', 38.627, -90.199, 'start', 1], ['St. Charles', 38.781, -90.497, 'start', 1], ['O\u2019Fallon', 38.811, -90.700, 'middle', 0], ['Chesterfield', 38.663, -90.577, 'middle', 0], ['Arnold', 38.433, -90.378, 'start', 0], ['Eureka', 38.503, -90.628, 'middle', 0]];
+  function scaleOf(vw, vh) { var r = $('frame').getBoundingClientRect(); return Math.max(0.2, Math.min(r.width / vw, r.height / vh)); }      // screen pixels per drawing unit
+  function drawMap() {
+    var w = $('svgwrap'); w.textContent = ''; var VB = [40, 40, 770, 660], k = scaleOf(VB[2], VB[3]), u = function (px) { return px / k; };
+    var s = sv('svg', { viewBox: VB.join(' '), role: 'group', 'aria-label': 'Map of metro St. Louis with four communities', preserveAspectRatio: 'xMidYMid meet' }); w.appendChild(s);
+    RIVERS.forEach(function (r, i) { s.appendChild(sv('path', { d: line(r), 'class': 'mp-water', 'stroke-width': u(i === 0 ? 7 : i === 1 ? 5 : 2.5) })); });
+    [['Mississippi River', 38.90, -90.30], ['Missouri River', 38.615, -90.93], ['Meramec River', 38.475, -90.52]].forEach(function (q) { var p = P(q[1], q[2]); s.appendChild(sv('text', { x: p[0], y: p[1] - u(7), 'class': 'mp-lbl', 'font-size': u(10), 'font-style': 'italic', fill: '#6fa3b3' }, q[0])); });
+    ROADS.forEach(function (r) { var pa = sv('path', { d: line(r[1]), 'class': 'mp-road' }); pa.setAttribute('style', 'stroke-width:' + u(2)); s.appendChild(pa); var p = P(r[2][0], r[2][1]); s.appendChild(sv('rect', { x: p[0] - u(11), y: p[1] - u(7), width: u(22), height: u(14), rx: u(3), fill: '#eef1ec', stroke: '#c9cec6', 'stroke-width': u(1) })); s.appendChild(sv('text', { x: p[0], y: p[1] + u(3.4), 'class': 'mp-shield', 'font-size': u(9.5), 'text-anchor': 'middle' }, r[0])); });
+    PLACES.forEach(function (q) { if (!q[4] && k < 0.62) return; var p = P(q[1], q[2]); s.appendChild(sv('circle', { cx: p[0], cy: p[1], r: u(2), fill: '#9aa39d' })); s.appendChild(sv('text', { x: p[0] + u(q[3] === 'start' ? 6 : q[3] === 'end' ? -6 : 0), y: p[1] + u(q[3] === 'middle' ? -6 : 3.5), 'class': 'mp-lbl', 'font-size': u(10.5), 'text-anchor': q[3] }, q[0])); });
+    COMMS.forEach(function (c) {
+      var p = P(c.lat, c.lon), n = openFits(c).length, left = c.k === 'fountain', g = sv('g', { 'class': 'pin' + (S.comm === c.k ? ' sel' : '') + (n ? '' : ' off'), tabindex: 0, role: 'button', 'aria-label': c.name + ', ' + (n ? n + ' open lots fit your home' : 'no lot fits your home') });
+      g.appendChild(sv('circle', { cx: p[0], cy: p[1], r: u(22), fill: 'rgba(31,61,50,0.10)' })); var dot = sv('circle', { cx: p[0], cy: p[1], r: u(8), 'class': 'dot' }); dot.setAttribute('style', 'stroke-width:' + u(3)); g.appendChild(dot);
+      var tx = left ? p[0] : p[0] + u(14), anchor = left ? 'middle' : 'start', up = left ? u(27) : 0;       // Fountain Park's name sits above its pin, clear of downtown
+      g.appendChild(sv('text', { x: tx, y: p[1] - u(3) - up, 'font-size': u(14.5), 'text-anchor': anchor, 'stroke-width': u(3) }, c.name));
+      var t2 = sv('text', { x: tx, y: p[1] + u(11) - up, 'font-size': u(11.5), 'text-anchor': anchor, 'stroke-width': u(3) }, n ? n + (n === 1 ? ' lot fits' : ' lots fit') : 'no fit'); t2.setAttribute('style', 'font-weight:600;fill:' + (n ? '#5d6862' : '#9b3c2e')); g.appendChild(t2);
+      var pick = function () { if (n) { S.comm = c.k; S.lot = null; render(); } }; g.addEventListener('click', pick); g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+      s.appendChild(g);
+    });
+  }
+  /* site plan of the chosen community: two rows of lots, a street or an alley between them */
+  function drawSite() {
+    var c = C(), w = $('svgwrap'); w.textContent = ''; if (!c) return;
+    var rows = [c.lots.filter(function (l) { return l.row === 0; }), c.lots.filter(function (l) { return l.row === 1; })], W = Math.max.apply(null, rows.map(function (r) { return r.reduce(function (a, l) { return a + l.w; }, 0); }));
+    var gap = c.alley ? 16 : 50, d0 = rows[0][0].d, d1 = rows[1][0].d, pad = W * 0.06, am = c.amen === 'pond' ? W * 0.16 : 0, top = c.alley ? 46 : 0, bot = c.alley ? (c.amen === 'park' ? 150 : 110) : 0, wood = c.amen === 'woods' ? 60 : 0;
+    var X0 = -pad, Y0 = -pad * 0.5 - top - wood, VW = W + am + 2 * pad, VH = top + d1 + gap + d0 + bot + pad + 2 * wood, k = scaleOf(VW, VH), fs = 9.5 / k;
+    var s = sv('svg', { viewBox: [X0, Y0, VW, VH].join(' '), role: 'group', 'aria-label': 'Site plan of ' + c.name, preserveAspectRatio: 'xMidYMid meet' }); w.appendChild(s);
+    s.appendChild(sv('rect', { x: X0, y: Y0, width: VW, height: VH, fill: '#eef1ec' }));
+    function strip(y, hgt, fill) { s.appendChild(sv('rect', { x: X0, y: y, width: VW, height: hgt, fill: fill })); }
+    function lbl(x, y, t, size) { s.appendChild(sv('text', { x: x, y: y, 'class': 'sp-lbl', 'font-size': size || fs, 'text-anchor': 'middle' }, t)); }
+    // layout (y grows downward): [top street for alley plans] row 1 lots, street or alley, row 0 lots, [front street and amenity]
+    var yB = 0, yMid = d1, yA = d1 + gap;
+    if (wood) { strip(-wood, wood, '#c9d6c2'); strip(yA + d0, wood, '#c9d6c2'); lbl(W / 2, -wood / 2 + fs / 3, 'WOODS'); lbl(W / 2, yA + d0 + wood / 2 + fs / 3, 'WOODS'); }
+    if (c.alley) { strip(-top, top, '#dfe2dd'); lbl(W / 2, -top / 2 + fs / 3, 'STREET'); strip(yMid, gap, '#d5d9d3'); lbl(W / 2, yMid + gap / 2 + fs / 3, 'ALLEY', fs * 0.8); strip(yA + d0, 44, '#dfe2dd'); lbl(W / 2, yA + d0 + 22 + fs / 3, c.street.toUpperCase());
+      if (c.amen === 'park') { s.appendChild(sv('ellipse', { cx: W / 2, cy: yA + d0 + 44 + 62, rx: W * 0.42, ry: 50, fill: '#bfd3b8' })); lbl(W / 2, yA + d0 + 44 + 66, 'THE OVAL PARK'); s.appendChild(sv('circle', { cx: W / 2, cy: yA + d0 + 44 + 40, r: 7, fill: '#9ec3cf' })); }
+      else { strip(yA + d0 + 44, 24, '#bfd3b8'); strip(yA + d0 + 68, 30, '#a9cbd6'); lbl(W / 2, yA + d0 + 88, 'CANAL'); }
+    } else { strip(yMid, gap, '#dfe2dd'); lbl(W / 2, yMid + gap / 2 + fs / 3, c.street.toUpperCase()); if (am) { s.appendChild(sv('ellipse', { cx: W + am * 0.55, cy: yMid + gap / 2, rx: am * 0.42, ry: (d0 + d1) * 0.34, fill: '#a9cbd6' })); lbl(W + am * 0.55, yMid + gap / 2 + fs / 3, 'POND'); } }
+    c.lots.forEach(function (l) {
+      var f = fit(c, l), cls = l.st !== 'open' ? l.st : (f.ok ? 'open' : 'nofit'), sel = S.lot === l.n, y = l.row === 0 ? yA : yB;
+      var r = sv('rect', { x: l.x, y: y, width: l.w, height: l.d, 'class': 'lot ' + cls + (sel ? ' sel' : ''), tabindex: cls === 'open' ? 0 : -1, role: 'button', 'aria-label': 'Lot ' + l.n + ', ' + l.w + ' by ' + l.d + ' feet, ' + (cls === 'open' ? usd(l.price) : cls === 'nofit' ? 'does not fit your home' : cls) });
+      if (cls === 'open') { var pick = function () { S.lot = l.n; render(); }; r.addEventListener('click', pick); r.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } }); }
+      var nf = Math.min(13 / k, l.w * 0.5); s.appendChild(r); s.appendChild(sv('text', { x: l.x + l.w / 2, y: y + l.d / 2 + nf * 0.36, 'class': 'lotn' + (sel ? ' sel' : cls === 'open' ? '' : ' dim'), 'font-size': nf }, String(l.n)));
+    });
+    var k = $('key'); k.textContent = '';
+    [['#cfdccb', 'Open, fits your home'], ['#121416', 'Your lot'], ['#e4e6e1', 'Does not fit'], ['#e9dcc5', 'On hold'], ['#dcdedb', 'Sold']].forEach(function (q) { var i = el('i'); i.style.background = q[0]; k.appendChild(el('span', {}, [i, q[1]])); });
+  }
+  /* the home drawn on its lot, to scale */
+  function plot(c, lt) {
+    var h = H(), f = fit(c, lt), hw = v2(h) && h.w2 ? h.w2 : h.w, hd = v2(h) && h.d2 ? h.d2 : h.d, pad = 14, s = sv('svg', { viewBox: [-pad, -pad - 12, lt.w + 2 * pad, lt.d + 2 * pad + 26].join(' '), role: 'img', 'aria-label': h.name + ' on lot ' + lt.n });
+    var Y = function (y) { return lt.d - y; };                       // street at the bottom
+    s.appendChild(sv('rect', { x: 0, y: 0, width: lt.w, height: lt.d, fill: '#e7ebe4', stroke: '#9aa39d', 'stroke-width': 0.8 }));
+    s.appendChild(sv('rect', { x: c.side, y: Y(lt.d - c.rear), width: lt.w - 2 * c.side, height: lt.d - c.rear - c.front, fill: 'none', stroke: '#9aa39d', 'stroke-width': 0.5, 'stroke-dasharray': '3 2' }));
+    var side = sideEntry(h), ox = side ? COURT : 0, total = hw + ox, x0 = (lt.w - total) / 2 + ox, y0 = c.front + 6;      // side entry: the court takes the garage side of the lot
+    function box(x1, y1, x2, y2, fill, stroke) { s.appendChild(sv('rect', { x: x0 + x1, y: Y(y0 + y2), width: x2 - x1, height: y2 - y1, fill: fill, stroke: stroke || 'none', 'stroke-width': 0.6 })); }
+    var gx = null, gd = 24;
+    h.parts.forEach(function (p) { if (p[0] === 'garage') { gx = [p[1], p[3]]; gd = p[4]; } });
+    if (side) { s.appendChild(sv('rect', { x: x0 - COURT, y: Y(y0 + gd + 5), width: COURT, height: gd + 10, fill: '#d5d9d3' })); s.appendChild(sv('rect', { x: x0 - COURT, y: Y(y0 - 5), width: 14, height: y0 - 5, fill: '#d5d9d3' })); }      // the court, and the one drive up to it
+    h.parts.forEach(function (p) {
+      var x2 = p[3], y2 = p[4];
+      if (v2(h) && h.w2 && p[0] === 'house') x2 = h.w2; if (v2(h) && h.d2 && p[0] === 'house' && p[1] >= 66) y2 = h.d2;
+      box(p[1], p[2], x2, y2, p[0] === 'house' ? '#1f3d32' : p[0] === 'garage' ? '#4d6a5d' : p[0] === 'porch' ? '#b9c7b5' : '#c9b89a', p[0] === 'garage' ? '#e7ebe4' : null);
+    });
+    if (gx && !side) s.appendChild(sv('rect', { x: x0 + gx[0] + 3, y: Y(y0), width: Math.min(20, gx[1] - gx[0] - 6), height: y0, fill: '#d5d9d3' }));
+    if (f.suite) { var gb = gd + 3; box(-24, gb, 0, gb + 24, '#4d6a5d', '#e7ebe4'); box(-24, gb + 24, 0, gb + 56, '#2f5445'); box(0, gb + 24, 6, gb + 56, '#b9c7b5'); }
+    if (!h.cars && S.dgar && !S.suite) { if (c.alley) { var gy = lt.d - c.rear - y0; box(hw / 2 - 12, gy - 24, hw / 2 + 12, gy, '#4d6a5d', '#e7ebe4'); } else { s.appendChild(sv('rect', { x: x0 + hw + 1, y: Y(y0 + hd + 20), width: 10, height: y0 + hd + 20, fill: '#d5d9d3' })); box(hw - 11, hd + 20, hw + 11, hd + 44, '#4d6a5d', '#e7ebe4'); } }
+    var t = function (x, y, str, anchor, size) { s.appendChild(sv('text', { x: x, y: y, 'font-size': size || 7, 'text-anchor': anchor || 'middle', fill: '#5d6862', 'font-family': 'Figtree, Arial, sans-serif', 'font-weight': 600 }, str)); };
+    t(lt.w / 2, lt.d + 10, 'STREET · ' + lt.w + ' ft'); t(lt.w / 2, -5, c.alley ? 'ALLEY' : 'REAR YARD'); var tv = sv('text', { x: -5, y: lt.d / 2, 'font-size': 7, 'text-anchor': 'middle', fill: '#5d6862', 'font-family': 'Figtree, Arial, sans-serif', 'font-weight': 600, transform: 'rotate(-90 -5 ' + (lt.d / 2) + ')' }, lt.d + ' ft'); s.appendChild(tv);
+    return s;
+  }
+
+  /* ------------------------------------------------------------ the panel, one step at a time */
+  function opt(title, desc, priceTxt, checked, onpick, extra) {
+    extra = extra || {};
+    var b = el('button', { type: 'button', 'class': 'opt' + (extra.cls ? ' ' + extra.cls : ''), role: 'radio', 'aria-checked': checked ? 'true' : 'false', 'aria-disabled': extra.off ? 'true' : null, on: { click: function () { if (!extra.off) onpick(); } } },
+      [extra.img ? el('img', { src: extra.img, alt: '', loading: 'lazy' }) : null, el('span', { 'class': 't', text: title }), el('span', { 'class': 'p' }, [priceTxt, extra.sub ? el('small', { text: extra.sub }) : null]), desc ? el('span', { 'class': 'd', text: desc }) : null, extra.why ? el('span', { 'class': 'why' + (extra.info ? ' info' : ''), text: extra.why }) : null]);
+    return b;
+  }
+  function delta(n) { return n === 0 ? 'Included' : (n > 0 ? '+' : '') + usd(n); }
+  function group(title, kids) { return el('div', { 'class': 'group', role: 'radiogroup', 'aria-label': title }, [title ? el('h3', { text: title }) : null].concat(kids)); }
+  function set(k, v) { return function () { S[k] = v; if (k === 'home') { S.ver = 1; S.top = 1; S.gar = 'f'; S.dgar = 0; }
+    if (k === 'top') S.shot = v ? 'ext' : 'lk0'; if (k === 'bsmt') S.shot = 'fpb'; if (k === 'gar') S.shot = v === 's' ? 'gs' : 'ext'; if (k === 'ver') S.shot = (S.home === 'half' || S.home === 'ranch') ? 'fpm' : 'fpu'; if (k === 'suite') S.shot = v ? 'pair' : 'ext';      // show what the choice changes
+    if (S.suite && H().gs) S.gar = 's'; if (k !== 'lot' && k !== 'shot') { var c = C(), l = Lt(); if (c && l && !fit(c, l).ok) S.lot = null; } render(); }; }
+  function panel() {
+    var p = $('panel'), h = H(), kids = [];
+    p.textContent = '';
+    if (S.step === 'home') {
+      kids.push(el('h2', { text: 'Choose your home' }), el('p', { 'class': 'lede', text: 'Six plans, each a fixed design you can walk through before it is built. Prices are for the home in its Standard version, before the lot.' }));
+      kids.push(group('', HOMES.map(function (x) { return opt(x.name, num(x.sq) + ' sq ft · ' + x.beds + ' bed · ' + x.baths + ' bath\n' + x.line, 'from ' + usd(baseOf(x, 1)), x.k === S.home, set('home', x.k), { cls: 'home', img: heroSrc(x.k, 'brick').replace('.jpg', '_s.jpg') }); })));
+    } else if (S.step === 'look') {
+      var b = baseOf(h, v2(h) ? 2 : 1);
+      kids.push(el('h2', { text: 'Choose the look' }), el('p', { 'class': 'lede', text: 'Each look sets the outside and the finishes inside together, so the house reads as one idea.' }));
+      kids.push(el('div', { 'class': 'swatches', role: 'radiogroup', 'aria-label': 'Look' }, SWORDER.map(function (k) {
+        var l = LOOKS.filter(function (x) { return x.k === k; })[0], i = el('i'); i.style.background = 'linear-gradient(135deg, ' + l.sw[0] + ' 0 62%, ' + l.sw[1] + ' 62%)';
+        return el('button', { type: 'button', 'class': 'sw', role: 'radio', 'aria-checked': l.k === S.look ? 'true' : 'false', 'aria-label': l.name, title: l.name, on: { click: set('look', l.k) } }, [i]);
+      })));
+      var L0 = Lk();
+      kids.push(el('div', { 'class': 'lookcard' }, [el('b', { text: L0.name }), el('span', { 'class': 'pr', text: delta(r100(b * L0.pct)) }), el('p', { text: L0.d }), L0.col ? el('small', { text: L0.col }) : null]));
+      kids.push(el('p', { 'class': 'note', text: 'Tap a swatch. The pictures change with it: outside, great room and kitchen.' }));
+    } else if (S.step === 'options') {
+      kids.push(el('h2', { text: 'Make it yours' }), el('p', { 'class': 'lede', text: 'A short list. Everything else is already decided and priced in.' }));
+      if (h.v2) kids.push(group('Version', [opt('Standard', 'The plan as drawn.', 'Included', S.ver === 1, set('ver', 1)), opt('Upgraded', 'A larger primary suite: more bath, more closet' + (h.sq2 ? ', ' + num(h.sq2 - h.sq) + ' sq ft more.' : '.'), delta(baseOf(h, 2) - baseOf(h, 1)), S.ver === 2, set('ver', 2))]));
+      kids.push(group(h.topName, [opt('With the ' + h.topName.toLowerCase(), num(h.top) + ' sq ft room at the top of the house, windows all around.', 'Included', S.top === 1, set('top', 1)), opt('Without it', 'The roof closes over and the stair stops a floor lower.', delta(-r100(h.top * 85)), S.top === 0, set('top', 0))]));
+      var bf = v2(h) && h.bF2 ? h.bF2 : h.bF, bt = v2(h) && h.bT2 ? h.bT2 : h.bT;
+      kids.push(group('Basement', [opt('Unfinished', num(bt) + ' sq ft with a safe room, an egress window and rough-ins for a bath and a bar.', 'Included', S.bsmt === 'u', set('bsmt', 'u')), opt('Finished', num(bf) + ' sq ft finished: sauna, gym, bar, safe room and a full bath.', delta(r100(bf * 62 + 14000)), S.bsmt === 'f', set('bsmt', 'f'))]));
+      if (h.gs) kids.push(group('Garage doors', [opt('Facing the street', '', 'Included', S.gar === 'f' && !S.suite, set('gar', 'f'), { off: !!S.suite, why: S.suite ? 'With the in-law suite the garage is entered from the side, off the court it shares with the second garage.' : '' }), opt('On the side', 'The front of the garage gets windows. One drive leads to a court beside the house.', delta(h.gs), sideEntry(h), set('gar', 's'))]));
+      if (!h.cars) kids.push(group('Garage', [opt('No garage', 'Park on the drive or the street.', 'Included', !S.dgar || !!S.suite, set('dgar', 0), { off: !!S.suite, info: 1, why: S.suite ? 'The in-law suite brings its own two-car garage.' : '' }), opt('Detached two-car garage', 'Behind the house off the alley, or beside it on a wider lot.', delta(DGAR), !!S.dgar && !S.suite, set('dgar', 1), { off: !!S.suite })]));
+      kids.push(group('In-law suite and second garage', [opt('No suite', '', 'Included', !S.suite, set('suite', 0)), opt('In-law suite + two-car garage', 'One add-on: a second two-car garage with a 768 sq ft, one-level home attached. Living room, kitchen, bedroom, bath, exercise room, its own porch and front door. No steps anywhere. The house garage turns to a side entry off a court; the second garage stands at the back of that court and the suite sits behind it. One driveway serves both.', delta(SUITE.price) + (h.gs && S.gar !== 's' ? ' + ' + usd(h.gs) : ''), !!S.suite, set('suite', 1))]));
+      kids.push(el('p', { 'class': 'note', text: 'The suite comes with the side-entry garage. The court takes about 32 ft beside the house and the suite reaches about 83 ft back, so it needs a wide lot. The lot step shows which lots take it.' }));
+    } else if (S.step === 'community') {
+      kids.push(el('h2', { text: 'Choose where' }), el('p', { 'class': 'lede', text: 'Four concept communities around metro St. Louis. Each shows how many open lots fit the home you configured.' }));
+      kids.push(group('', COMMS.map(function (c) {
+        var n = openFits(c).length, ps = c.lots.filter(function (l) { return l.st === 'open'; }).map(function (l) { return l.price; }), ws = c.lots.map(function (l) { return l.w; });
+        var why = n ? '' : (c.maxSq && (v2(h) && h.sq2 ? h.sq2 : h.sq) >= c.maxSq ? 'Homes here stay under ' + num(c.maxSq) + ' sq ft. Your plan is ' + num(v2(h) && h.sq2 ? h.sq2 : h.sq) + '.' : 'No open lot here fits this home' + (S.suite ? ' with the in-law suite.' : '.'));
+        return opt(c.name, c.where + '. ' + c.d + ' Lots ' + Math.min.apply(null, ws) + ' to ' + Math.max.apply(null, ws) + ' ft wide.', 'lots from ' + usd(Math.min.apply(null, ps)), S.comm === c.k, function () { S.comm = c.k; S.lot = null; render(); }, { off: !n, why: why, sub: n ? n + ' fit your home' : '' });
+      })));
+    } else if (S.step === 'lot') {
+      var c = C(), lt = Lt();
+      kids.push(el('h2', { text: lt ? 'Lot ' + lt.n + ', ' + c.name : 'Choose your lot' }), el('p', { 'class': 'lede', text: lt ? (lt.tag ? lt.tag + '. ' : '') + 'Your home is drawn on the lot to scale, with the setbacks dashed.' : 'Tap an open lot on the plan, or pick one from the list.' }));
+      if (lt) {
+        var f = fit(c, lt);
+        kids.push(el('div', { 'class': 'facts' }, [el('div', {}, [el('b', { text: lt.w + ' × ' + lt.d + ' ft' }), el('span', { text: num(lt.w * lt.d) + ' sq ft, ' + (lt.w * lt.d / 43560).toFixed(2) + ' acre' })]), el('div', {}, [el('b', { text: usd(lt.price) }), el('span', { text: 'Lot price, illustrative' })])]));
+        var pl = el('div', { 'class': 'plot' }); pl.appendChild(plot(c, lt)); kids.push(pl);
+        if (S.suite) kids.push(el('p', { 'class': 'note', text: 'One drive leads to a court beside the house. The house garage opens onto it from the side; the second garage stands at the back of it, with the in-law suite behind.' }));
+        else if (f.side) kids.push(el('p', { 'class': 'note', text: 'One drive leads to a court beside the house; the garage doors open onto it.' }));      }
+      kids.push(group('Open lots that fit', openFits(c).map(function (l) { return opt('Lot ' + l.n, l.w + ' × ' + l.d + ' ft' + (l.tag ? '. ' + l.tag + '.' : ''), usd(l.price), S.lot === l.n, set('lot', l.n)); })));
+    } else {
+      var pr = price(), c2 = C(), l2 = Lt();
+      kids.push(el('h2', { text: 'Your home' }), el('p', { 'class': 'lede', text: h.name + (v2(h) ? ', Upgraded' : '') + ' in the ' + Lk().name + ' look' + (l2 ? ', on lot ' + l2.n + ' in ' + c2.name + '.' : '. Choose a community and a lot to finish.') }));
+      var tb = el('table', { 'class': 'sum' });
+      pr.rows.forEach(function (r) { tb.appendChild(el('tr', {}, [el('td', {}, [r[0], r[1] ? el('small', { text: r[1] }) : null]), el('td', { text: r[2] === 0 ? 'Included' : usd(r[2]) })])); });
+      tb.appendChild(el('tr', { 'class': 'tot' }, [el('td', { text: pr.lot ? 'Estimated total' : 'Estimated total, before the lot' }), el('td', { text: usd(pr.total) })])); kids.push(tb);
+      kids.push(el('p', { 'class': 'note', text: 'An illustrative estimate from a simple model: it is not a quote, and it leaves out closing costs, taxes, utility fees and site work beyond a typical lot. No order is placed from this page.' }));
+      kids.push(el('div', { 'class': 'links' }, [el('a', { href: VIEWER + '#plan-' + h.code + (v2(h) ? 'v2' : '') + (S.suite ? '-with-suite' : ''), target: '_blank', rel: 'noopener', text: 'Walk through it in 3D' }), el('a', { href: SETS + '#' + h.set + (v2(h) ? '2' : '') + '-A', target: '_blank', rel: 'noopener', text: 'See the plan set' }),
+        S.suite ? el('a', { href: VIEWER + '#walk-suite', target: '_blank', rel: 'noopener', text: 'Walk through the suite' }) : null, el('button', { type: 'button', id: 'copy', text: 'Copy my build', on: { click: copyBuild } })]));
+      kids.push(el('div', { 'class': 'share' }, [el('input', { type: 'text', readonly: 'readonly', id: 'share-url', value: shareUrl(), 'aria-label': 'Link to this build' }), el('button', { type: 'button', id: 'share', text: 'Copy link', on: { click: copyLink } })]));
+      kids.push(group('From here to move-in', [el('ol', { 'class': 'time' }, [['Week 0', 'Selections locked. Because the plan is fixed, the drawings and the budget are final on day one.'], ['Weeks 1 to 6', 'Permit and site work.'], ['Weeks 7 to 9', 'Foundation.'], ['Weeks 10 to 15', 'Framing, roof and windows.'], ['Weeks 16 to 20', 'Plumbing, electrical, heating and air, insulation.'], ['Weeks 21 to 29', 'Drywall, cabinets, floors and finishes.'], ['Weeks 30 to 32', 'Walkthrough and keys.']].map(function (q) { return el('li', {}, [el('span', { text: q[0] }), el('span', { text: q[1] })]); }))]));
+      kids.push(el('p', { 'class': 'note', text: 'A typical schedule for a home this size, shown to give the feel of the process. Weather, permits and options move it.' }));
+    }
+    kids.forEach(function (k) { p.appendChild(k); });
+  }
+  function shareUrl() { return String(location.href).split('#')[0] + '#b-' + [S.home, S.look, S.ver, S.top, S.bsmt, S.gar, S.suite ? 1 : 0, S.comm || 'x', S.lot || 0].join('-'); }
+  function copyLink() {
+    var b = $('share'), i = $('share-url'), done = function (ok) { b.textContent = ok ? 'Copied' : 'Select the link and copy it'; setTimeout(function () { b.textContent = 'Copy link'; }, 2200); };
+    try { i.focus(); i.select(); } catch (e) { /* selection is a nicety */ }
+    try { navigator.clipboard.writeText(i.value).then(function () { done(true); }, function () { done(false); }); } catch (e) { done(false); }
+  }
+  function readShare(hk) {                      // a build link: #b-home-look-version-lookout-basement-garage-suite-community-lot
+    var q = /^b-([a-z0-9]+)-([a-z]+)-([12])-([01])-([uf])-([fs])-([01])-([a-z]+)-(\d+)$/.exec(hk || '');
+    if (!q || !HOMES.some(function (x) { return x.k === q[1]; }) || !LOOKS.some(function (x) { return x.k === q[2]; })) return false;
+    S.home = q[1]; S.look = q[2]; S.ver = +q[3]; S.top = +q[4]; S.bsmt = q[5]; S.gar = q[6]; S.suite = +q[7]; S.comm = COMMS.some(function (x) { return x.k === q[8]; }) ? q[8] : null; S.lot = +q[9] || null;
+    if (!H().v2) S.ver = 1; if (S.suite && H().gs) S.gar = 's'; var c = C(), l = Lt(); if (!c || !l || !fit(c, l).ok) S.lot = null;
+    S.step = 'summary'; S.shot = S.suite ? 'pair' : 'ext'; return true;
+  }
+  /* ------------------------------------------------------------ every floor plan and option, home by home; and the homes side by side */
+  var FP = { home: null, ver: 1 };
+  function fpCard(src, title, sub, extra) {
+    if (!have(src)) return null;
+    var im = el('img', { src: src, alt: title, loading: 'lazy' }); im.addEventListener('click', function () { $('zoom-img').setAttribute('src', src); $('zoom-img').setAttribute('alt', title); $('zoom').hidden = false; });
+    return el('figure', { 'class': 'fpcard' }, [im, el('figcaption', {}, [el('b', { text: title }), sub ? el('span', { text: sub }) : null, extra ? el('i', { text: extra }) : null])]);
+  }
+  function closeSheets() { $('fp').hidden = true; $('cmp').hidden = true; $('zoom').hidden = true; document.body.style.overflow = ''; }
+  function pickHome(k, ver) { S.home = k; S.ver = ver || 1; S.top = 1; S.gar = S.suite ? 's' : 'f'; S.dgar = 0; S.lot = null; S.shot = 'ext'; closeSheets(); $('intro').classList.add('gone'); go('home'); }
+  function drawFp() {
+    var h = HOMES.filter(function (x) { return x.k === FP.home; })[0] || H(), ver = h.v2 ? FP.ver : 1, m = h.k + (ver === 2 ? '2' : ''), two = h.k !== 'ranch', F = 'img/fp_' + m + '_', low = h.topName.toLowerCase();
+    var sq = ver === 2 && h.sq2 ? h.sq2 : h.sq, bt = ver === 2 && h.bT2 ? h.bT2 : h.bT, bf = ver === 2 && h.bF2 ? h.bF2 : h.bF, base = baseOf(h, ver);
+    var tabs = $('fp-tabs'), b = $('fp-body'); tabs.textContent = ''; b.textContent = '';
+    HOMES.forEach(function (x) { tabs.appendChild(el('button', { type: 'button', 'aria-pressed': x.k === h.k ? 'true' : 'false', text: x.name, on: { click: function () { FP.home = x.k; FP.ver = 1; drawFp(); b.scrollTop = 0; } } })); });
+    var acts = [el('button', { type: 'button', 'class': 'solid', text: 'Configure this home', on: { click: function () { pickHome(h.k, ver); } } })];
+    if (h.v2) acts.push(el('button', { type: 'button', text: ver === 2 ? 'Show the Standard version' : 'Show the Upgraded version', on: { click: function () { FP.ver = ver === 2 ? 1 : 2; drawFp(); } } }));
+    acts.push(el('a', { href: VIEWER + '#plan-' + h.code + (ver === 2 ? 'v2' : ''), target: '_blank', rel: 'noopener', text: 'Walk through in 3D' }), el('a', { href: SETS + '#' + h.set + (ver === 2 ? '2' : '') + '-A', target: '_blank', rel: 'noopener', text: 'Plan set' }));
+    var kids = [el('h3', { text: h.name + (h.v2 ? (ver === 2 ? ', Upgraded' : ', Standard') : '') }),
+      el('p', { 'class': 'lede', text: num(sq) + ' sq ft · ' + h.beds + ' bed · ' + h.baths + ' bath · ' + h.cars + '-car garage · ' + (ver === 2 && h.w2 ? h.w2 : h.w) + ' × ' + (ver === 2 && h.d2 ? h.d2 : h.d) + ' ft · from ' + usd(base) + '. ' + h.line + '. Tap a plan to enlarge it.' }),
+      el('div', { 'class': 'fpacts' }, acts),
+      el('h3', { text: 'Every level' }),
+      el('div', { 'class': 'fpgrid' }, [fpCard(F + 'main_f.jpg', 'Main floor', two ? 'Kitchen, dining and living as one room' : 'Everything on one level'), two ? fpCard(F + 'upper.jpg', 'Upstairs', 'Bedrooms, baths and laundry') : null,
+        fpCard(F + 'look.jpg', h.topName, num(h.top) + ' sq ft at the top of the house, windows all around'), fpCard(F + 'bsmt_u.jpg', 'Basement, unfinished', num(bt) + ' sq ft with a safe room, an egress window and rough-ins')]),
+      el('h3', { text: 'Options' }), el('p', { 'class': 'lede', text: 'Each option drawn on this home. Prices are illustrative.' }),
+      el('div', { 'class': 'fpgrid' }, [
+        fpCard('img/opt_' + h.k + '_gs_brick.jpg', 'Side-entry garage', 'Doors on the side, off a court beside the house. One drive.', delta(h.gs)),
+        fpCard(F + 'main_s.jpg', 'Main floor with the side-entry garage', 'The garage level as planned for side entry'),
+        fpCard('img/opt_' + h.k + '_lk0_brick.jpg', 'Without the ' + low, 'The roof closes over', delta(-r100(h.top * 85))),
+        two && (h.k === 'small' || h.k === 'half') ? fpCard(F + 'upper_lk0.jpg', 'Upstairs without the ' + low, 'The foot of its stair becomes a walk-in storage closet') : null,
+        !two ? fpCard(F + 'main_f_lk0.jpg', 'Main floor without the ' + low, 'The stair nook becomes a sitting room in the primary suite') : null,
+        fpCard(F + 'bsmt_f.jpg', 'Finished basement', num(bf) + ' sq ft finished: sauna, gym, bar, safe room and a full bath', delta(r100(bf * 62 + 14000))),
+        fpCard('img/pair_' + h.k + '_brick.jpg', 'In-law suite and second garage', 'The garage turns to the court, a second garage stands at the back of it, the suite sits behind', delta(SUITE.price) + ', with the side-entry garage'),
+        fpCard(F + 'main_su.jpg', 'Main floor with the in-law suite', '768 sq ft more: one bedroom, one bath, its own porch, no steps')]),
+      el('h3', { text: 'Looks' }),
+      el('div', { 'class': 'fpgrid' }, SWORDER.map(function (k) { var L = LOOKS.filter(function (x) { return x.k === k; })[0]; return fpCard(heroSrc(h.k, k), L.name, L.d, delta(r100(base * L.pct))); }))];
+    kids.forEach(function (k) { if (k) b.appendChild(k); });
+  }
+  function drawCmp() {
+    var b = $('cmp-body'); b.textContent = '';
+    var head = el('tr', {}, ['Home', 'Size', 'Bedrooms', 'Baths', 'Garage', 'Footprint', 'Basement', 'From', ''].map(function (t) { return el('th', { scope: 'col', text: t }); }));
+    var rows = HOMES.map(function (h) {
+      return el('tr', {}, [el('td', {}, [el('img', { src: 'img/' + h.k + '_brick_s.jpg', alt: '', loading: 'lazy' }), el('b', { text: h.name }), el('small', { text: h.line })]),
+        el('td', {}, [num(h.sq) + ' sq ft', h.sq2 ? el('small', { text: 'Upgraded ' + num(h.sq2) }) : null]), el('td', { text: String(h.beds) }), el('td', { text: String(h.baths) }), el('td', { text: h.cars + '-car' }),
+        el('td', {}, [h.w + ' × ' + h.d + ' ft', el('small', { text: h.k === 'ranch' ? 'one level' : h.k === 'half' ? 'primary suite on main' : 'two stories' })]),
+        el('td', {}, [num(h.bT) + ' sq ft', el('small', { text: num(h.bF) + ' finished' })]), el('td', {}, [el('b', { text: usd(baseOf(h, 1)) }), h.v2 ? el('small', { text: 'Upgraded ' + usd(baseOf(h, 2)) }) : null]),
+        el('td', {}, [el('button', { type: 'button', text: 'Choose', on: { click: function () { pickHome(h.k, 1); } } })])]);
+    });
+    b.appendChild(el('p', { 'class': 'lede', text: 'Six plans side by side. Sizes come from the 3D models; prices are illustrative, for the Standard version before the lot. Every home takes all five looks, the lookout, a finished basement, a side-entry garage and the in-law suite.' }));
+    b.appendChild(el('div', { 'class': 'cmpwrap' }, [el('table', { 'class': 'cmp' }, [el('thead', {}, [head]), el('tbody', {}, rows)])]));
+  }
+  function openFp() { FP.home = S.home; FP.ver = S.ver; drawFp(); $('cmp').hidden = true; $('fp').hidden = false; document.body.style.overflow = 'hidden'; $('fp-body').scrollTop = 0; }
+  function openCmp() { drawCmp(); $('fp').hidden = true; $('cmp').hidden = false; document.body.style.overflow = 'hidden'; }
+  $('open-fp').addEventListener('click', openFp); $('open-cmp').addEventListener('click', openCmp); $('fp-close').addEventListener('click', closeSheets); $('cmp-close').addEventListener('click', closeSheets);
+  $('zoom').addEventListener('click', function () { $('zoom').hidden = true; });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { if (!$('zoom').hidden) $('zoom').hidden = true; else closeSheets(); } });
+  $('intro-fp').addEventListener('click', function (e) { e.preventDefault(); $('intro').classList.add('gone'); openFp(); });
+  function copyBuild() {
+    var pr = price(), h = H(), txt = 'My build: ' + h.name + (v2(h) ? ', Upgraded' : '') + '\n' + pr.rows.map(function (r) { return '- ' + r[0] + (r[1] ? ' (' + r[1] + ')' : '') + ': ' + (r[2] === 0 ? 'Included' : usd(r[2])); }).join('\n') + '\nEstimated total: ' + usd(pr.total) + ' (illustrative)';
+    var b = $('copy'), done = function (ok) { b.textContent = ok ? 'Copied' : 'Copy did not work here'; setTimeout(function () { b.textContent = 'Copy my build'; }, 2200); };
+    try { navigator.clipboard.writeText(txt).then(function () { done(true); }, function () { done(false); }); } catch (e) { done(false); }
+  }
+  function canGo(step) {                      // a step opens once the ones before it are answered
+    if (step === 'lot') return !!C(); return true;
+  }
+  function render() {
+    var i = STEPS.map(function (s) { return s[0]; }).indexOf(S.step), st = $('steps'); st.textContent = '';
+    STEPS.forEach(function (s, n) { st.appendChild(el('li', {}, [el('button', { type: 'button', 'aria-current': s[0] === S.step ? 'step' : null, disabled: canGo(s[0]) ? null : '', on: { click: function () { go(s[0]); } } }, [el('span', { 'class': 'n', text: String(n + 1) }), el('span', { 'class': 'w', text: s[1] })])])); });
+    stage(); panel();
+    if (lastStep !== S.step) { lastStep = S.step; var pn = $('panel'); pn.classList.remove('in'); void pn.offsetWidth; pn.classList.add('in'); }
+    var pr = price(); count(pr.total); $('amt-lbl').textContent = pr.lot ? 'Estimated total' : 'Estimate before the lot';
+    $('back').disabled = i === 0; var nx = $('next'), nextStep = STEPS[i + 1];
+    nx.hidden = !nextStep; if (nextStep) { nx.textContent = 'Next'; nx.appendChild(el('span', { 'class': 'w', text: ': ' + nextStep[1] })); nx.disabled = (S.step === 'community' && !C()) || (S.step === 'lot' && !Lt()); }
+    try { localStorage.setItem('build-v1', JSON.stringify(S)); } catch (e) { /* storage is a convenience only */ }
+  }
+  var lastStep = '', shown = null, cnt = 0, calm = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  function count(to) {                                  // the price rolls to its new value
+    var a = $('amt'), from = shown === null || calm ? to : shown, t0 = performance.now(); shown = to; cancelAnimationFrame(cnt);
+    if (from === to) { a.textContent = usd(to); return; }
+    (function tick(now) { var k = Math.min(1, (now - t0) / 380), e = 1 - Math.pow(1 - k, 3); a.textContent = usd(Math.round((from + (to - from) * e) / 100) * 100); if (k < 1) cnt = requestAnimationFrame(tick); else a.textContent = usd(to); })(t0);
+  }
+  function go(step) { if (!canGo(step)) return; S.step = step; if (step !== 'summary' && step !== 'options' && step !== 'look' && step !== 'home') S.shot = 'ext'; if (step === 'summary' && S.suite) S.shot = 'pair'; try { history.replaceState(null, '', '#' + step); } catch (e) { /* fine without it */ } render(); window.scrollTo(0, 0); }
+  $('next').addEventListener('click', function () { var i = STEPS.map(function (s) { return s[0]; }).indexOf(S.step); if (STEPS[i + 1]) go(STEPS[i + 1][0]); });
+  $('back').addEventListener('click', function () { var i = STEPS.map(function (s) { return s[0]; }).indexOf(S.step); if (i > 0) go(STEPS[i - 1][0]); });
+  var rz = 0; window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(function () { if (S.step === 'community' || S.step === 'lot') stage(); }, 150); });
+  window.addEventListener('hashchange', function () { var k = (location.hash || '').slice(1); if (k === 'plans') { openFp(); return; } if (k === 'compare') { openCmp(); return; } if (readShare(k)) { render(); return; } if (STEPS.some(function (s) { return s[0] === k; }) && k !== S.step && canGo(k)) { S.step = k; render(); } });
+  function start(saved) {
+    var k; try { var ls = JSON.parse(localStorage.getItem('build-v1') || 'null'); if (ls && !saved.home) saved = ls; } catch (e) { /* start fresh */ }
+    for (k in (saved || {})) if (k in S) S[k] = saved[k];
+    if (!HOMES.some(function (x) { return x.k === S.home; })) S.home = 'p18';
+    var hk = (location.hash || '').slice(1), shared = readShare(hk); if (STEPS.some(function (s) { return s[0] === hk; })) S.step = hk; if (!canGo(S.step)) S.step = 'community';
+    if (S.suite && H().gs) S.gar = 's';
+    render();
+    var fresh = !saved || !saved.home, it = $('intro');
+    $('intro-walk').setAttribute('href', VIEWER + '#plan-' + H().code); $('intro-walk').setAttribute('target', '_blank'); $('intro-walk').setAttribute('rel', 'noopener');
+    if (fresh && !hk) it.classList.remove('gone');
+    if (hk === 'plans') openFp(); else if (hk === 'compare') openCmp();
+    $('begin').addEventListener('click', function () { it.classList.add('gone'); try { $('steps').querySelector('button').focus({ preventScroll: true }); } catch (e) { /* focus is a nicety */ } });
+  }
+  var hot = window.claude && window.claude.hot;
+  if (hot && hot.snapshot) hot.snapshot(function () { return S; });
+  if (hot && hot.ready) hot.ready(start); else start((hot && hot.data) || {});
 })();
 </script>
 </body>

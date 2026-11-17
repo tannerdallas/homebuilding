@@ -3,21 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Farmhouse 3D Models</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&amp;family=Barlow+Semi+Condensed:wght@600&amp;display=swap" rel="stylesheet">
+<title>3D walkthrough | Design Your Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&amp;family=Figtree:wght@400;500;600&amp;display=swap" rel="stylesheet">
 <style>
 :root {
-  /* One daylight scene, single theme by choice. Layout: full-bleed 3D stage, a title plate top left, a control dock along the bottom.
-     Walkthrough mode swaps the dock for floor and room shortcuts and adds a small floor map top right. */
+  /* One daylight scene, single theme by choice. Layout: full-bleed 3D stage, a title plate top left with the plan's live numbers, a control dock along the bottom.
+     Walkthrough mode swaps the dock for floor and room shortcuts and adds a small floor map top right.
+     Seven plans share the page: four larger ones, each in a Standard and an Upgraded version, and three compact ones. A model file is fetched the first time it is chosen.
+     The Options button opens a panel in the dock: look (outside and in), garage entry, lookout add-on, basement finish, backyard pool. */
   --sky: #dfe7ee;
   --ink: #17212b;
   --plate: #ffffff;
   --line: #c9d1da;
   --muted: #4b5a67;
-  --accent: #1b56b3;
+  --accent: #121416;
   --accent-ink: #ffffff;
-  --display: "Barlow Semi Condensed", "Arial Narrow", Arial, sans-serif;
-  --body: Barlow, "Helvetica Neue", Arial, sans-serif;
+  --display: Outfit, "Helvetica Neue", Arial, sans-serif;
+  --body: Figtree, "Helvetica Neue", Arial, sans-serif;
   color-scheme: light;
 }
 html, body { height: 100%; margin: 0; }
@@ -30,19 +32,25 @@ body { background: var(--sky); color: var(--ink); font-family: var(--body); font
 .tag { position: absolute; left: 0; top: 0; padding: 2px 7px; border-radius: 4px; background: rgba(23, 33, 43, 0.82); color: #ffffff; font-size: 12px; line-height: 16px; font-weight: 500; white-space: nowrap; will-change: transform; }
 header { position: absolute; left: 12px; top: 12px; right: 12px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; pointer-events: none; }
 .plate { background: var(--plate); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; pointer-events: auto; max-width: 100%; box-sizing: border-box; }
-h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 20px; line-height: 24px; letter-spacing: 0.2px; text-wrap: balance; }
+h1 { margin: 0; font-family: var(--display); font-weight: 500; font-size: 20px; line-height: 24px; letter-spacing: -0.2px; text-wrap: balance; }
+.stats { margin: 3px 0 0 0; font-weight: 600; font-size: 16px; line-height: 21px; font-variant-numeric: tabular-nums; }
 .sub { margin: 2px 0 0 0; color: var(--muted); font-size: 13px; line-height: 17px; }
 #map { position: absolute; right: 12px; top: 12px; background: rgba(255, 255, 255, 0.94); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; touch-action: manipulation; }
 #dock { position: absolute; left: 12px; right: 12px; bottom: 12px; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
-#orbit-ui, #walk-ui { display: flex; flex-direction: column; gap: 8px; align-items: center; width: 100%; }
+#orbit-ui, #walk-ui, #opts { display: flex; flex-direction: column; gap: 8px; align-items: center; width: 100%; }
+#opts .row { align-items: flex-end; }
 #hint { background: rgba(255, 255, 255, 0.86); border-radius: 6px; padding: 3px 10px; color: var(--muted); font-size: 13px; line-height: 18px; text-align: center; }
 .row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; pointer-events: auto; max-width: 100%; }
-.seg { display: flex; background: var(--plate); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; pointer-events: auto; max-width: 100%; }
+.seg { display: flex; background: var(--plate); border: 1px solid var(--line); border-radius: 8px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; pointer-events: auto; max-width: 100%; }
+.seg::-webkit-scrollbar { display: none; }
+.seg button { flex: 0 0 auto; }
 .seg button { border: 0; border-right: 1px solid var(--line); border-radius: 0; }
 .seg button:last-child { border-right: 0; }
 button { font: inherit; font-weight: 500; color: var(--ink); background: var(--plate); border: 1px solid var(--line); border-radius: 8px; min-height: 44px; padding: 0 13px; cursor: pointer; white-space: nowrap; }
 button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
 button:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
+.two { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; line-height: 17px; }          /* plan and version buttons: name over its live square footage */
+.two .q { font-size: 12px; line-height: 15px; font-weight: 500; opacity: 0.8; font-variant-numeric: tabular-nums; }
 .primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; padding: 0 22px; pointer-events: auto; }
 .primary:focus-visible { outline-color: #ffffff; }
 .plain { pointer-events: auto; }
@@ -53,20 +61,30 @@ button:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
 .chips button[aria-current="true"] { background: var(--ink); color: #ffffff; border-color: var(--ink); }
 .cap { font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.6px; text-transform: uppercase; color: var(--muted); background: rgba(255, 255, 255, 0.86); border-radius: 5px; padding: 1px 7px; }
 .grp { display: flex; flex-direction: column; gap: 3px; align-items: center; max-width: 100%; }
-.walking header { right: 156px; }
+.walking header { right: var(--mapw, 156px); }
+.walking #plans, .walking #vers, .walking #stats, .choosing #plans, .choosing #vers { display: none; }
+.picker { display: flex; gap: 8px; flex-wrap: wrap; max-width: 100%; }
+#loading { color: var(--muted); font-size: 13px; line-height: 17px; }
 .walking #labels { display: none; }
 #fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px; background: var(--sky); }
 #fallback p { background: var(--plate); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; max-width: 420px; margin: 0; }
 @media (max-width: 430px) {
   button { padding: 0 9px; font-size: 14px; }
+  #opts button { padding: 0 6px; }
+  #opts .looks button { padding: 0 5px; font-size: 13px; }
   .primary { padding: 0 18px; font-size: 15px; }
   h1 { font-size: 18px; line-height: 22px; }
 }
+@media (max-height: 640px) {
+  #orbit-ui > .grp > .cap { display: none; }
+  #opts button { min-height: 38px; }
+}
 @media (max-height: 480px) {
-  #hint, .cap { display: none; }
+  #hint { display: none; }
   #dock, #orbit-ui, #walk-ui { gap: 6px; }
 }
 </style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23121416%27/%3E%3Cpath d=%27M6 17 16 8l10 9v8H6z%27 fill=%27%23fff%27/%3E%3C/svg%3E">
 </head>
 <body>
 <div id="app">
@@ -74,13 +92,27 @@ button:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
   <div id="labels" aria-hidden="true"></div>
   <header>
     <div class="plate">
-      <h1 id="title">Farmhouse 3D Models</h1>
+      <h1 id="title">3D walkthrough</h1>
+      <p class="stats" id="stats" hidden></p>
       <p class="sub" id="sub">Concept models from the floor plans, not for construction</p>
+      <p class="sub"><a href="../" style="color: inherit; font-weight: 600;">Back to Design Your Home</a></p>
     </div>
-    <div class="seg" role="group" aria-label="Choose a plan">
-      <button type="button" id="m-big" aria-pressed="true">3,928 sq ft</button>
-      <button type="button" id="m-small" aria-pressed="false">2,792 sq ft</button>
+    <div class="picker">
+      <div class="seg" id="plans" role="group" aria-label="Choose a plan">
+        <button type="button" id="m-big" class="two" aria-pressed="true"><span>3,928 Plan</span><span class="q" id="q-big">3,928 sq ft</span></button>
+        <button type="button" id="m-small" class="two" aria-pressed="false"><span>2,792 Plan</span><span class="q" id="q-small">2,792 sq ft</span></button>
+        <button type="button" id="m-half" class="two" aria-pressed="false"><span>1.5-Story</span><span class="q" id="q-half">3,560 sq ft</span></button>
+        <button type="button" id="m-ranch" class="two" aria-pressed="false"><span>Ranch</span><span class="q" id="q-ranch">2,544 sq ft</span></button>
+        <button type="button" id="m-p18" class="two" aria-pressed="false"><span>1,856 Plan</span><span class="q" id="q-p18">1,856 sq ft</span></button>
+        <button type="button" id="m-p14" class="two" aria-pressed="false"><span>1,420 Plan</span><span class="q" id="q-p14">1,420 sq ft</span></button>
+        <button type="button" id="m-suite" class="two" aria-pressed="false"><span>In-Law Suite</span><span class="q" id="q-suite">768 sq ft</span></button>
+      </div>
+      <div class="seg" id="vers" role="group" aria-label="Choose a version">
+        <button type="button" id="ver-1" class="two" aria-pressed="true"><span>Standard</span><span class="q" id="q-ver1">3,928 sq ft</span></button>
+        <button type="button" id="ver-2" class="two" aria-pressed="false"><span>Upgraded</span><span class="q" id="q-ver2">3,928 sq ft</span></button>
+      </div>
     </div>
+    <div class="plate" id="loading" role="status" hidden>Loading the model</div>
   </header>
   <canvas id="map" width="128" height="128" aria-hidden="true" hidden></canvas>
   <div id="dock">
@@ -88,27 +120,66 @@ button:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
     <div id="orbit-ui">
       <div class="grp">
         <span class="cap">Open the house to</span>
-        <div class="seg" role="group" aria-label="Open the house to a level">
-          <button type="button" id="l-exterior" aria-pressed="true">Exterior</button>
-          <button type="button" id="l-lookout" aria-pressed="false">Lookout</button>
-          <button type="button" id="l-upper" aria-pressed="false">Upstairs</button>
-          <button type="button" id="l-main" aria-pressed="false">Main floor</button>
+        <div class="seg" id="levels" role="group" aria-label="Open the house to a level"></div>
+      </div>
+      <div id="opts" hidden>
+        <div class="grp">
+          <span class="cap">Look, outside and in</span>
+          <div class="seg looks" role="group" aria-label="Look, outside and in">
+            <button type="button" id="st-brick" aria-pressed="true">Brick</button>
+            <button type="button" id="st-trans" aria-pressed="false">Transitional</button>
+            <button type="button" id="st-farm" aria-pressed="false">Farmhouse</button>
+            <button type="button" id="st-craft" aria-pressed="false">Craftsman</button>
+            <button type="button" id="st-country" aria-pressed="false">Country</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="grp" id="garage-grp" hidden>
+            <span class="cap">Garage</span>
+            <div class="seg" role="group" aria-label="Garage door side">
+              <button type="button" id="g-front" aria-pressed="true">Front</button>
+              <button type="button" id="g-side" aria-pressed="false">Side</button>
+            </div>
+          </div>
+          <div class="grp" id="lk-grp">
+            <span class="cap">Add-on</span>
+            <button type="button" id="t-lookout" aria-pressed="true">Lookout</button>
+          </div>
+          <div class="grp" id="su-grp">
+            <span class="cap">Add-on</span>
+            <button type="button" id="t-suite" aria-pressed="false">In-law suite + garage</button>
+          </div>
+          <div class="grp" id="bs-grp">
+            <span class="cap">Basement</span>
+            <div class="seg" role="group" aria-label="Basement finish">
+              <button type="button" id="b-u" aria-pressed="true">Unfinished</button>
+              <button type="button" id="b-f" aria-pressed="false">Finished</button>
+            </div>
+          </div>
+        </div>
+        <div class="grp" id="pool-grp">
+          <span class="cap">Backyard pool</span>
+          <div class="seg" role="group" aria-label="Backyard pool option">
+            <button type="button" id="p-0" aria-pressed="true">None</button>
+            <button type="button" id="p-1" aria-pressed="false">Lap</button>
+            <button type="button" id="p-2" aria-pressed="false">Plunge</button>
+            <button type="button" id="p-3" aria-pressed="false">Court</button>
+          </div>
         </div>
       </div>
-      <div class="row">
+      <div class="row" id="views">
         <button type="button" id="v-front">Front</button>
         <button type="button" id="v-back">Back</button>
         <button type="button" id="v-above">From above</button>
         <button type="button" id="t-labels" aria-pressed="true">Room names</button>
       </div>
-      <button type="button" class="primary" id="b-walk">Walk through the house</button>
+      <div class="row">
+        <button type="button" id="b-opts" aria-expanded="false" aria-controls="opts">Options</button>
+        <button type="button" class="primary" id="b-walk">Walk through the house</button>
+      </div>
     </div>
     <div id="walk-ui" hidden>
-      <div class="seg" role="group" aria-label="Go to a floor">
-        <button type="button" id="f-0" aria-pressed="true">Main floor</button>
-        <button type="button" id="f-1" aria-pressed="false">Upstairs</button>
-        <button type="button" id="f-2" aria-pressed="false">Lookout</button>
-      </div>
+      <div class="seg" id="floors" role="group" aria-label="Go to a floor"></div>
       <div class="chips" id="chips" role="group" aria-label="Walk to a room"></div>
       <button type="button" class="plain" id="b-exit">Back to the model</button>
     </div>
@@ -117,8 +188,6 @@ button:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<script src="model-big.js"></script>
-<script src="model-small.js"></script>
 <script src="nav.js"></script>
 <script src="app.js"></script>
 </body>
