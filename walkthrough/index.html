@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>3D walkthrough | Design Your Home</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&amp;family=Barlow+Semi+Condensed:wght@600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&amp;family=Figtree:wght@400;500;600&amp;display=swap" rel="stylesheet">
 <style>
 :root {
   /* One daylight scene, single theme by choice. Layout: full-bleed 3D stage, a title plate top left with the plan's live numbers, a control dock along the bottom.
@@ -16,10 +16,10 @@
   --plate: #ffffff;
   --line: #c9d1da;
   --muted: #4b5a67;
-  --accent: #1b56b3;
+  --accent: #121416;
   --accent-ink: #ffffff;
-  --display: "Barlow Semi Condensed", "Arial Narrow", Arial, sans-serif;
-  --body: Barlow, "Helvetica Neue", Arial, sans-serif;
+  --display: Outfit, "Helvetica Neue", Arial, sans-serif;
+  --body: Figtree, "Helvetica Neue", Arial, sans-serif;
   color-scheme: light;
 }
 html, body { height: 100%; margin: 0; }
@@ -32,7 +32,7 @@ body { background: var(--sky); color: var(--ink); font-family: var(--body); font
 .tag { position: absolute; left: 0; top: 0; padding: 2px 7px; border-radius: 4px; background: rgba(23, 33, 43, 0.82); color: #ffffff; font-size: 12px; line-height: 16px; font-weight: 500; white-space: nowrap; will-change: transform; }
 header { position: absolute; left: 12px; top: 12px; right: 12px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; pointer-events: none; }
 .plate { background: var(--plate); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; pointer-events: auto; max-width: 100%; box-sizing: border-box; }
-h1 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 20px; line-height: 24px; letter-spacing: 0.2px; text-wrap: balance; }
+h1 { margin: 0; font-family: var(--display); font-weight: 500; font-size: 20px; line-height: 24px; letter-spacing: -0.2px; text-wrap: balance; }
 .stats { margin: 3px 0 0 0; font-weight: 600; font-size: 16px; line-height: 21px; font-variant-numeric: tabular-nums; }
 .sub { margin: 2px 0 0 0; color: var(--muted); font-size: 13px; line-height: 17px; }
 #map { position: absolute; right: 12px; top: 12px; background: rgba(255, 255, 255, 0.94); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; touch-action: manipulation; }
