@@ -167,7 +167,7 @@
     };
   }
   function build(name) {
-    var m = MODELS[name], buf = decode(m.bin), root = new THREE.Group(), layers = {}, solid = [], caps = [], wallColor = null, sty = {}, styled = {}, glasses = [], lvs = { value: [m.meta.bsmt ? m.meta.bsmt.zb : -99, 0, m.meta.zf2 || -99, m.meta.zf3 || -99] };
+    var m = MODELS[name], buf = decode(m.bin), root = new THREE.Group(), layers = {}, solid = [], caps = [], wallColor = null, sty = {}, styled = {}, glasses = [], plants = [], streets = [], walks = [], concMat = null, lvs = { value: [m.meta.bsmt ? m.meta.bsmt.zb : -99, 0, m.meta.zf2 || -99, m.meta.zf3 || -99] };
     Object.keys(m.meta.styles || {}).forEach(function (st) { Object.keys(m.meta.styles[st]).forEach(function (k) { styled[k] = true; }); });      // materials an exterior style recolors
     function layer(k) { if (!layers[k]) { layers[k] = new THREE.Group(); root.add(layers[k]); } return layers[k]; }
     m.parts.forEach(function (p) {
@@ -187,6 +187,10 @@
       if (glass || water) mesh.renderOrder = 2;
       layer(p.layer).add(mesh);
       var lb = p.layer.split('@')[0];
+      if (lb === 'SITE' || lb === 'GF' || lb === 'GS') {                                  // the sidewalk along the street, and the front walks (the suite add-on links to them)
+        g.computeBoundingBox(); var bb = g.boundingBox;
+        if (bb.max.x - bb.min.x > 300) streets.push(mesh); else if (p.mat === 'conc') { walks.push({ lay: lb, b: bb }); if (!concMat) concMat = mat; }
+      }
       if (!glass && !water && lb !== 'SITE' && lb !== 'DOOR' && lb !== 'BJ' && lb !== 'BC' && lb.indexOf('POOL') !== 0) solid.push(mesh);     // what a tap can land on in the walkthrough
       if (p.mat === 'cap') caps.push({ m: mat, c: mat.color.clone() });                   // dark wall tops for the cutaway views
       if (p.mat === 'wall' && !wallColor) wallColor = mat.color.clone();
@@ -198,11 +202,12 @@
       var s = new THREE.Mesh(ico, mats[key]);
       s.position.set(b[0], b[2], -b[1]); s.scale.set(b[3], b[3] * b[5], b[3]); s.castShadow = true; s.receiveShadow = true;
       (b[6] ? layer(b[6]) : site).add(s);             // shrubs that belong to one garage variation carry its layer name
+      s.userData.p = [b[0], b[1]]; plants.push(s);
     });
     var bark = new THREE.MeshLambertMaterial({ color: 0x5b4636 }); patch(bark, 9);
     (m.meta.trunks || []).forEach(function (t) {
       var c = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.65, t[2] * 0.55, 8), bark);
-      c.position.set(t[0], m.meta.zg + t[2] * 0.27, -t[1]); c.castShadow = true; site.add(c);
+      c.position.set(t[0], m.meta.zg + t[2] * 0.27, -t[1]); c.castShadow = true; site.add(c); c.userData.p = [t[0], t[1]]; plants.push(c);
     });
     var nav = new NAV.Nav(m.meta.nav), ext = [1e9, 1e9, -1e9, -1e9];
     [nav.floors[0].base].concat(nav.floors[0].alt).forEach(function (v) {                  // the floor map has room for either garage layout
@@ -223,7 +228,7 @@
     ext[0] -= 1.5; ext[1] -= 1.5; ext[2] += 1.5; ext[3] += 1.5;
     var pools = {};
     [1, 2, 3].forEach(function (k) { if (layers['POOL' + k]) pools[k] = new THREE.Box3().setFromObject(layers['POOL' + k]); });
-    return { root: root, layers: layers, meta: m.meta, nav: nav, solid: solid, solidOn: solid, ext: ext, caps: caps, wallColor: wallColor, pools: pools, sty: sty, gnd: gnd, glasses: glasses };
+    return { root: root, layers: layers, meta: m.meta, nav: nav, solid: solid, solidOn: solid, ext: ext, caps: caps, wallColor: wallColor, pools: pools, sty: sty, gnd: gnd, glasses: glasses, plants: plants, streets: streets, walks: walks, concMat: concMat };
   }
 
   /* ---------------------------------------------------------------- model view */
@@ -235,7 +240,8 @@
   var CODE = { big: '3928', small: '2792', half: '3560', ranch: 'ranch', big2: '3928v2', small2: '2792v2', half2: '3560v2', ranch2: 'ranchv2', p19: '1960', p18: '1856', p14: '1420', suite: 'suite' }, NAME = {};
   Object.keys(CODE).forEach(function (k) { NAME[CODE[k]] = k; });
   var built = {}, cur = null, curName = '', level = 'exterior', pool = 0, garage = 'front', family = 'big', ver = 1, showLabels = true, tags = [], mode = 'orbit', pendingWalk = false;
-  var opt = { g: 'f', lk: '1', st: 'farm', b: 'u' }, optsOpen = false;       // options: garage entry (front, side), lookout add-on, exterior style, basement (unfinished, finished)
+  var opt = { g: 'f', lk: '1', st: 'brick', b: 'u' }, optsOpen = false;
+  var su = false, side = null, link = null, backTo = '', SUGAP = 12;      // in-law suite add-on: a second building (suite + two-car garage) beside the house; backTo: the house a suite walk was started from       // options: garage entry (front, side), lookout add-on, exterior style, basement (unfinished, finished)
   var dirty = true, tween = null, booting = true, loading = {};
   var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
@@ -246,7 +252,7 @@
     return L[0];
   }
   function view(kind) {
-    var m = cur.meta, xl = m.xl, xr = m.xr, cx = (xl + xr) / 2, D = m.D, k = Math.max(1, (xr - xl) / 60), z = lv().lift || 0, t = m.tower, low = m.stories === 1;
+    var m = cur.meta, xl = m.xl, xr = m.xr + (suiteOn() ? SUGAP + 56 : 0), cx = (xl + xr) / 2, D = m.D, k = Math.max(1, (xr - xl) / 60), z = lv().lift || 0, t = m.tower, low = m.stories === 1;
     if (kind === 'front') return { p: [xr + 34 * k, 11, 98 * k], t: [cx + 0.5, low ? 10 : 14, -10] };
     if (kind === 'back') return { p: [xr + 54 * k, 15, -(D + 86 * k)], t: [cx + 2, low ? 9 : 13, -(pool ? D + 24 : 24)] };
     if (kind === 'above') return { p: [cx, 150 * k + z, -(D / 2 - 30)], t: [cx, z, -(D / 2 + 3)] };
@@ -286,13 +292,58 @@
       cur.layers[k].visible = on;
     });
     cur.solidOn = cur.solid.filter(function (m) { return m.parent.visible; });
+    applySide();
     dirty = true;
   }
-  function applyStyle() {                               // exterior style: recolor the exterior materials
-    var S = (cur.meta.styles || {})[opt.st] || {};
-    Object.keys(cur.sty).forEach(function (k) {
+  function suiteOn() { return su && !!side && curName !== 'suite'; }
+  function sideCut() { var hd = lv().hide; return mode !== 'walk' && hd.indexOf('ROOF') >= 0 && hd.indexOf('L2') >= 0; }      // the house is open to its main floor or basement: the suite opens too
+  function aimSun() {
+    var m = cur.meta, xr = m.xr + (suiteOn() ? SUGAP + 56 : 0), cx = (m.xl + xr) / 2;
+    sun.position.set(cx + 80, 150, 70 - m.D / 2); sun.target.position.set(cx, 0, -m.D / 2 - 12); sun.target.updateMatrixWorld();
+  }
+  function applySide() {                                // the in-law suite add-on: one building, suite and second two-car garage, 12 ft off the side of the house without the garage
+    var onNow = suiteOn(), m = cur.meta, X0 = m.xr + SUGAP + 24;
+    if (side) { if (onNow) { if (side.root.parent !== scene) scene.add(side.root); } else if (side.root.parent === scene) scene.remove(side.root); }
+    cur.plants.forEach(function (o) { var p = o.userData.p; o.visible = !(onNow && p[0] > m.xr + 1.5 && p[0] < X0 + 40 && p[1] > -66 && p[1] < 36); });      // planting that would stand where the suite and its drive go
+    if (link) link.visible = onNow;
+    if (!onNow) return;
+    var s = side, sopt = { g: 'f', lk: '0', st: opt.st, b: 'u' }, hide = sideCut() ? s.cutHide : [];
+    s.root.position.set(X0, m.zg - s.meta.zg, 0);       // front walls in line; its slab sits at the house's grade
+    Object.keys(s.layers).forEach(function (k) {
+      var at = k.indexOf('@'), base = at < 0 ? k : k.slice(0, at), on = hide.indexOf(base) < 0 && base !== 'GS' && base !== 'CS';
+      if (on && at >= 0) on = NAV.holds(k.slice(at + 1), sopt);
+      s.layers[k].visible = on;
+    });
+    s.plants.forEach(function (o) { o.visible = o.userData.p[0] > -24.5; });       // its own trees on the house side give way to the house
+    s.streets.forEach(function (o) { o.visible = false; });                       // one sidewalk along the street, the house's
+    applyStyle(s);
+    var xe = null;                                      // a walk from the house's front walk to the suite's drive, so the two front doors are joined
+    cur.walks.forEach(function (w) {
+      if ((w.lay === 'SITE' || w.lay === (opt.g === 's' ? 'GS' : 'GF')) && w.b.min.z < 12 && w.b.max.z > 9 && w.b.max.y < m.zg + 0.8) xe = Math.max(xe === null ? -1e9 : xe, w.b.max.x);
+    });
+    if (xe === null || xe > m.xr - 1) xe = m.xr - 8;
+    if (!link) { link = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), s.concMat || new THREE.MeshLambertMaterial({ color: 0xbdb9b0 })); link.receiveShadow = true; scene.add(link); }
+    var x1 = X0 - 20.9; link.scale.set(Math.max(0.1, x1 - xe + 0.2), 0.3, 4); link.position.set((xe - 0.2 + x1) / 2, m.zg - 0.13, 10.5);
+  }
+  function setSuite(on, move) {
+    su = !!on; $('t-suite').setAttribute('aria-pressed', su ? 'true' : 'false');
+    function fin() { aimSun(); refresh(); setLabels(); setHash(); if (move && mode === 'orbit') go(su && level !== 'exterior' ? 'above' : homeView()); }
+    if (su && !side) {
+      loadModel('suite', function () {
+        if (!MODELS.suite) return;
+        side = build('suite');
+        var L = side.meta.levels.filter(function (l) { return l.id === 'main'; })[0] || { hide: [], labels: '' };
+        side.cutHide = L.hide; side.cutLabels = L.labels;
+        if (cur) { fin(); if (!move && mode === 'orbit') go(homeView(), true); }      // loaded after the house was framed: frame the pair
+      });
+    } else if (cur) fin();
+  }
+  function applyStyle(M) {                              // exterior style: recolor the exterior materials
+    M = M || cur;
+    var S = (M.meta.styles || {})[opt.st] || {};
+    Object.keys(M.sty).forEach(function (k) {
       var v = S[k];
-      cur.sty[k].forEach(function (e) {
+      M.sty[k].forEach(function (e) {
         if (v) {
           e.m.color.setRGB(v.color[0], v.color[1], v.color[2]); e.m.roughness = Math.max(v.rough, 0.22); e.m.metalness = Math.min(v.metal, 0.55); var wantEnv = ENV && v.metal > 0.5 ? ENV : null; if (e.m.envMap !== wantEnv) { e.m.envMap = wantEnv; e.m.envMapIntensity = 0.7; e.m.needsUpdate = true; }
           if (e.m.userData.c2) { setPat(e.m, PATN[v.pat] || 0); if (v.c2) e.m.userData.c2.value.setRGB(v.c2[0], v.c2[1], v.c2[2]); else e.m.userData.c2.value.copy(e.m.color).multiplyScalar(0.5); }
@@ -323,7 +374,8 @@
     var sq = s.sqft - (opt.lk === '1' ? 0 : s.lookout) + (fin ? s.bsmt.fin : 0), ba = s.baths + (fin ? s.bsmt.baths : 0);
     titleEl.textContent = PLAN[curName];
     statsEl.hidden = false; statsEl.textContent = fmt(sq) + ' sq ft \u00b7 ' + s.beds + ' bed \u00b7 ' + ba + ' bath';
-    subEl.textContent = (!cur.meta.bsmt ? 'One level on a slab, no steps anywhere. Attached two-car garage' : fin ? 'Includes ' + fmt(s.bsmt.fin) + ' sq ft of finished basement' : 'Plus ' + fmt(s.bsmt.total) + ' sq ft of unfinished basement') + '. Concept model, not for construction.';
+    if (suiteOn()) titleEl.textContent += ' + In-Law Suite';
+    subEl.textContent = (suiteOn() ? 'Plus the in-law suite beside it: 768 sq ft, 1 bed, 1 bath, two-car garage. ' : '') + (!cur.meta.bsmt ? 'One level on a slab, no steps anywhere. Attached two-car garage' : fin ? 'Includes ' + fmt(s.bsmt.fin) + ' sq ft of finished basement' : 'Plus ' + fmt(s.bsmt.total) + ' sq ft of unfinished basement') + '. Concept model, not for construction.';
   }
   function refresh() { cur.nav.setState(opt); applyVis(); showPlate(); }
   function setLabels() {
@@ -334,6 +386,10 @@
     (cur.meta.labels[key] || []).forEach(function (l) {
       var d = document.createElement('div'); d.className = 'tag'; d.textContent = l.t;
       labelsEl.appendChild(d); tags.push({ el: d, v: new THREE.Vector3(l.x, l.z + 1.5, -l.y), w: 0 });
+    });
+    if (suiteOn() && sideCut()) (side.meta.labels[side.cutLabels] || []).forEach(function (l) {
+      var d = document.createElement('div'); d.className = 'tag'; d.textContent = l.t;
+      labelsEl.appendChild(d); tags.push({ el: d, v: new THREE.Vector3(l.x + side.root.position.x, l.z + 1.5 + side.root.position.y, -l.y), w: 0 });
     });
     tags.forEach(function (t) { t.w = t.el.offsetWidth || 60; });
   }
@@ -380,7 +436,7 @@
   function setHash() {
     if (booting) return;
     try {
-      var h = (mode === 'walk' ? 'walk-' : 'plan-') + CODE[curName];
+      var h = (mode === 'walk' ? 'walk-' : 'plan-') + CODE[curName] + (su && curName !== 'suite' && !backTo ? '-with-suite' : '');
       if (location.hash !== '#' + h) location.hash = h;
     } catch (e) { /* the address is optional */ }
   }
@@ -395,6 +451,7 @@
   }
   function setModel(name, first) {
     if (name === curName) return;
+    if (name !== 'suite') backTo = '';
     press('m-', name.replace(/2$/, '')); press('ver-', /2$/.test(name) ? '2' : '1');
     loadModel(name, function () {
       if (!MODELS[name]) return;
@@ -409,13 +466,14 @@
       $('lk-grp').hidden = !!cur.meta.notower; $('bs-grp').hidden = !cur.meta.bsmt; $('pool-grp').hidden = !hasPools;
       if (!hasPools && pool) { pool = 0; press('p-', '0'); }
       opt.lk = cur.meta.notower ? '0' : '1'; $('t-lookout').setAttribute('aria-pressed', 'true');      // the lookout add-on is switched on again every time a plan loads
-      cur.nav.setState(opt); applyStyle(); ground.visible = !cur.gnd;
-      var m = cur.meta, cx = (m.xl + m.xr) / 2;
-      sun.position.set(cx + 80, 150, 70 - m.D / 2); sun.target.position.set(cx, 0, -m.D / 2 - 12); sun.target.updateMatrixWorld();
+      cur.nav.setState(opt); applyStyle(); ground.visible = !cur.gnd; ground.position.y = cur.meta.zg - 0.02;
+      $('su-grp').hidden = name === 'suite'; $('t-suite').setAttribute('aria-pressed', su ? 'true' : 'false');
+      aimSun();
       buildLevels();
       if (mode === 'walk' || pendingWalk) { pendingWalk = false; enterWalk(); }
       else { setLevel(level, false); go(homeView(), true); showPlate(); }
       setHash();
+      if (su && !side && name !== 'suite') setSuite(true, false);       // the add-on stays on from plan to plan; its model loads the first time
     });
   }
 
@@ -639,6 +697,11 @@
       });
       floorsEl.appendChild(b);
     });
+    if (suiteOn() || (curName === 'suite' && backTo)) {                     // with the add-on, the walk continues in the suite, and comes back
+      var b2 = document.createElement('button'); b2.type = 'button'; b2.textContent = curName === 'suite' ? 'Back to the house' : 'In-law suite'; b2.setAttribute('aria-pressed', 'false');
+      b2.addEventListener('click', function () { if (curName === 'suite') { var nm = backTo; backTo = ''; setModel(nm); } else { backTo = curName; setModel('suite'); } });
+      floorsEl.appendChild(b2);
+    }
   }
   function buildChips() {
     var ft = tab;
@@ -733,6 +796,7 @@
     hemi.groundColor.setHex(0x8b8f7c); hemi.intensity = 0.72; fillA.intensity = 0; fillB.intensity = 0; fillC.intensity = 0; lamp.intensity = 0;
     camera.near = 1; camera.far = 5000; camera.fov = 36; camera.up.set(0, 1, 0); camera.updateProjectionMatrix();
     clearTimeout(flashT);
+    if (backTo) { var nm0 = backTo; backTo = ''; setModel(nm0); return; }       // a suite walk that started from a house ends back at that house
     setLevel(level, false); go(homeView(), true); showPlate(); setHash();
   }
 
@@ -806,6 +870,7 @@
   on('g-side', function () { if (cur) setGarage('side', true); });
   ['farm', 'craft', 'trans', 'brick', 'country'].forEach(function (st) { on('st-' + st, function () { if (cur) setStyle(st, true); }); });
   on('t-lookout', function () { if (cur) setLookout(opt.lk !== '1', true); });
+  on('t-suite', function () { if (cur) setSuite(!su, true); });
   on('b-u', function () { if (cur) setBasement('u', true); });
   on('b-f', function () { if (cur) setBasement('f', true); });
   on('b-opts', function () { setOpts(!optsOpen); });
@@ -819,19 +884,20 @@
   on('b-walk', function () { if (cur) enterWalk(); });
   on('b-exit', exitWalk);
   function parseHash() {
-    var m = /^#(plan|walk)-(3928v2|2792v2|3560v2|ranchv2|3928|2792|3560|ranch|1960|1856|1420|suite)$/.exec(location.hash || '');
-    return m ? { walk: m[1] === 'walk', name: NAME[m[2]] } : null;
+    var m = /^#(plan|walk)-(3928v2|2792v2|3560v2|ranchv2|3928|2792|3560|ranch|1960|1856|1420|suite)(-with-suite)?$/.exec(location.hash || '');
+    return m ? { walk: m[1] === 'walk', name: NAME[m[2]], su: !!m[3] && m[2] !== 'suite' } : null;
   }
   window.addEventListener('hashchange', function () {
     var h = parseHash();
     if (!h) return;
+    if (h.name !== 'suite' && h.su !== su) { if (h.name !== curName) su = h.su; else setSuite(h.su, true); }
     if (h.name !== curName) { pendingWalk = h.walk && mode !== 'walk'; setModel(h.name); return; }
     if (h.walk && mode !== 'walk') enterWalk(); else if (!h.walk && mode === 'walk') exitWalk();
   });
 
   var h0 = parseHash();
   resize();
-  pendingWalk = !!(h0 && h0.walk);
+  pendingWalk = !!(h0 && h0.walk); su = !!(h0 && h0.su);
   setModel(h0 ? h0.name : 'big', true);
   booting = false;
   requestAnimationFrame(frame);

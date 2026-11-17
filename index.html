@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Design Your Home</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   /* Layout idea: a showroom. The house, map or lot fills a quiet stage; one decision at a time sits beside it; the price stays in view at the foot. */
   :root {
@@ -129,8 +129,101 @@
   }
   @media (prefers-reduced-motion: reduce) { .frame img { transition: none; } }
 </style>
+<style id="skin-v2">
+  /* v2 skin: a white showroom. The picture fills the left of the screen from the top bar to the price bar; one choice at a time sits in a narrow column beside it. */
+  :root { --paper: #ffffff; --card: #ffffff; --ink: #121416; --soft: #5a5f63; --line: #e2e3e0; --spruce: #121416; --spruce-ink: #ffffff; --bronze: #a8472e; --tint: #f4f4f2; --barh: 78px; --toph: 56px;
+    --display: "Outfit", "Helvetica Neue", Arial, sans-serif; }
+  body { background: #fff; }
+  .top { position: sticky; top: 0; z-index: 6; background: rgba(255, 255, 255, 0.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); padding: 0 24px; min-height: var(--toph); }
+  .brand { font-family: var(--display); font-weight: 600; letter-spacing: 0.3em; font-size: 12px; }
+  .steps button { font-weight: 500; font-size: 13.5px; transition: color 0.15s; } .steps button:hover:not(:disabled) { color: var(--ink); }
+  .steps .n { font-family: var(--body); font-size: 11.5px; font-weight: 600; opacity: 0.6; margin-right: 6px; }
+  .steps button[aria-current="step"] { border-bottom-color: var(--ink); }
+  .concept { font-size: 11.5px; letter-spacing: 0.04em; }
+  main { grid-template-columns: minmax(0, 1fr) minmax(360px, 460px); }
+  .stage { top: var(--toph); height: calc(100vh - var(--toph) - var(--barh)); height: calc(100dvh - var(--toph) - var(--barh)); padding: 0; gap: 0; background: var(--tint); }
+  .frame, .frame.tall { flex: 1 1 auto; aspect-ratio: auto; min-height: 0; border-radius: 0; background: var(--tint); }
+  .frame img { transition: opacity 0.5s ease; }
+  .frame .svgwrap { background: #f1f2ef; }
+  .tag { left: 20px; bottom: 16px; background: rgba(18, 20, 22, 0.62); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); font-size: 12px; border-radius: 999px; padding: 6px 12px; }
+  .cap { padding: 14px 24px 0; align-items: baseline; }
+  .cap h1 { font-weight: 500; font-size: clamp(26px, 2.5vw, 36px); letter-spacing: -0.015em; }
+  .cap p { font-size: 14.5px; }
+  .thumbs { padding: 10px 24px 16px; gap: 8px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } .thumbs::-webkit-scrollbar { display: none; }
+  .thumbs button { flex: 0 0 auto; width: 96px; border-radius: 8px; border-width: 1.5px; transition: border-color 0.15s, transform 0.1s; } .thumbs button:active { transform: scale(0.97); }
+  .thumbs button[aria-pressed="true"] { border-color: var(--ink); }
+  .key { padding: 0 24px 14px; }
+  .panel { padding: 26px 28px 30px 30px; gap: 16px; border-left: 1px solid var(--line); min-height: calc(100vh - var(--toph) - var(--barh)); }
+  .panel h2 { font-weight: 500; font-size: 30px; letter-spacing: -0.015em; }
+  .panel .lede { font-size: 15.5px; }
+  .opt { border: 1px solid var(--line); border-radius: 14px; padding: 15px 16px; transition: border-color 0.15s, box-shadow 0.15s, transform 0.08s; }
+  .opt:hover { border-color: #b9bcb8; } .opt:active { transform: scale(0.993); }
+  .opt[aria-checked="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+  .opt.home { grid-template-columns: 104px 1fr; column-gap: 14px; }
+  .opt.home img { width: 104px; border-radius: 8px; grid-row: 1 / span 3; align-self: center; }
+  .opt.home .t { font-weight: 500; font-size: 20px; letter-spacing: -0.01em; grid-row: 1; }
+  .opt.home .d { grid-row: 2; }
+  .opt.home .p { grid-row: 3; grid-column: 2; text-align: left; font-size: 14px; color: var(--ink); }
+  .facts b, .sum tr.tot td:last-child { font-weight: 500; letter-spacing: -0.01em; }
+  .bar { background: rgba(255, 255, 255, 0.94); min-height: var(--barh); padding: 8px 24px calc(8px + env(safe-area-inset-bottom, 0px)); }
+  .total .amt { font-weight: 500; font-size: 30px; letter-spacing: -0.015em; }
+  .nav .primary { background: var(--ink); color: #fff; min-width: 168px; transition: background 0.15s, transform 0.08s; } .nav .primary:hover:not(:disabled) { background: #2b2e31; } .nav .primary:active:not(:disabled) { transform: scale(0.98); }
+  .nav .primary:disabled { background: #b9bcb8; }
+  .links a, .links button { transition: background 0.15s, color 0.15s; } .links a:hover, .links button:hover { background: var(--ink); color: #fff; }
+  /* looks as swatches */
+  .swatches { display: flex; gap: 10px; justify-content: center; padding: 6px 0 0; }
+  .sw { width: 60px; height: 60px; border-radius: 50%; border: 0; padding: 5px; background: none; cursor: pointer; box-shadow: inset 0 0 0 2px transparent; transition: box-shadow 0.18s; }
+  .sw i { display: block; width: 100%; height: 100%; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14); }
+  .sw[aria-checked="true"] { box-shadow: inset 0 0 0 2px var(--ink); }
+  .lookcard { text-align: center; display: grid; gap: 6px; justify-items: center; padding: 4px 6px 0; }
+  .lookcard b { font-family: var(--display); font-weight: 500; font-size: 22px; letter-spacing: -0.01em; }
+  .lookcard .pr { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .lookcard p { margin: 0; color: var(--soft); max-width: 40ch; }
+  .lookcard small { color: var(--soft); letter-spacing: 0.12em; text-transform: uppercase; font-size: 11.5px; font-weight: 700; }
+  /* step change */
+  .panel.in > * { animation: rise 0.36s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+  .panel.in > *:nth-child(2) { animation-delay: 0.03s; } .panel.in > *:nth-child(3) { animation-delay: 0.06s; } .panel.in > *:nth-child(n+4) { animation-delay: 0.09s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+  /* opening screen */
+  .intro { position: fixed; inset: 0; z-index: 20; background: #cfd9e3; display: grid; grid-template-rows: auto 1fr auto; justify-items: center; transition: opacity 0.45s ease, visibility 0s linear 0.45s; }
+  .intro.gone { opacity: 0; visibility: hidden; pointer-events: none; }
+  .intro img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
+  .intro .in-top { position: relative; z-index: 1; text-align: center; padding: max(6vh, 44px) 24px 0; color: var(--ink); }
+  .intro .kick { font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 700; font-family: var(--display); margin: 0 0 14px; }
+  .intro h1 { font-family: var(--display); font-weight: 500; font-size: clamp(38px, 5.2vw, 68px); line-height: 1.02; letter-spacing: -0.025em; margin: 0 0 12px; text-wrap: balance; }
+  .intro p.sub { margin: 0; font-size: clamp(16px, 1.5vw, 19px); color: #23272b; }
+  .intro .cta { position: relative; z-index: 1; grid-row: 3; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; padding: 0 20px max(8vh, 40px); }
+  .intro .cta button, .intro .cta a { min-height: 52px; min-width: 232px; padding: 12px 22px; border-radius: 999px; border: 0; font: 600 16px var(--body); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: transform 0.08s, background 0.15s; }
+  .intro .cta .go { background: var(--ink); color: #fff; } .intro .cta .go:hover { background: #2b2e31; }
+  .intro .cta .alt { background: rgba(255, 255, 255, 0.92); color: var(--ink); } .intro .cta .alt:hover { background: #fff; }
+  .intro .cta button:active, .intro .cta a:active { transform: scale(0.98); }
+  .intro .fine { position: absolute; z-index: 1; left: 0; right: 0; bottom: 10px; text-align: center; font-size: 11.5px; color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); margin: 0; }
+  @media (max-width: 900px) {
+    main { grid-template-columns: 1fr; }
+    .top { position: static; padding: 10px 16px 0; }
+    .stage { position: static; height: auto; padding: 0; }
+    .frame { aspect-ratio: 16 / 10; flex: none; } .frame.tall { aspect-ratio: 1 / 1; flex: none; }
+    .cap { padding: 12px 16px 0; } .thumbs { padding: 10px 16px 6px; } .key { padding: 4px 16px 0; }
+    .panel { padding: 18px 16px 24px; border-left: 0; min-height: 0; } .panel h2 { font-size: 27px; }
+    .bar { padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px)); } .total .amt { font-size: 26px; }
+    .nav .primary { min-width: 0; }
+    .sw { width: 56px; height: 56px; }
+    .intro { background: linear-gradient(#89a5c0 0%, #8faac3 36%, #a3b9ce 100%); }
+    .intro img { inset: auto 0 0 0; height: 66%; object-position: 54% 100%; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 16%); mask-image: linear-gradient(to bottom, transparent 0, #000 16%); }
+    .intro .cta { flex-direction: column; align-items: center; gap: 10px; }
+    .total .lbl { white-space: nowrap; font-size: 10.5px; letter-spacing: 0.1em; } .nav button { white-space: nowrap; } .nav .primary .w { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .panel.in > * { animation: none; } .intro { transition: none; } .frame img, .opt, .sw, .nav .primary { transition: none; } }
+</style>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23121416%27/%3E%3Cpath d=%27M6 17 16 8l10 9v8H6z%27 fill=%27%23fff%27/%3E%3C/svg%3E">
 </head>
 <body>
+<section class="intro gone" id="intro" aria-label="Welcome">
+  <img src="img/hero_brick.jpg" alt="A two-story brick home with a covered porch and a lookout room above the roof">
+  <div class="in-top"><p class="kick">Your Brand Homes</p><h1>Design your home.</h1><p class="sub">Seven plans. Five looks. The price in view the whole way.</p></div>
+  <div class="cta"><button type="button" class="go" id="begin">Start designing</button><a class="alt" id="intro-walk" href="#">Walk through in 3D</a></div>
+  <p class="fine">Concept preview. Rendering of the 3D model.</p>
+</section>
 <div class="app">
   <header class="top">
     <div class="brand">Your Brand <span>Homes</span></div>
@@ -159,7 +252,7 @@
 (function () {
   'use strict';
   var VIEWER = 'walkthrough/', SETS = 'plans/';
-  var HAVE = /*HAVE*/{"big_brick":1,"big_country":1,"big_craft":1,"big_farm":1,"big_farm_s":1,"big_trans":1,"half_brick":1,"half_country":1,"half_craft":1,"half_farm":1,"half_farm_s":1,"half_trans":1,"in_brick_great":1,"in_brick_kit":1,"in_country_great":1,"in_country_kit":1,"in_craft_great":1,"in_craft_kit":1,"in_farm_great":1,"in_farm_kit":1,"in_trans_great":1,"in_trans_kit":1,"p14_brick":1,"p14_country":1,"p14_craft":1,"p14_farm":1,"p14_farm_s":1,"p14_trans":1,"p18_brick":1,"p18_country":1,"p18_craft":1,"p18_farm":1,"p18_farm_s":1,"p18_trans":1,"p19_brick":1,"p19_country":1,"p19_craft":1,"p19_farm":1,"p19_farm_s":1,"p19_trans":1,"ranch_brick":1,"ranch_country":1,"ranch_craft":1,"ranch_farm":1,"ranch_farm_s":1,"ranch_trans":1,"small_brick":1,"small_country":1,"small_craft":1,"small_farm":1,"small_farm_s":1,"small_trans":1,"suite_bed":1,"suite_brick":1,"suite_country":1,"suite_craft":1,"suite_farm":1,"suite_kit":1,"suite_live":1,"suite_trans":1}/*END*/;                 // the renderings that ship with this version of the page
+  var HAVE = /*HAVE*/{"big_brick":1,"big_brick_s":1,"big_country":1,"big_craft":1,"big_farm":1,"big_trans":1,"half_brick":1,"half_brick_s":1,"half_country":1,"half_craft":1,"half_farm":1,"half_trans":1,"hero_brick":1,"in_brick_great":1,"in_brick_kit":1,"in_country_great":1,"in_country_kit":1,"in_craft_great":1,"in_craft_kit":1,"in_farm_great":1,"in_farm_kit":1,"in_trans_great":1,"in_trans_kit":1,"p14_brick":1,"p14_brick_s":1,"p14_country":1,"p14_craft":1,"p14_farm":1,"p14_trans":1,"p18_brick":1,"p18_brick_s":1,"p18_country":1,"p18_craft":1,"p18_farm":1,"p18_trans":1,"p19_brick":1,"p19_brick_s":1,"p19_country":1,"p19_craft":1,"p19_farm":1,"p19_trans":1,"pair_big_brick":1,"pair_big_country":1,"pair_big_craft":1,"pair_big_farm":1,"pair_big_trans":1,"pair_half_brick":1,"pair_half_country":1,"pair_half_craft":1,"pair_half_farm":1,"pair_half_trans":1,"pair_p14_brick":1,"pair_p14_country":1,"pair_p14_craft":1,"pair_p14_farm":1,"pair_p14_trans":1,"pair_p18_brick":1,"pair_p18_country":1,"pair_p18_craft":1,"pair_p18_farm":1,"pair_p18_trans":1,"pair_p19_brick":1,"pair_p19_country":1,"pair_p19_craft":1,"pair_p19_farm":1,"pair_p19_trans":1,"pair_ranch_brick":1,"pair_ranch_country":1,"pair_ranch_craft":1,"pair_ranch_farm":1,"pair_ranch_trans":1,"pair_small_brick":1,"pair_small_country":1,"pair_small_craft":1,"pair_small_farm":1,"pair_small_trans":1,"plan_big":1,"plan_big_s":1,"plan_half":1,"plan_half_s":1,"plan_p14":1,"plan_p14_s":1,"plan_p18":1,"plan_p18_s":1,"plan_p19":1,"plan_p19_s":1,"plan_ranch":1,"plan_ranch_s":1,"plan_small":1,"plan_small_s":1,"ranch_brick":1,"ranch_brick_s":1,"ranch_country":1,"ranch_craft":1,"ranch_farm":1,"ranch_trans":1,"small_brick":1,"small_brick_s":1,"small_country":1,"small_craft":1,"small_farm":1,"small_trans":1,"suite_bed":1,"suite_brick":1,"suite_country":1,"suite_craft":1,"suite_farm":1,"suite_kit":1,"suite_live":1,"suite_trans":1}/*END*/;                 // the renderings that ship with this version of the page
   function have(src) { return !!HAVE[src.slice(4, -4)]; }
   var $ = function (id) { return document.getElementById(id); };
   function el(tag, attrs, kids) {
@@ -191,11 +284,11 @@
       parts: [['house', 0, 0, 58, 38], ['garage', 0, 0, 32, 22], ['porch', 35, -6, 58, 0], ['deck', 31.25, 38, 47.25, 52]] }
   ];
   var LOOKS = [
-    { k: 'farm', name: 'Modern Farmhouse', col: 'Meadow collection', d: 'Ivory board and batten, charcoal roof, one wood-toned entry. Inside: natural oak, muted olive, aged brass.', pct: 0 },
-    { k: 'craft', name: 'Craftsman', col: 'Grove collection', d: 'Sage lap siding, cream trim, tapered columns on stone piers. Inside: medium oak, cream, bronze.', pct: 0.012 },
-    { k: 'trans', name: 'Transitional', col: 'Stone collection', d: 'Limestone-beige siding with a brick entry wall and bronze accents. Inside: light oak, limestone tones, satin nickel.', pct: 0.009 },
-    { k: 'brick', name: 'Traditional Brick', col: '', d: 'Red-brown brick across the front, ivory trim, a deep green door. Inside: updated traditional.', pct: 0.03 },
-    { k: 'country', name: 'Country Farmhouse', col: '', d: 'Warm taupe siding, cream trim, timber posts on stone. Inside: refined country.', pct: 0.01 }
+    { k: 'farm', sw: ['#efe9dc', '#3d3b38'], name: 'Modern Farmhouse', col: 'Meadow collection', d: 'Ivory board and batten, charcoal roof, one wood-toned entry. Inside: natural oak, muted olive, aged brass.', pct: 0 },
+    { k: 'craft', sw: ['#8d9b83', '#efe6d2'], name: 'Craftsman', col: 'Grove collection', d: 'Sage lap siding, cream trim, tapered columns on stone piers. Inside: medium oak, cream, bronze.', pct: 0.012 },
+    { k: 'trans', sw: ['#d8d0c2', '#6b5a48'], name: 'Transitional', col: 'Stone collection', d: 'Limestone-beige siding with a brick entry wall and bronze accents. Inside: light oak, limestone tones, satin nickel.', pct: 0.009 },
+    { k: 'brick', sw: ['#a4533f', '#efe9dc'], name: 'Traditional Brick', col: 'The lead look', d: 'Red-brown brick across the front with limestone lintels, ivory trim, shutters and a deep green door. Inside: updated traditional.', pct: 0.03 },
+    { k: 'country', sw: ['#a99b87', '#f0e8d8'], name: 'Country Farmhouse', col: '', d: 'Warm taupe siding, cream trim, timber posts on stone. Inside: refined country.', pct: 0.01 }
   ];
   var SUITE = { price: 152000, w: 24, d: 56 }, DGAR = 38000;
   /* ------------------------------------------------------------ concept communities. Lots and prices are illustrative. */
@@ -222,7 +315,8 @@
                   [210, 58000, 260, [[125], [120], [135, 'sold'], [120], [145], [160, '', 'End of the road', 4000]]]]) }
   ];
   var STEPS = [['home', 'Home'], ['look', 'Look'], ['options', 'Options'], ['community', 'Community'], ['lot', 'Lot'], ['summary', 'Summary']];
-  var S = { step: 'home', home: 'p18', look: 'trans', ver: 1, top: 1, bsmt: 'u', gar: 'f', dgar: 0, suite: 0, comm: null, lot: null, shot: 'ext' };
+  var SWORDER = ['brick', 'trans', 'farm', 'craft', 'country'];
+  var S = { step: 'home', home: 'p18', look: 'brick', ver: 1, top: 1, bsmt: 'u', gar: 'f', dgar: 0, suite: 0, comm: null, lot: null, shot: 'ext' };
 
   function H() { return HOMES.filter(function (h) { return h.k === S.home; })[0]; }
   function Lk() { return LOOKS.filter(function (l) { return l.k === S.look; })[0]; }
@@ -279,6 +373,8 @@
     if (isLot) { drawSite(); return; }
     var shots = [['ext', 'Outside', heroSrc(h.k, lk.k), h.name + ' in the ' + lk.name + ' look, from the street'],
                  ['great', 'Great room', 'img/in_' + lk.k + '_great.jpg', 'Great room in the ' + lk.name + ' look'], ['kit', 'Kitchen', 'img/in_' + lk.k + '_kit.jpg', 'Kitchen in the ' + lk.name + ' look']];
+    if (S.suite) shots.push(['pair', 'With the suite', 'img/pair_' + h.k + '_' + lk.k + '.jpg', h.name + ' with the in-law suite and second garage beside it'], ['planv', 'Floor plan', 'img/plan_' + h.k + '_s.jpg', 'Main floor of the ' + h.name + ' with the in-law suite, from above']);
+    else shots.push(['planv', 'Floor plan', 'img/plan_' + h.k + '.jpg', 'Main floor of the ' + h.name + ', from above']);
     if (S.suite) shots.push(['suite', 'In-law suite', 'img/suite_' + lk.k + '.jpg', 'In-law suite with its garage in the ' + lk.name + ' look'], ['suitein', 'Suite living', 'img/suite_live.jpg', 'Kitchen, dining and living room of the in-law suite'],
       ['suitekit', 'Suite kitchen', 'img/suite_kit.jpg', 'Kitchen of the in-law suite'], ['suitebed', 'Suite bedroom', 'img/suite_bed.jpg', 'Bedroom of the in-law suite']);
     var fallback = !have(shots[0][2]); if (fallback) shots[0][2] = heroSrc(h.k, 'farm');
@@ -289,7 +385,7 @@
       if (s[0] === S.shot) {
         show(s[2], s[3]);
         $('tag').textContent = s[0] === 'ext' ? (fallback ? 'Shown in Modern Farmhouse; the rendering in this look is not ready yet' : 'Rendering of the 3D model') + (S.top ? '' : ', shown with the ' + h.topName.toLowerCase()) + (h.gs && S.gar === 's' ? ', shown with the front-entry garage' : '')
-          : (s[0] === 'great' || s[0] === 'kit') ? 'Interior package for this look, shown in the 3,928 Plan' : s[0] === 'suite' ? 'The suite and its garage as one building' : s[3] + ', Modern Farmhouse interior';
+          : (s[0] === 'great' || s[0] === 'kit') ? 'Interior package for this look, shown in the 3,928 Plan' : s[0] === 'suite' ? 'The suite and its garage as one building' : (s[0] === 'pair' || s[0] === 'planv') ? 'View of the 3D model' : s[3] + ', Modern Farmhouse interior';
       }
     });
   }
@@ -389,11 +485,17 @@
     p.textContent = '';
     if (S.step === 'home') {
       kids.push(el('h2', { text: 'Choose your home' }), el('p', { 'class': 'lede', text: 'Seven plans, each a fixed design you can walk through before it is built. Prices are for the home in its Standard version, before the lot.' }));
-      kids.push(group('', HOMES.map(function (x) { return opt(x.name, num(x.sq) + ' sq ft · ' + x.beds + ' bed · ' + x.baths + ' bath\n' + x.line, 'from ' + usd(baseOf(x, 1)), x.k === S.home, set('home', x.k), { cls: 'home', img: heroSrc(x.k, 'farm').replace('.jpg', '_s.jpg') }); })));
+      kids.push(group('', HOMES.map(function (x) { return opt(x.name, num(x.sq) + ' sq ft · ' + x.beds + ' bed · ' + x.baths + ' bath\n' + x.line, 'from ' + usd(baseOf(x, 1)), x.k === S.home, set('home', x.k), { cls: 'home', img: heroSrc(x.k, 'brick').replace('.jpg', '_s.jpg') }); })));
     } else if (S.step === 'look') {
       var b = baseOf(h, v2(h) ? 2 : 1);
       kids.push(el('h2', { text: 'Choose the look' }), el('p', { 'class': 'lede', text: 'Each look sets the outside and the finishes inside together, so the house reads as one idea.' }));
-      kids.push(group('', LOOKS.map(function (l) { return opt(l.name, l.d, delta(r100(b * l.pct)), l.k === S.look, set('look', l.k), { sub: l.col }); })));
+      kids.push(el('div', { 'class': 'swatches', role: 'radiogroup', 'aria-label': 'Look' }, SWORDER.map(function (k) {
+        var l = LOOKS.filter(function (x) { return x.k === k; })[0], i = el('i'); i.style.background = 'linear-gradient(135deg, ' + l.sw[0] + ' 0 62%, ' + l.sw[1] + ' 62%)';
+        return el('button', { type: 'button', 'class': 'sw', role: 'radio', 'aria-checked': l.k === S.look ? 'true' : 'false', 'aria-label': l.name, title: l.name, on: { click: set('look', l.k) } }, [i]);
+      })));
+      var L0 = Lk();
+      kids.push(el('div', { 'class': 'lookcard' }, [el('b', { text: L0.name }), el('span', { 'class': 'pr', text: delta(r100(b * L0.pct)) }), el('p', { text: L0.d }), L0.col ? el('small', { text: L0.col }) : null]));
+      kids.push(el('p', { 'class': 'note', text: 'Tap a swatch. The pictures change with it: outside, great room and kitchen.' }));
     } else if (S.step === 'options') {
       kids.push(el('h2', { text: 'Make it yours' }), el('p', { 'class': 'lede', text: 'A short list. Everything else is already decided and priced in.' }));
       if (h.v2) kids.push(group('Version', [opt('Standard', 'The plan as drawn.', 'Included', S.ver === 1, set('ver', 1)), opt('Upgraded', 'A larger primary suite: more bath, more closet' + (h.sq2 ? ', ' + num(h.sq2 - h.sq) + ' sq ft more.' : '.'), delta(baseOf(h, 2) - baseOf(h, 1)), S.ver === 2, set('ver', 2))]));
@@ -402,7 +504,7 @@
       kids.push(group('Basement', [opt('Unfinished', num(bt) + ' sq ft with a safe room, an egress window and rough-ins for a bath and a bar.', 'Included', S.bsmt === 'u', set('bsmt', 'u')), opt('Finished', num(bf) + ' sq ft finished: sauna, gym, bar, safe room and a full bath.', delta(r100(bf * 62 + 14000)), S.bsmt === 'f', set('bsmt', 'f'))]));
       if (h.gs) kids.push(group('Garage doors', [opt('Facing the street', '', 'Included', S.gar === 'f', set('gar', 'f')), opt('On the side', 'The front of the garage gets windows; the drive turns into a court.', delta(h.gs), S.gar === 's', set('gar', 's'))]));
       if (!h.cars) kids.push(group('Garage', [opt('No garage', 'Park on the drive or the street.', 'Included', !S.dgar || !!S.suite, set('dgar', 0), { off: !!S.suite, info: 1, why: S.suite ? 'The in-law suite brings its own two-car garage.' : '' }), opt('Detached two-car garage', 'Behind the house off the alley, or beside it on a wider lot.', delta(DGAR), !!S.dgar && !S.suite, set('dgar', 1), { off: !!S.suite })]));
-      kids.push(group('In-law suite', [opt('No suite', '', 'Included', !S.suite, set('suite', 0)), opt('Add the in-law suite', 'A second two-car garage with a 768 sq ft, one-level home attached: living room, kitchen, bedroom, bath, exercise room, its own porch and front door. No steps anywhere.', delta(SUITE.price), !!S.suite, function () { S.suite = 1; S.shot = 'suite'; set('suite', 1)(); })]));
+      kids.push(group('In-law suite and second garage', [opt('No suite', '', 'Included', !S.suite, set('suite', 0)), opt('In-law suite + two-car garage', 'One add-on: a second two-car garage with a 768 sq ft, one-level home attached. Living room, kitchen, bedroom, bath, exercise room, its own porch and front door. No steps anywhere. It sits beside the house.', delta(SUITE.price), !!S.suite, function () { S.suite = 1; S.shot = 'pair'; set('suite', 1)(); })]));
       kids.push(el('p', { 'class': 'note', text: 'The suite needs a wider or deeper lot. The lot step shows which lots take it.' }));
     } else if (S.step === 'community') {
       kids.push(el('h2', { text: 'Choose where' }), el('p', { 'class': 'lede', text: 'Four concept communities around metro St. Louis. Each shows how many open lots fit the home you configured.' }));
@@ -428,8 +530,8 @@
       pr.rows.forEach(function (r) { tb.appendChild(el('tr', {}, [el('td', {}, [r[0], r[1] ? el('small', { text: r[1] }) : null]), el('td', { text: r[2] === 0 ? 'Included' : usd(r[2]) })])); });
       tb.appendChild(el('tr', { 'class': 'tot' }, [el('td', { text: pr.lot ? 'Estimated total' : 'Estimated total, before the lot' }), el('td', { text: usd(pr.total) })])); kids.push(tb);
       kids.push(el('p', { 'class': 'note', text: 'An illustrative estimate from a simple model: it is not a quote, and it leaves out closing costs, taxes, utility fees and site work beyond a typical lot. No order is placed from this page.' }));
-      kids.push(el('div', { 'class': 'links' }, [el('a', { href: VIEWER + '#plan-' + h.code + (v2(h) ? 'v2' : ''), target: '_blank', rel: 'noopener', text: 'Walk through it in 3D' }), el('a', { href: SETS + '#' + h.set + (v2(h) ? '2' : '') + '-A', target: '_blank', rel: 'noopener', text: 'See the plan set' }),
-        S.suite ? el('a', { href: VIEWER + '#plan-suite', target: '_blank', rel: 'noopener', text: 'Walk through the suite' }) : null, el('button', { type: 'button', id: 'copy', text: 'Copy my build', on: { click: copyBuild } })]));
+      kids.push(el('div', { 'class': 'links' }, [el('a', { href: VIEWER + '#plan-' + h.code + (v2(h) ? 'v2' : '') + (S.suite ? '-with-suite' : ''), target: '_blank', rel: 'noopener', text: 'Walk through it in 3D' }), el('a', { href: SETS + '#' + h.set + (v2(h) ? '2' : '') + '-A', target: '_blank', rel: 'noopener', text: 'See the plan set' }),
+        S.suite ? el('a', { href: VIEWER + '#walk-suite', target: '_blank', rel: 'noopener', text: 'Walk through the suite' }) : null, el('button', { type: 'button', id: 'copy', text: 'Copy my build', on: { click: copyBuild } })]));
       kids.push(group('From here to move-in', [el('ol', { 'class': 'time' }, [['Week 0', 'Selections locked. Because the plan is fixed, the drawings and the budget are final on day one.'], ['Weeks 1 to 6', 'Permit and site work.'], ['Weeks 7 to 9', 'Foundation.'], ['Weeks 10 to 15', 'Framing, roof and windows.'], ['Weeks 16 to 20', 'Plumbing, electrical, heating and air, insulation.'], ['Weeks 21 to 29', 'Drywall, cabinets, floors and finishes.'], ['Weeks 30 to 32', 'Walkthrough and keys.']].map(function (q) { return el('li', {}, [el('span', { text: q[0] }), el('span', { text: q[1] })]); }))]));
       kids.push(el('p', { 'class': 'note', text: 'A typical schedule for a home this size, shown to give the feel of the process. Weather, permits and options move it.' }));
     }
@@ -447,10 +549,17 @@
     var i = STEPS.map(function (s) { return s[0]; }).indexOf(S.step), st = $('steps'); st.textContent = '';
     STEPS.forEach(function (s, n) { st.appendChild(el('li', {}, [el('button', { type: 'button', 'aria-current': s[0] === S.step ? 'step' : null, disabled: canGo(s[0]) ? null : '', on: { click: function () { go(s[0]); } } }, [el('span', { 'class': 'n', text: String(n + 1) }), el('span', { 'class': 'w', text: s[1] })])])); });
     stage(); panel();
-    var pr = price(); $('amt').textContent = usd(pr.total); $('amt-lbl').textContent = pr.lot ? 'Estimated total' : 'Estimate before the lot';
+    if (lastStep !== S.step) { lastStep = S.step; var pn = $('panel'); pn.classList.remove('in'); void pn.offsetWidth; pn.classList.add('in'); }
+    var pr = price(); count(pr.total); $('amt-lbl').textContent = pr.lot ? 'Estimated total' : 'Estimate before the lot';
     $('back').disabled = i === 0; var nx = $('next'), nextStep = STEPS[i + 1];
-    nx.hidden = !nextStep; if (nextStep) { nx.textContent = 'Next: ' + nextStep[1]; nx.disabled = (S.step === 'community' && !C()) || (S.step === 'lot' && !Lt()); }
+    nx.hidden = !nextStep; if (nextStep) { nx.textContent = 'Next'; nx.appendChild(el('span', { 'class': 'w', text: ': ' + nextStep[1] })); nx.disabled = (S.step === 'community' && !C()) || (S.step === 'lot' && !Lt()); }
     try { localStorage.setItem('build-v1', JSON.stringify(S)); } catch (e) { /* storage is a convenience only */ }
+  }
+  var lastStep = '', shown = null, cnt = 0, calm = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  function count(to) {                                  // the price rolls to its new value
+    var a = $('amt'), from = shown === null || calm ? to : shown, t0 = performance.now(); shown = to; cancelAnimationFrame(cnt);
+    if (from === to) { a.textContent = usd(to); return; }
+    (function tick(now) { var k = Math.min(1, (now - t0) / 380), e = 1 - Math.pow(1 - k, 3); a.textContent = usd(Math.round((from + (to - from) * e) / 100) * 100); if (k < 1) cnt = requestAnimationFrame(tick); else a.textContent = usd(to); })(t0);
   }
   function go(step) { if (!canGo(step)) return; S.step = step; if (step !== 'summary' && step !== 'options' && step !== 'look' && step !== 'home') S.shot = 'ext'; try { history.replaceState(null, '', '#' + step); } catch (e) { /* fine without it */ } render(); window.scrollTo(0, 0); }
   $('next').addEventListener('click', function () { var i = STEPS.map(function (s) { return s[0]; }).indexOf(S.step); if (STEPS[i + 1]) go(STEPS[i + 1][0]); });
@@ -463,6 +572,10 @@
     if (!HOMES.some(function (x) { return x.k === S.home; })) S.home = 'p18';
     var hk = (location.hash || '').slice(1); if (STEPS.some(function (s) { return s[0] === hk; })) S.step = hk; if (!canGo(S.step)) S.step = 'community';
     render();
+    var fresh = !saved || !saved.home, it = $('intro');
+    $('intro-walk').setAttribute('href', VIEWER + '#plan-' + H().code); $('intro-walk').setAttribute('target', '_blank'); $('intro-walk').setAttribute('rel', 'noopener');
+    if (fresh && !hk) it.classList.remove('gone');
+    $('begin').addEventListener('click', function () { it.classList.add('gone'); try { $('steps').querySelector('button').focus({ preventScroll: true }); } catch (e) { /* focus is a nicety */ } });
   }
   var hot = window.claude && window.claude.hot;
   if (hot && hot.snapshot) hot.snapshot(function () { return S; });
