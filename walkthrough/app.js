@@ -240,7 +240,7 @@
   var CODE = { big: '3928', small: '2792', half: '3560', ranch: 'ranch', big2: '3928v2', small2: '2792v2', half2: '3560v2', ranch2: 'ranchv2', p18: '1856', p14: '1420', suite: 'suite' }, NAME = {};
   Object.keys(CODE).forEach(function (k) { NAME[CODE[k]] = k; });
   var built = {}, cur = null, curName = '', level = 'exterior', pool = 0, garage = 'front', family = 'big', ver = 1, showLabels = true, tags = [], mode = 'orbit', pendingWalk = false;
-  var opt = { g: 'f', lk: '1', st: 'brick', b: 'u', su: '0' }, optsOpen = false;
+  var opt = { g: 'f', lk: '1', st: 'farm', b: 'u', su: '0' }, optsOpen = false;
   var su = false, side = null, backTo = '';      // in-law suite add-on: a second building (suite + two-car garage) beside the house; backTo: the house a suite walk was started from       // options: garage entry (front, side), lookout add-on, exterior style, basement (unfinished, finished)
   var dirty = true, tween = null, booting = true, loading = {};
   var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -438,7 +438,7 @@
     resize();
   }
   function setHash() {
-    if (booting) return;
+    if (booting || embed) return;                       // embedded in the design page: the page sets the address, not the model
     try {
       var h = (mode === 'walk' ? 'walk-' : 'plan-') + CODE[curName] + (su && curName !== 'suite' && !backTo ? '-with-suite' : '');
       if (location.hash !== '#' + h) location.hash = h;
@@ -475,10 +475,12 @@
       $('su-grp').hidden = name === 'suite'; $('t-suite').setAttribute('aria-pressed', su ? 'true' : 'false');
       aimSun();
       buildLevels();
+      if (pendingQ) applyOpts(pendingQ);                                 // the options an address asks for go on before anyone walks in
       if (mode === 'walk' || pendingWalk) { pendingWalk = false; enterWalk(); }
       else { setLevel(level, false); go(homeView(), true); showPlate(); }
       setHash();
       if (su && !side && name !== 'suite') setSuite(true, false);       // the add-on stays on from plan to plan; its model loads the first time
+      if (pendingQ) { var pq = pendingQ; pendingQ = null; applyQ(pq); }
     });
   }
 
@@ -486,6 +488,7 @@
     var w = stage.clientWidth || 1, h = stage.clientHeight || 1;
     renderer.setSize(w, h, false); camera.aspect = w / h;
     var off = (mode === 'orbit' && optsOpen) ? Math.round(Math.min(dockEl.offsetHeight * 0.4, h * 0.28)) : 0;       // options open: slide the picture up so the house stays clear of the panel
+    if (!off && embed && mode === 'orbit' && w > h) off = Math.round(Math.min(orbitUI.offsetHeight * 0.42, h * 0.16));      // embedded in a wide frame: lift the house clear of the buttons
     if (off) camera.setViewOffset(w, h, 0, off, w, h); else camera.clearViewOffset();
     if (mode === 'walk') setFov(); else camera.updateProjectionMatrix();
     dirty = true;
@@ -888,21 +891,49 @@
   [0, 1, 2, 3].forEach(function (k) { on('p-' + k, function () { if (cur) setPool(k, true); }); });
   on('b-walk', function () { if (cur) enterWalk(); });
   on('b-exit', exitWalk);
-  function parseHash() {
-    var m = /^#(plan|walk)-(3928v2|2792v2|3560v2|ranchv2|3928|2792|3560|ranch|1856|1420|suite)(-with-suite)?$/.exec(location.hash || '');
-    return m ? { walk: m[1] === 'walk', name: NAME[m[2]], su: !!m[3] && m[2] !== 'suite' } : null;
+  var embed = false, pendingQ = null;
+  function parseHash() {                                // #plan-3560-with-suite/st=farm,lv=main,lk=0,g=s,b=f,v=front,room=Kitchen,e=1 : everything after the slash is optional
+    var m = /^#(plan|walk)-(3928v2|2792v2|3560v2|ranchv2|3928|2792|3560|ranch|1856|1420|suite)(-with-suite)?(?:\/(.*))?$/.exec(location.hash || ''), q = null;
+    if (m && m[4]) { q = {}; m[4].split(',').forEach(function (kv) { var i = kv.indexOf('='); if (i > 0) { try { q[kv.slice(0, i)] = decodeURIComponent(kv.slice(i + 1)); } catch (e) { /* a broken value is skipped */ } } }); }
+    return m ? { walk: m[1] === 'walk', name: NAME[m[2]], su: !!m[3] && m[2] !== 'suite', q: q } : null;
+  }
+  function optsDiffer(q) {
+    return !!q && !!cur && !!((q.st && q.st !== opt.st && $('st-' + q.st)) || (q.g && cur.meta.garage && (q.g === 's' ? 'side' : 'front') !== garage) ||
+      (q.b && cur.meta.bsmt && q.b !== opt.b) || (q.lk && !cur.meta.notower && q.lk !== opt.lk));
+  }
+  function applyOpts(q) {                               // look, garage, basement and lookout: set while the model is seen from outside
+    if (!q || !cur) return;
+    if (q.st && q.st !== opt.st && $('st-' + q.st)) setStyle(q.st, false);
+    if (q.g && cur.meta.garage) { var gg = q.g === 's' ? 'side' : 'front'; if (gg !== garage) setGarage(gg, false); }
+    if (q.b && cur.meta.bsmt && q.b !== opt.b) setBasement(q.b, false);
+    if (q.lk && !cur.meta.notower && q.lk !== opt.lk) setLookout(q.lk === '1', false);
+  }
+  function applyQ(q) {                                  // put the model in the state the address asks for
+    if (!q || !cur) return;
+    if (q.e === '1' && !embed) { embed = true; document.body.classList.add('embed'); }
+    if (embed) resize();
+    if (optsDiffer(q)) { var wk = mode === 'walk'; if (wk) { backTo = ''; exitWalk(); } applyOpts(q); if (wk) enterWalk(); }
+    if (mode === 'walk') {
+      if (q.room) Array.prototype.some.call(document.querySelectorAll('#chips button'), function (b) { if (b.textContent === q.room) { b.click(); return true; } return false; });
+      return;
+    }
+    var lvId = q.lv && levelsOn().some(function (L) { return L.id === q.lv; }) ? q.lv : null;
+    if (lvId) setLevel(lvId, false);
+    go(q.v === 'back' || q.v === 'above' || q.v === 'garage' || q.v === 'front' ? q.v : homeView());
   }
   window.addEventListener('hashchange', function () {
     var h = parseHash();
     if (!h) return;
     if (h.name !== 'suite' && h.su !== su) { if (h.name !== curName) su = h.su; else setSuite(h.su, true); }
-    if (h.name !== curName) { pendingWalk = h.walk && mode !== 'walk'; setModel(h.name); return; }
+    if (h.name !== curName) { if (!h.walk && mode === 'walk') { backTo = ''; exitWalk(); } pendingWalk = h.walk && mode !== 'walk'; pendingQ = h.q; setModel(h.name); return; }
     if (h.walk && mode !== 'walk') enterWalk(); else if (!h.walk && mode === 'walk') exitWalk();
+    applyQ(h.q);
   });
 
   var h0 = parseHash();
   resize();
-  pendingWalk = !!(h0 && h0.walk); su = !!(h0 && h0.su);
+  pendingWalk = !!(h0 && h0.walk); su = !!(h0 && h0.su); pendingQ = h0 && h0.q;
+  if (pendingQ && pendingQ.e === '1') { embed = true; document.body.classList.add('embed'); }
   setModel(h0 ? h0.name : 'big', true);
   booting = false;
   requestAnimationFrame(frame);
