@@ -235,13 +235,13 @@
   var WALKHINT = 'Tap where you want to go. Drag to look around.';
   var PLAN = { big: '3,928 Plan, Standard', small: '2,792 Plan, Standard', half: '1.5-Story Plan, Standard', ranch: 'Ranch Plan, Standard',
     big2: '3,928 Plan, Upgraded', small2: '2,792 Plan, Upgraded', half2: '1.5-Story Plan, Upgraded', ranch2: 'Ranch Plan, Upgraded',
-    p19: '1,960 Plan', p18: '1,856 Plan', p14: '1,420 Plan', suite: 'In-Law Suite with Garage' };
-  var FAMS = ['big', 'small', 'half', 'ranch', 'p19', 'p18', 'p14', 'suite'], HAS2 = { big: 1, small: 1, half: 1, ranch: 1 };       // the compact plans come in one version
-  var CODE = { big: '3928', small: '2792', half: '3560', ranch: 'ranch', big2: '3928v2', small2: '2792v2', half2: '3560v2', ranch2: 'ranchv2', p19: '1960', p18: '1856', p14: '1420', suite: 'suite' }, NAME = {};
+    p18: '1,856 Plan', p14: '1,420 Plan', suite: 'In-Law Suite with Garage' };
+  var FAMS = ['big', 'small', 'half', 'ranch', 'p18', 'p14', 'suite'], HAS2 = { big: 1, small: 1, half: 1, ranch: 1 };       // the compact plans come in one version
+  var CODE = { big: '3928', small: '2792', half: '3560', ranch: 'ranch', big2: '3928v2', small2: '2792v2', half2: '3560v2', ranch2: 'ranchv2', p18: '1856', p14: '1420', suite: 'suite' }, NAME = {};
   Object.keys(CODE).forEach(function (k) { NAME[CODE[k]] = k; });
   var built = {}, cur = null, curName = '', level = 'exterior', pool = 0, garage = 'front', family = 'big', ver = 1, showLabels = true, tags = [], mode = 'orbit', pendingWalk = false;
-  var opt = { g: 'f', lk: '1', st: 'brick', b: 'u' }, optsOpen = false;
-  var su = false, side = null, link = null, backTo = '', SUGAP = 12;      // in-law suite add-on: a second building (suite + two-car garage) beside the house; backTo: the house a suite walk was started from       // options: garage entry (front, side), lookout add-on, exterior style, basement (unfinished, finished)
+  var opt = { g: 'f', lk: '1', st: 'brick', b: 'u', su: '0' }, optsOpen = false;
+  var su = false, side = null, backTo = '';      // in-law suite add-on: a second building (suite + two-car garage) beside the house; backTo: the house a suite walk was started from       // options: garage entry (front, side), lookout add-on, exterior style, basement (unfinished, finished)
   var dirty = true, tween = null, booting = true, loading = {};
   var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
@@ -252,8 +252,8 @@
     return L[0];
   }
   function view(kind) {
-    var m = cur.meta, xl = m.xl, xr = m.xr + (suiteOn() ? SUGAP + 56 : 0), cx = (xl + xr) / 2, D = m.D, k = Math.max(1, (xr - xl) / 60), z = lv().lift || 0, t = m.tower, low = m.stories === 1;
-    if (kind === 'front') return { p: [xr + 34 * k, 11, 98 * k], t: [cx + 0.5, low ? 10 : 14, -10] };
+    var m = cur.meta, xl = m.xl - (suiteOn() ? 56 : 0), xr = m.xr, cx = (xl + xr) / 2, D = m.D, k = Math.max(1, (xr - xl) / 60), z = lv().lift || 0, t = m.tower, low = m.stories === 1;
+    if (kind === 'front') return suiteOn() ? { p: [cx + 10 * k, 13, 104 * k], t: [cx, low ? 9 : 12, -10] } : { p: [xr + 34 * k, 11, 98 * k], t: [cx + 0.5, low ? 10 : 14, -10] };
     if (kind === 'back') return { p: [xr + 54 * k, 15, -(D + 86 * k)], t: [cx + 2, low ? 9 : 13, -(pool ? D + 24 : 24)] };
     if (kind === 'above') return { p: [cx, 150 * k + z, -(D / 2 - 30)], t: [cx, z, -(D / 2 + 3)] };
     if (kind === 'look') return { p: [(t[0] + t[2]) / 2 + 26, z + 24, -(t[1] + t[3]) / 2 + 34], t: [(t[0] + t[2]) / 2, z + 2, -(t[1] + t[3]) / 2] };
@@ -278,6 +278,7 @@
   }
   function applyVis() {                                 // which parts of the house are shown
     var hide = mode === 'walk' ? [] : lv().hide, deep = mode === 'walk' || level === 'basement';
+    opt.su = suiteOn() ? '1' : '0';
     Object.keys(cur.layers).forEach(function (k) {
       var at = k.indexOf('@'), base = at < 0 ? k : k.slice(0, at), on = hide.indexOf(base) < 0;
       if (base.indexOf('POOL') === 0) on = base === 'POOL' + pool;
@@ -298,40 +299,35 @@
   function suiteOn() { return su && !!side && curName !== 'suite'; }
   function sideCut() { var hd = lv().hide; return mode !== 'walk' && hd.indexOf('ROOF') >= 0 && hd.indexOf('L2') >= 0; }      // the house is open to its main floor or basement: the suite opens too
   function aimSun() {
-    var m = cur.meta, xr = m.xr + (suiteOn() ? SUGAP + 56 : 0), cx = (m.xl + xr) / 2;
+    var m = cur.meta, cx = (m.xl - (suiteOn() ? 56 : 0) + m.xr) / 2;
     sun.position.set(cx + 80, 150, 70 - m.D / 2); sun.target.position.set(cx, 0, -m.D / 2 - 12); sun.target.updateMatrixWorld();
   }
-  function applySide() {                                // the in-law suite add-on: one building, suite and second two-car garage, 12 ft off the side of the house without the garage
-    var onNow = suiteOn(), m = cur.meta, X0 = m.xr + SUGAP + 24;
+  function applySide() {                                // the in-law suite add-on: suite and second two-car garage in one building, its garage built against the house's garage
+    var onNow = suiteOn(), m = cur.meta, X0 = m.xl - 24;
     if (side) { if (onNow) { if (side.root.parent !== scene) scene.add(side.root); } else if (side.root.parent === scene) scene.remove(side.root); }
-    cur.plants.forEach(function (o) { var p = o.userData.p; o.visible = !(onNow && p[0] > m.xr + 1.5 && p[0] < X0 + 40 && p[1] > -66 && p[1] < 36); });      // planting that would stand where the suite and its drive go
-    if (link) link.visible = onNow;
+    cur.plants.forEach(function (o) { var p = o.userData.p; o.visible = !(onNow && p[0] < m.xl + 1.5 && p[0] > m.xl - 64 && p[1] > -66 && p[1] < 36); });      // planting that would stand where the suite and its drive go
     if (!onNow) return;
-    var s = side, sopt = { g: 'f', lk: '0', st: opt.st, b: 'u' }, hide = sideCut() ? s.cutHide : [];
+    var s = side, sopt = { g: 'f', lk: '0', st: opt.st, b: 'u', su: '1' }, hide = sideCut() ? s.cutHide : [];
+    s.root.scale.set(-1, 1, 1);                         // mirrored, so its garage end meets the house's garage
     s.root.position.set(X0, m.zg - s.meta.zg, 0);       // front walls in line; its slab sits at the house's grade
     Object.keys(s.layers).forEach(function (k) {
       var at = k.indexOf('@'), base = at < 0 ? k : k.slice(0, at), on = hide.indexOf(base) < 0 && base !== 'GS' && base !== 'CS';
       if (on && at >= 0) on = NAV.holds(k.slice(at + 1), sopt);
       s.layers[k].visible = on;
     });
-    s.plants.forEach(function (o) { o.visible = o.userData.p[0] > -24.5; });       // its own trees on the house side give way to the house
+    s.plants.forEach(function (o) { o.visible = o.userData.p[0] > -22.5; });       // its own planting at the garage end gives way to the house
     s.streets.forEach(function (o) { o.visible = false; });                       // one sidewalk along the street, the house's
     applyStyle(s);
-    var xe = null;                                      // a walk from the house's front walk to the suite's drive, so the two front doors are joined
-    cur.walks.forEach(function (w) {
-      if ((w.lay === 'SITE' || w.lay === (opt.g === 's' ? 'GS' : 'GF')) && w.b.min.z < 12 && w.b.max.z > 9 && w.b.max.y < m.zg + 0.8) xe = Math.max(xe === null ? -1e9 : xe, w.b.max.x);
-    });
-    if (xe === null || xe > m.xr - 1) xe = m.xr - 8;
-    if (!link) { link = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), s.concMat || new THREE.MeshLambertMaterial({ color: 0xbdb9b0 })); link.receiveShadow = true; scene.add(link); }
-    var x1 = X0 - 20.9; link.scale.set(Math.max(0.1, x1 - xe + 0.2), 0.3, 4); link.position.set((xe - 0.2 + x1) / 2, m.zg - 0.13, 10.5);
   }
   function setSuite(on, move) {
     su = !!on; $('t-suite').setAttribute('aria-pressed', su ? 'true' : 'false');
+    $('g-side').disabled = su && curName !== 'suite';                     // built against the garage's end wall, so the garage doors face the street
+    if (su && curName !== 'suite' && garage === 'side' && cur) setGarage('front', false);
     function fin() { aimSun(); refresh(); setLabels(); setHash(); if (move && mode === 'orbit') go(su && level !== 'exterior' ? 'above' : homeView()); }
     if (su && !side) {
-      loadModel('suite', function () {
-        if (!MODELS.suite) return;
-        side = build('suite');
+      loadModel('suitea', function () {
+        if (!MODELS.suitea) return;
+        side = build('suitea');
         var L = side.meta.levels.filter(function (l) { return l.id === 'main'; })[0] || { hide: [], labels: '' };
         side.cutHide = L.hide; side.cutLabels = L.labels;
         if (cur) { fin(); if (!move && mode === 'orbit') go(homeView(), true); }      // loaded after the house was framed: frame the pair
@@ -355,7 +351,7 @@
   function fmt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
   var QS = { big: { sqft: 3928, lookout: 224, bsmt: { fin: 1220 } }, small: { sqft: 2792, lookout: 224, bsmt: { fin: 730 } }, half: { sqft: 3560, lookout: 224, bsmt: { fin: 850 } }, ranch: { sqft: 2544, lookout: 224, bsmt: { fin: 2000 } },
     big2: { sqft: 3928, lookout: 224, bsmt: { fin: 1220 } }, small2: { sqft: 2792, lookout: 224, bsmt: { fin: 730 } }, half2: { sqft: 3760, lookout: 224, bsmt: { fin: 850 } }, ranch2: { sqft: 2796, lookout: 224, bsmt: { fin: 2260 } },
-    p19: { sqft: 1960, lookout: 288, bsmt: { fin: 610 } }, p18: { sqft: 1856, lookout: 224, bsmt: { fin: 590 } }, p14: { sqft: 1420, lookout: 140, bsmt: { fin: 410 } }, suite: { sqft: 768, lookout: 0, bsmt: { fin: 0 } } };      // each plan's numbers, so every plan and version button can show its own; a loaded model's own numbers replace its entry
+    p18: { sqft: 1856, lookout: 224, bsmt: { fin: 590 } }, p14: { sqft: 1420, lookout: 140, bsmt: { fin: 410 } }, suite: { sqft: 768, lookout: 0, bsmt: { fin: 0 } } };      // each plan's numbers, so every plan and version button can show its own; a loaded model's own numbers replace its entry
   function sqOf(s, lk) { return s.sqft - (lk ? 0 : s.lookout) + (opt.b === 'f' ? s.bsmt.fin : 0); }
   function planNums() {                                 // square footage on every plan and version button, as configured (another plan or version opens with the lookout on)
     FAMS.forEach(function (f) {
@@ -375,7 +371,7 @@
     titleEl.textContent = PLAN[curName];
     statsEl.hidden = false; statsEl.textContent = fmt(sq) + ' sq ft \u00b7 ' + s.beds + ' bed \u00b7 ' + ba + ' bath';
     if (suiteOn()) titleEl.textContent += ' + In-Law Suite';
-    subEl.textContent = (suiteOn() ? 'Plus the in-law suite beside it: 768 sq ft, 1 bed, 1 bath, two-car garage. ' : '') + (!cur.meta.bsmt ? 'One level on a slab, no steps anywhere. Attached two-car garage' : fin ? 'Includes ' + fmt(s.bsmt.fin) + ' sq ft of finished basement' : 'Plus ' + fmt(s.bsmt.total) + ' sq ft of unfinished basement') + '. Concept model, not for construction.';
+    subEl.textContent = (suiteOn() ? 'Plus the in-law suite, attached at the garage: 768 sq ft, 1 bed, 1 bath, second two-car garage. ' : '') + (!cur.meta.bsmt ? 'One level on a slab, no steps anywhere. Attached two-car garage' : fin ? 'Includes ' + fmt(s.bsmt.fin) + ' sq ft of finished basement' : 'Plus ' + fmt(s.bsmt.total) + ' sq ft of unfinished basement') + '. Concept model, not for construction.';
   }
   function refresh() { cur.nav.setState(opt); applyVis(); showPlate(); }
   function setLabels() {
@@ -384,12 +380,13 @@
     if (key === 'b') key = 'b' + opt.b;                 // the basement has one set of names for each fit-out
     if (!showLabels || !key || !cur) return;
     (cur.meta.labels[key] || []).forEach(function (l) {
+      if (l.w && !NAV.holds(l.w, opt)) return;          // a room that changes name with an option
       var d = document.createElement('div'); d.className = 'tag'; d.textContent = l.t;
       labelsEl.appendChild(d); tags.push({ el: d, v: new THREE.Vector3(l.x, l.z + 1.5, -l.y), w: 0 });
     });
     if (suiteOn() && sideCut()) (side.meta.labels[side.cutLabels] || []).forEach(function (l) {
       var d = document.createElement('div'); d.className = 'tag'; d.textContent = l.t;
-      labelsEl.appendChild(d); tags.push({ el: d, v: new THREE.Vector3(l.x + side.root.position.x, l.z + 1.5 + side.root.position.y, -l.y), w: 0 });
+      labelsEl.appendChild(d); tags.push({ el: d, v: new THREE.Vector3(side.root.position.x - l.x, l.z + 1.5 + side.root.position.y, -l.y), w: 0 });
     });
     tags.forEach(function (t) { t.w = t.el.offsetWidth || 60; });
   }
@@ -411,6 +408,7 @@
     if (move && mode === 'orbit' && k) { if (level !== 'exterior') setLevel('exterior', false); go('pool'); }
   }
   function setGarage(g, move) {
+    if (g === 'side' && su && curName !== 'suite') g = 'front';
     garage = g; opt.g = g === 'side' ? 's' : 'f'; press('g-', g); refresh();
     if (move && mode === 'orbit') { if (level !== 'exterior') setLevel('exterior', false); go(g === 'side' ? 'garage' : 'front'); }
   }
@@ -884,7 +882,7 @@
   on('b-walk', function () { if (cur) enterWalk(); });
   on('b-exit', exitWalk);
   function parseHash() {
-    var m = /^#(plan|walk)-(3928v2|2792v2|3560v2|ranchv2|3928|2792|3560|ranch|1960|1856|1420|suite)(-with-suite)?$/.exec(location.hash || '');
+    var m = /^#(plan|walk)-(3928v2|2792v2|3560v2|ranchv2|3928|2792|3560|ranch|1856|1420|suite)(-with-suite)?$/.exec(location.hash || '');
     return m ? { walk: m[1] === 'walk', name: NAME[m[2]], su: !!m[3] && m[2] !== 'suite' } : null;
   }
   window.addEventListener('hashchange', function () {

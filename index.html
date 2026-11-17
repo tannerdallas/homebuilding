@@ -220,7 +220,7 @@
 <body>
 <section class="intro gone" id="intro" aria-label="Welcome">
   <img src="img/hero_brick.jpg" alt="A two-story brick home with a covered porch and a lookout room above the roof">
-  <div class="in-top"><p class="kick">Your Brand Homes</p><h1>Design your home.</h1><p class="sub">Seven plans. Five looks. The price in view the whole way.</p></div>
+  <div class="in-top"><p class="kick">Your Brand Homes</p><h1>Design your home.</h1><p class="sub">Six plans. Five looks. The price in view the whole way.</p></div>
   <div class="cta"><button type="button" class="go" id="begin">Start designing</button><a class="alt" id="intro-walk" href="#">Walk through in 3D</a></div>
   <p class="fine">Concept preview. Rendering of the 3D model.</p>
 </section>
@@ -252,7 +252,7 @@
 (function () {
   'use strict';
   var VIEWER = 'walkthrough/', SETS = 'plans/';
-  var HAVE = /*HAVE*/{"big_brick":1,"big_brick_s":1,"big_country":1,"big_craft":1,"big_farm":1,"big_trans":1,"half_brick":1,"half_brick_s":1,"half_country":1,"half_craft":1,"half_farm":1,"half_trans":1,"hero_brick":1,"in_brick_great":1,"in_brick_kit":1,"in_country_great":1,"in_country_kit":1,"in_craft_great":1,"in_craft_kit":1,"in_farm_great":1,"in_farm_kit":1,"in_trans_great":1,"in_trans_kit":1,"p14_brick":1,"p14_brick_s":1,"p14_country":1,"p14_craft":1,"p14_farm":1,"p14_trans":1,"p18_brick":1,"p18_brick_s":1,"p18_country":1,"p18_craft":1,"p18_farm":1,"p18_trans":1,"p19_brick":1,"p19_brick_s":1,"p19_country":1,"p19_craft":1,"p19_farm":1,"p19_trans":1,"pair_big_brick":1,"pair_big_country":1,"pair_big_craft":1,"pair_big_farm":1,"pair_big_trans":1,"pair_half_brick":1,"pair_half_country":1,"pair_half_craft":1,"pair_half_farm":1,"pair_half_trans":1,"pair_p14_brick":1,"pair_p14_country":1,"pair_p14_craft":1,"pair_p14_farm":1,"pair_p14_trans":1,"pair_p18_brick":1,"pair_p18_country":1,"pair_p18_craft":1,"pair_p18_farm":1,"pair_p18_trans":1,"pair_p19_brick":1,"pair_p19_country":1,"pair_p19_craft":1,"pair_p19_farm":1,"pair_p19_trans":1,"pair_ranch_brick":1,"pair_ranch_country":1,"pair_ranch_craft":1,"pair_ranch_farm":1,"pair_ranch_trans":1,"pair_small_brick":1,"pair_small_country":1,"pair_small_craft":1,"pair_small_farm":1,"pair_small_trans":1,"plan_big":1,"plan_big_s":1,"plan_half":1,"plan_half_s":1,"plan_p14":1,"plan_p14_s":1,"plan_p18":1,"plan_p18_s":1,"plan_p19":1,"plan_p19_s":1,"plan_ranch":1,"plan_ranch_s":1,"plan_small":1,"plan_small_s":1,"ranch_brick":1,"ranch_brick_s":1,"ranch_country":1,"ranch_craft":1,"ranch_farm":1,"ranch_trans":1,"small_brick":1,"small_brick_s":1,"small_country":1,"small_craft":1,"small_farm":1,"small_trans":1,"suite_bed":1,"suite_brick":1,"suite_country":1,"suite_craft":1,"suite_farm":1,"suite_kit":1,"suite_live":1,"suite_trans":1}/*END*/;                 // the renderings that ship with this version of the page
+  var HAVE = /*HAVE*/{"big_brick":1,"big_brick_s":1,"big_country":1,"big_craft":1,"big_farm":1,"big_trans":1,"half_brick":1,"half_brick_s":1,"half_country":1,"half_craft":1,"half_farm":1,"half_trans":1,"hero_brick":1,"in_brick_great":1,"in_brick_kit":1,"in_country_great":1,"in_country_kit":1,"in_craft_great":1,"in_craft_kit":1,"in_farm_great":1,"in_farm_kit":1,"in_trans_great":1,"in_trans_kit":1,"p14_brick":1,"p14_brick_s":1,"p14_country":1,"p14_craft":1,"p14_farm":1,"p14_trans":1,"p18_brick":1,"p18_brick_s":1,"p18_country":1,"p18_craft":1,"p18_farm":1,"p18_trans":1,"pair_big_brick":1,"pair_big_country":1,"pair_big_craft":1,"pair_big_farm":1,"pair_big_trans":1,"pair_half_brick":1,"pair_half_country":1,"pair_half_craft":1,"pair_half_farm":1,"pair_half_trans":1,"pair_p14_brick":1,"pair_p14_country":1,"pair_p14_craft":1,"pair_p14_farm":1,"pair_p14_trans":1,"pair_p18_brick":1,"pair_p18_country":1,"pair_p18_craft":1,"pair_p18_farm":1,"pair_p18_trans":1,"pair_ranch_brick":1,"pair_ranch_country":1,"pair_ranch_craft":1,"pair_ranch_farm":1,"pair_ranch_trans":1,"pair_small_brick":1,"pair_small_country":1,"pair_small_craft":1,"pair_small_farm":1,"pair_small_trans":1,"plan_big":1,"plan_big_s":1,"plan_half":1,"plan_half_s":1,"plan_p14":1,"plan_p14_s":1,"plan_p18":1,"plan_p18_s":1,"plan_ranch":1,"plan_ranch_s":1,"plan_small":1,"plan_small_s":1,"ranch_brick":1,"ranch_brick_s":1,"ranch_country":1,"ranch_craft":1,"ranch_farm":1,"ranch_trans":1,"small_brick":1,"small_brick_s":1,"small_country":1,"small_craft":1,"small_farm":1,"small_trans":1,"suite_bed":1,"suite_brick":1,"suite_country":1,"suite_craft":1,"suite_farm":1,"suite_kit":1,"suite_live":1,"suite_trans":1}/*END*/;                 // the renderings that ship with this version of the page
   function have(src) { return !!HAVE[src.slice(4, -4)]; }
   var $ = function (id) { return document.getElementById(id); };
   function el(tag, attrs, kids) {
@@ -268,12 +268,10 @@
 
   /* ------------------------------------------------------------ the homes. Sizes and footprints come from the 3D models. */
   var HOMES = [
-    { k: 'p14', name: '1,420 Plan', line: 'Two stories and a lookout, 20 ft wide', sq: 1420, top: 140, topName: 'Lookout', beds: 3, baths: 2.5, cars: 0, w: 20, d: 32, bT: 640, bF: 410, code: '1420', set: 'p14',
-      parts: [['house', 0, 0, 20, 32], ['porch', 0, -6, 20, 0], ['deck', 7.5, 32, 19.5, 44]] },
+    { k: 'p14', name: '1,420 Plan', line: 'The smallest home, with a two-car garage standard', sq: 1420, top: 140, topName: 'Lookout', beds: 3, baths: 2.5, cars: 2, w: 42, d: 32, bT: 640, bF: 410, gs: 4500, plus: 30000, code: '1420', set: 'p14',
+      parts: [['garage', 0, 0, 22, 24], ['house', 22, 0, 42, 32], ['porch', 22, -6, 42, 0], ['deck', 29.5, 32, 41.5, 44]] },
     { k: 'p18', name: '1,856 Plan', line: 'Two stories, a lookout and a two-car garage', sq: 1856, top: 224, topName: 'Lookout', beds: 3, baths: 2.5, cars: 2, w: 46, d: 34, bT: 816, bF: 590, gs: 4500, code: '1856', set: 'p18',
       parts: [['garage', 0, 0, 22, 24], ['house', 22, 0, 46, 34], ['porch', 22, -6, 46, 0], ['deck', 31, 34, 45, 46]] },
-    { k: 'p19', name: '1,960 Plan', line: 'Three stories with a loft on top, 22 ft wide', sq: 1960, top: 288, topName: 'Loft', beds: 3, baths: 2.5, cars: 0, w: 22, d: 38, bT: 836, bF: 610, code: '1960', set: 'p19',
-      parts: [['house', 0, 0, 22, 38], ['porch', 0, -6, 22, 0], ['deck', 10.5, 38, 21.5, 50]] },
     { k: 'ranch', name: 'Ranch Plan', line: 'One level, with a lookout over the primary suite', sq: 2544, sq2: 2796, top: 224, topName: 'Lookout', beds: 3, baths: 2.5, cars: 3, w: 72, w2: 78, d: 42, bT: 2320, bF: 2000, bT2: 2572, bF2: 2260, v2: 1, gs: 9500, mult: 1.08, code: 'ranch', set: 'ranch',
       parts: [['house', 0, 0, 72, 42], ['garage', 0, 0, 32, 22], ['porch', 33, -6, 56, 0], ['deck', 35, 42, 51, 56]] },
     { k: 'small', name: '2,792 Plan', line: 'Two stories and a lookout', sq: 2792, top: 224, topName: 'Lookout', beds: 3, baths: 2.5, cars: 2, w: 42, d: 38, bT: 972, bF: 730, v2: 1, gs: 9500, code: '2792', set: 'small',
@@ -290,7 +288,7 @@
     { k: 'brick', sw: ['#a4533f', '#efe9dc'], name: 'Traditional Brick', col: 'The lead look', d: 'Red-brown brick across the front with limestone lintels, ivory trim, shutters and a deep green door. Inside: updated traditional.', pct: 0.03 },
     { k: 'country', sw: ['#a99b87', '#f0e8d8'], name: 'Country Farmhouse', col: '', d: 'Warm taupe siding, cream trim, timber posts on stone. Inside: refined country.', pct: 0.01 }
   ];
-  var SUITE = { price: 152000, w: 24, d: 56 }, DGAR = 38000;
+  var SUITE = { price: 152000, w: 56, d: 24 }, DGAR = 38000;      // the suite and its garage, in line with the house: 56 ft of frontage, 24 ft deep
   /* ------------------------------------------------------------ concept communities. Lots and prices are illustrative. */
   function lots(rows) {                       // rows: [depth, base price, per-foot premium over the narrowest, [[width, status, tag, extra]...]]
     var out = [], n = 0;
@@ -302,14 +300,14 @@
   }
   var COMMS = [
     { k: 'wentzville', name: 'Wentzville', where: 'St. Charles County, off I-70 and I-64', d: 'Family-size lots on a quiet street that ends at a pond.', lat: 38.811, lon: -90.853, front: 25, side: 7, rear: 25, alley: 0, amen: 'pond', street: 'Meadow lane',
-      lots: lots([[140, 78000, 550, [[84], [78, 'sold'], [78], [82, 'held'], [96, '', 'Widest on the north side'], [78, 'sold'], [78], [88], [104, '', 'Backs to the pond', 9000]]],
-                  [135, 76000, 550, [[80], [76, 'sold'], [76], [80], [80, 'sold'], [76], [92], [100, 'held'], [110, '', 'End of the street, beside the pond', 7000]]]]) },
+      lots: lots([[140, 78000, 550, [[84], [78, 'sold'], [78], [82, 'held'], [96, '', 'Widest on the north side'], [78, 'sold'], [78], [88], [128, '', 'Backs to the pond', 9000]]],
+                  [135, 76000, 550, [[80], [76, 'sold'], [76], [80], [80, 'sold'], [76], [92], [100, 'held'], [144, '', 'End of the street, beside the pond', 7000]]]]) },
     { k: 'newtown', name: 'Near New Town', where: 'St. Charles, north of the city', d: 'Walkable blocks facing a canal green, garages off the alley.', lat: 38.846, lon: -90.497, front: 10, side: 4, rear: 3, alley: 1, amen: 'canal', street: 'Canal walk',
-      lots: lots([[112, 72000, 900, [[44], [40, 'sold'], [40], [40], [48, 'held'], [40], [40, 'sold'], [44], [56], [60, '', 'Corner, widest on the green', 5000]]],
-                  [108, 64000, 900, [[44], [40], [40, 'sold'], [44], [44], [40, 'held'], [40], [44, 'sold'], [52], [58, '', 'Corner lot', 3000]]]]) },
+      lots: lots([[112, 72000, 900, [[54], [50, 'sold'], [50], [50], [58, 'held'], [50], [50, 'sold'], [54], [66], [70, '', 'Corner, widest on the green', 5000]]],
+                  [108, 64000, 900, [[54], [50], [50, 'sold'], [54], [54], [50, 'held'], [50], [54, 'sold'], [62], [68, '', 'Corner lot', 3000]]]]) },
     { k: 'fountain', name: 'Fountain Park', where: 'City of St. Louis, central corridor', d: 'City lots facing the oval park. Homes here stay under 3,000 sq ft.', lat: 38.657, lon: -90.258, front: 15, side: 3, rear: 3, alley: 1, amen: 'park', street: 'Park side', maxSq: 3000,
-      lots: lots([[138, 30000, 700, [[38], [35], [35, 'sold'], [35], [40], [35, 'held'], [35], [38, 'sold'], [42], [45, '', 'Corner, on the park', 4000]]],
-                  [130, 24000, 700, [[35], [35, 'sold'], [38], [35], [35], [40, 'sold'], [35], [35, 'held'], [38], [42, '', 'Corner lot', 2000]]]]) },
+      lots: lots([[138, 30000, 700, [[50], [48], [48, 'sold'], [48], [52], [48, 'held'], [48], [50, 'sold'], [54], [58, '', 'Corner, on the park', 4000]]],
+                  [130, 24000, 700, [[48], [48, 'sold'], [50], [48], [48], [52, 'sold'], [48], [48, 'held'], [50], [54, '', 'Corner lot', 2000]]]]) },
     { k: 'imperial', name: 'Imperial', where: 'Jefferson County, off I-55', d: 'Half-acre and larger wooded lots, about 25 minutes south of downtown.', lat: 38.370, lon: -90.378, front: 40, side: 12, rear: 35, alley: 0, amen: 'woods', street: 'Ridge road',
       lots: lots([[230, 62000, 260, [[130], [120, 'sold'], [120], [140, 'held'], [150], [165, '', 'Largest lot, backs to the woods', 6000]]],
                   [210, 58000, 260, [[125], [120], [135, 'sold'], [120], [145], [160, '', 'End of the road', 4000]]]]) }
@@ -324,7 +322,7 @@
   function Lt() { var c = C(); return c ? c.lots.filter(function (l) { return l.n === S.lot; })[0] || null : null; }
   function v2(h) { return h.v2 && S.ver === 2; }
   function sqft(h) { return (v2(h) && h.sq2 ? h.sq2 : h.sq) - (S.top ? 0 : h.top) + (S.bsmt === 'f' ? (v2(h) && h.bF2 ? h.bF2 : h.bF) : 0); }
-  function baseOf(h, ver) { return r100((95000 + 135 * (ver === 2 && h.sq2 ? h.sq2 : h.sq)) * (h.mult || 1) + (ver === 2 ? 15000 : 0)); }
+  function baseOf(h, ver) { return r100((95000 + 135 * (ver === 2 && h.sq2 ? h.sq2 : h.sq)) * (h.mult || 1) + (h.plus || 0) + (ver === 2 ? 15000 : 0)); }      // plus: the attached garage on the smallest plan
   function price() {
     var h = H(), base = baseOf(h, 1), rows = [['Home', h.name + ', Standard' , base]];
     if (v2(h)) rows.push(['Upgraded version', 'Larger primary suite', baseOf(h, 2) - base]);
@@ -332,13 +330,13 @@
     rows.push(['Look', lk.name, r100(b * lk.pct)]);
     if (!S.top) rows.push([h.topName, 'Left off', -r100(h.top * 85)]);
     if (S.bsmt === 'f') rows.push(['Finished basement', 'Sauna, gym, bar, safe room, bath', r100((v2(h) && h.bF2 ? h.bF2 : h.bF) * 62 + 14000)]);
-    if (h.gs && S.gar === 's') rows.push(['Side-entry garage', '', h.gs]);
+    if (h.gs && S.gar === 's' && !S.suite) rows.push(['Side-entry garage', '', h.gs]);
     if (!h.cars && S.dgar && !S.suite) rows.push(['Detached two-car garage', '', DGAR]);
-    if (S.suite) rows.push(['In-law suite', '768 sq ft with a second two-car garage', SUITE.price]);
+    if (S.suite) rows.push(['In-law suite', '768 sq ft with a second two-car garage, attached at the garage', SUITE.price]);
     var lt = Lt(); if (lt) rows.push(['Lot ' + lt.n, C().name + ', ' + lt.w + ' × ' + lt.d + ' ft', lt.price]);
     return { rows: rows, total: rows.reduce(function (a, r) { return a + r[2]; }, 0), lot: !!lt };
   }
-  /* does the configured home fit a lot? returns { ok, why, suite: 'beside' | 'behind' | null } */
+  /* does the configured home fit a lot? returns { ok, why, suite: 'attached' | null } */
   function fit(c, lt) {
     var h = H(), hw = v2(h) && h.w2 ? h.w2 : h.w, hd = v2(h) && h.d2 ? h.d2 : h.d, needW = hw + 2 * c.side, needD = c.front + 6 + hd + 14 + c.rear, dg = (!h.cars && S.dgar && !S.suite);
     if (c.maxSq && (v2(h) && h.sq2 ? h.sq2 : h.sq) >= c.maxSq) return { ok: false, why: 'Homes here stay under ' + num(c.maxSq) + ' sq ft' };
@@ -346,10 +344,9 @@
     if (lt.w < needW) return { ok: false, why: 'Needs a lot ' + Math.ceil(needW) + ' ft wide' };
     if (lt.d < needD) return { ok: false, why: 'Needs a lot ' + Math.ceil(needD) + ' ft deep' };
     var su = null;
-    if (S.suite) {
-      if (lt.w >= hw + 2 * c.side + SUITE.w + 8) su = 'beside';
-      else if (lt.d >= c.front + 6 + hd + 12 + SUITE.d + (c.alley ? 3 : c.rear)) su = 'behind';
-      else return { ok: false, why: 'Too small for the in-law suite' };
+    if (S.suite) {                              // the suite's garage is built against the house garage: one building, 56 ft wider
+      if (lt.w >= needW + SUITE.w) su = 'attached';
+      else return { ok: false, why: 'With the in-law suite: needs a lot ' + Math.ceil(needW + SUITE.w) + ' ft wide' };
     }
     return { ok: true, why: '', suite: su };
   }
@@ -373,7 +370,7 @@
     if (isLot) { drawSite(); return; }
     var shots = [['ext', 'Outside', heroSrc(h.k, lk.k), h.name + ' in the ' + lk.name + ' look, from the street'],
                  ['great', 'Great room', 'img/in_' + lk.k + '_great.jpg', 'Great room in the ' + lk.name + ' look'], ['kit', 'Kitchen', 'img/in_' + lk.k + '_kit.jpg', 'Kitchen in the ' + lk.name + ' look']];
-    if (S.suite) shots.push(['pair', 'With the suite', 'img/pair_' + h.k + '_' + lk.k + '.jpg', h.name + ' with the in-law suite and second garage beside it'], ['planv', 'Floor plan', 'img/plan_' + h.k + '_s.jpg', 'Main floor of the ' + h.name + ' with the in-law suite, from above']);
+    if (S.suite) shots.push(['pair', 'With the suite', 'img/pair_' + h.k + '_' + lk.k + '.jpg', h.name + ' with the in-law suite attached at the garage'], ['planv', 'Floor plan', 'img/plan_' + h.k + '_s.jpg', 'Main floor of the ' + h.name + ' with the in-law suite, from above']);
     else shots.push(['planv', 'Floor plan', 'img/plan_' + h.k + '.jpg', 'Main floor of the ' + h.name + ', from above']);
     if (S.suite) shots.push(['suite', 'In-law suite', 'img/suite_' + lk.k + '.jpg', 'In-law suite with its garage in the ' + lk.name + ' look'], ['suitein', 'Suite living', 'img/suite_live.jpg', 'Kitchen, dining and living room of the in-law suite'],
       ['suitekit', 'Suite kitchen', 'img/suite_kit.jpg', 'Kitchen of the in-law suite'], ['suitebed', 'Suite bedroom', 'img/suite_bed.jpg', 'Bedroom of the in-law suite']);
@@ -451,7 +448,7 @@
     var Y = function (y) { return lt.d - y; };                       // street at the bottom
     s.appendChild(sv('rect', { x: 0, y: 0, width: lt.w, height: lt.d, fill: '#e7ebe4', stroke: '#9aa39d', 'stroke-width': 0.8 }));
     s.appendChild(sv('rect', { x: c.side, y: Y(lt.d - c.rear), width: lt.w - 2 * c.side, height: lt.d - c.rear - c.front, fill: 'none', stroke: '#9aa39d', 'stroke-width': 0.5, 'stroke-dasharray': '3 2' }));
-    var total = hw + (f.suite === 'beside' ? SUITE.w + 8 : 0), x0 = (lt.w - total) / 2, y0 = c.front + 6;
+    var ox = f.suite ? SUITE.w : 0, total = hw + ox, x0 = (lt.w - total) / 2 + ox, y0 = c.front + 6;      // the house's garage is its left end; the suite goes on that side
     function box(x1, y1, x2, y2, fill, stroke) { s.appendChild(sv('rect', { x: x0 + x1, y: Y(y0 + y2), width: x2 - x1, height: y2 - y1, fill: fill, stroke: stroke || 'none', 'stroke-width': 0.6 })); }
     h.parts.forEach(function (p) {
       var x2 = p[3], y2 = p[4];
@@ -460,10 +457,9 @@
     });
     var gx = null;
     h.parts.forEach(function (p) { if (p[0] === 'garage') gx = [p[1], p[3]]; });
-    if (gx && !(h.gs && S.gar === 's')) s.appendChild(sv('rect', { x: x0 + gx[0] + 3, y: Y(y0), width: Math.min(20, gx[1] - gx[0] - 6), height: y0, fill: '#d5d9d3' }));
-    if (gx && h.gs && S.gar === 's') s.appendChild(sv('path', { d: 'M' + (x0 - 2) + ' ' + Y(0) + ' V' + Y(y0 + 12) + ' H' + (x0 + 1), fill: 'none', stroke: '#d5d9d3', 'stroke-width': 9 }));
-    if (f.suite === 'beside') { var sx = hw + 8; box(sx, 4, sx + 24, 28, '#4d6a5d', '#e7ebe4'); box(sx, 28, sx + 24, 60, '#2f5445'); s.appendChild(sv('rect', { x: x0 + sx + 3, y: Y(y0 + 4), width: 18, height: y0 + 4, fill: '#d5d9d3' })); }
-    if (f.suite === 'behind') { var bx = (hw - 24) / 2, by = lt.d - (c.alley ? 3 : c.rear) - y0; box(bx, by - 24, bx + 24, by, '#4d6a5d', '#e7ebe4'); box(bx, by - 56, bx + 24, by - 24, '#2f5445'); }
+    if (gx && !(h.gs && S.gar === 's' && !S.suite)) s.appendChild(sv('rect', { x: x0 + gx[0] + 3, y: Y(y0), width: Math.min(20, gx[1] - gx[0] - 6), height: y0, fill: '#d5d9d3' }));
+    if (gx && h.gs && S.gar === 's' && !S.suite) s.appendChild(sv('path', { d: 'M' + (x0 - 2) + ' ' + Y(0) + ' V' + Y(y0 + 12) + ' H' + (x0 + 1), fill: 'none', stroke: '#d5d9d3', 'stroke-width': 9 }));
+    if (f.suite) { box(-24, 0, 0, 24, '#4d6a5d', '#e7ebe4'); box(-56, 0, -24, 24, '#2f5445'); box(-56, -6, -24, 0, '#b9c7b5'); s.appendChild(sv('rect', { x: x0 - 21, y: Y(y0), width: 18, height: y0, fill: '#d5d9d3' })); }
     if (!h.cars && S.dgar && !S.suite) { if (c.alley) { var gy = lt.d - c.rear - y0; box(hw / 2 - 12, gy - 24, hw / 2 + 12, gy, '#4d6a5d', '#e7ebe4'); } else { s.appendChild(sv('rect', { x: x0 + hw + 1, y: Y(y0 + hd + 20), width: 10, height: y0 + hd + 20, fill: '#d5d9d3' })); box(hw - 11, hd + 20, hw + 11, hd + 44, '#4d6a5d', '#e7ebe4'); } }
     var t = function (x, y, str, anchor, size) { s.appendChild(sv('text', { x: x, y: y, 'font-size': size || 7, 'text-anchor': anchor || 'middle', fill: '#5d6862', 'font-family': 'Figtree, Arial, sans-serif', 'font-weight': 600 }, str)); };
     t(lt.w / 2, lt.d + 10, 'STREET · ' + lt.w + ' ft'); t(lt.w / 2, -5, c.alley ? 'ALLEY' : 'REAR YARD'); var tv = sv('text', { x: -5, y: lt.d / 2, 'font-size': 7, 'text-anchor': 'middle', fill: '#5d6862', 'font-family': 'Figtree, Arial, sans-serif', 'font-weight': 600, transform: 'rotate(-90 -5 ' + (lt.d / 2) + ')' }, lt.d + ' ft'); s.appendChild(tv);
@@ -484,7 +480,7 @@
     var p = $('panel'), h = H(), kids = [];
     p.textContent = '';
     if (S.step === 'home') {
-      kids.push(el('h2', { text: 'Choose your home' }), el('p', { 'class': 'lede', text: 'Seven plans, each a fixed design you can walk through before it is built. Prices are for the home in its Standard version, before the lot.' }));
+      kids.push(el('h2', { text: 'Choose your home' }), el('p', { 'class': 'lede', text: 'Six plans, each a fixed design you can walk through before it is built. Prices are for the home in its Standard version, before the lot.' }));
       kids.push(group('', HOMES.map(function (x) { return opt(x.name, num(x.sq) + ' sq ft · ' + x.beds + ' bed · ' + x.baths + ' bath\n' + x.line, 'from ' + usd(baseOf(x, 1)), x.k === S.home, set('home', x.k), { cls: 'home', img: heroSrc(x.k, 'brick').replace('.jpg', '_s.jpg') }); })));
     } else if (S.step === 'look') {
       var b = baseOf(h, v2(h) ? 2 : 1);
@@ -502,10 +498,10 @@
       kids.push(group(h.topName, [opt('With the ' + h.topName.toLowerCase(), num(h.top) + ' sq ft room at the top of the house, windows all around.', 'Included', S.top === 1, set('top', 1)), opt('Without it', 'The roof closes over and the stair stops a floor lower.', delta(-r100(h.top * 85)), S.top === 0, set('top', 0))]));
       var bf = v2(h) && h.bF2 ? h.bF2 : h.bF, bt = v2(h) && h.bT2 ? h.bT2 : h.bT;
       kids.push(group('Basement', [opt('Unfinished', num(bt) + ' sq ft with a safe room, an egress window and rough-ins for a bath and a bar.', 'Included', S.bsmt === 'u', set('bsmt', 'u')), opt('Finished', num(bf) + ' sq ft finished: sauna, gym, bar, safe room and a full bath.', delta(r100(bf * 62 + 14000)), S.bsmt === 'f', set('bsmt', 'f'))]));
-      if (h.gs) kids.push(group('Garage doors', [opt('Facing the street', '', 'Included', S.gar === 'f', set('gar', 'f')), opt('On the side', 'The front of the garage gets windows; the drive turns into a court.', delta(h.gs), S.gar === 's', set('gar', 's'))]));
+      if (h.gs) kids.push(group('Garage doors', [opt('Facing the street', '', 'Included', S.gar === 'f' || !!S.suite, set('gar', 'f')), opt('On the side', 'The front of the garage gets windows; the drive turns into a court.', delta(h.gs), S.gar === 's' && !S.suite, set('gar', 's'), { off: !!S.suite, why: S.suite ? 'The in-law suite is built against the end of the garage, so the doors face the street.' : '' })]));
       if (!h.cars) kids.push(group('Garage', [opt('No garage', 'Park on the drive or the street.', 'Included', !S.dgar || !!S.suite, set('dgar', 0), { off: !!S.suite, info: 1, why: S.suite ? 'The in-law suite brings its own two-car garage.' : '' }), opt('Detached two-car garage', 'Behind the house off the alley, or beside it on a wider lot.', delta(DGAR), !!S.dgar && !S.suite, set('dgar', 1), { off: !!S.suite })]));
-      kids.push(group('In-law suite and second garage', [opt('No suite', '', 'Included', !S.suite, set('suite', 0)), opt('In-law suite + two-car garage', 'One add-on: a second two-car garage with a 768 sq ft, one-level home attached. Living room, kitchen, bedroom, bath, exercise room, its own porch and front door. No steps anywhere. It sits beside the house.', delta(SUITE.price), !!S.suite, function () { S.suite = 1; S.shot = 'pair'; set('suite', 1)(); })]));
-      kids.push(el('p', { 'class': 'note', text: 'The suite needs a wider or deeper lot. The lot step shows which lots take it.' }));
+      kids.push(group('In-law suite and second garage', [opt('No suite', '', 'Included', !S.suite, set('suite', 0)), opt('In-law suite + two-car garage', 'One add-on: a second two-car garage with a 768 sq ft, one-level home attached. Living room, kitchen, bedroom, bath, exercise room, its own porch and front door. No steps anywhere. Its garage is built against the house garage, so it reads as one home.', delta(SUITE.price), !!S.suite, function () { S.suite = 1; S.gar = 'f'; S.shot = 'pair'; set('suite', 1)(); })]));
+      kids.push(el('p', { 'class': 'note', text: 'With the suite the home is 56 ft wider, so it needs a wide lot. The lot step shows which lots take it.' }));
     } else if (S.step === 'community') {
       kids.push(el('h2', { text: 'Choose where' }), el('p', { 'class': 'lede', text: 'Four concept communities around metro St. Louis. Each shows how many open lots fit the home you configured.' }));
       kids.push(group('', COMMS.map(function (c) {
@@ -520,7 +516,7 @@
         var f = fit(c, lt);
         kids.push(el('div', { 'class': 'facts' }, [el('div', {}, [el('b', { text: lt.w + ' × ' + lt.d + ' ft' }), el('span', { text: num(lt.w * lt.d) + ' sq ft, ' + (lt.w * lt.d / 43560).toFixed(2) + ' acre' })]), el('div', {}, [el('b', { text: usd(lt.price) }), el('span', { text: 'Lot price, illustrative' })])]));
         var pl = el('div', { 'class': 'plot' }); pl.appendChild(plot(c, lt)); kids.push(pl);
-        if (S.suite) kids.push(el('p', { 'class': 'note', text: f.suite === 'beside' ? 'The in-law suite sits beside the house, its garage facing the street.' : 'The in-law suite sits behind the house' + (c.alley ? ', its garage on the alley.' : '.') }));
+        if (S.suite) kids.push(el('p', { 'class': 'note', text: 'The in-law suite is attached at the garage end. Together the home is ' + ((v2(h) && h.w2 ? h.w2 : h.w) + SUITE.w) + ' ft wide.' }));
       }
       kids.push(group('Open lots that fit', openFits(c).map(function (l) { return opt('Lot ' + l.n, l.w + ' × ' + l.d + ' ft' + (l.tag ? '. ' + l.tag + '.' : ''), usd(l.price), S.lot === l.n, set('lot', l.n)); })));
     } else {

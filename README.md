@@ -7,7 +7,7 @@ A static site for choosing and configuring a concept home.
 - `plans/`: schematic plan sets. Architecture, electrical, plumbing and mechanical sheets for each model.
 - `img/`: renderings used by the configurator.
 
-Seven plans from 1,420 to 3,928 sq ft, five looks, and an in-law suite with a second two-car garage.
+Six plans from 1,420 to 3,928 sq ft, five looks, and an in-law suite whose second two-car garage is built against the house garage.
 
 No build step. Deploy the repo root as a static site (for example on Vercel with the default settings).
 
