@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>3D walkthrough | Design Your Home</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&amp;family=Figtree:wght@400;500;600&amp;display=swap" rel="stylesheet">
 <style>
 :root {
@@ -83,6 +86,8 @@ button:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
   #hint { display: none; }
   #dock, #orbit-ui, #walk-ui { gap: 6px; }
 }
+  /* embedded in the design page: the model and its level, view and walk controls only */
+  body.embed header, body.embed #b-opts, body.embed #opts { display: none !important; }
 </style>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23121416%27/%3E%3Cpath d=%27M6 17 16 8l10 9v8H6z%27 fill=%27%23fff%27/%3E%3C/svg%3E">
 </head>
@@ -126,9 +131,9 @@ button:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
         <div class="grp">
           <span class="cap">Look, outside and in</span>
           <div class="seg looks" role="group" aria-label="Look, outside and in">
-            <button type="button" id="st-brick" aria-pressed="true">Brick</button>
+            <button type="button" id="st-farm" aria-pressed="true">Farmhouse</button>
             <button type="button" id="st-trans" aria-pressed="false">Transitional</button>
-            <button type="button" id="st-farm" aria-pressed="false">Farmhouse</button>
+            <button type="button" id="st-brick" aria-pressed="false">Brick</button>
             <button type="button" id="st-craft" aria-pressed="false">Craftsman</button>
             <button type="button" id="st-country" aria-pressed="false">Country</button>
           </div>
