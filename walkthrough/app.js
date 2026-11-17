@@ -253,7 +253,8 @@
   }
   function view(kind) {
     var m = cur.meta, sg = suiteOn() ? sideGeo() : null, xl = sg ? Math.min(m.xl, sg.cx) : m.xl, xr = m.xr, cx = (xl + xr) / 2, D = sg ? Math.max(m.D, sg.yb + 58) : m.D, k = Math.max(1, (xr - xl) / 60), z = lv().lift || 0, t = m.tower, low = m.stories === 1;
-    if (kind === 'front') return suiteOn() ? { p: [cx + 10 * k, 13, 104 * k], t: [cx, low ? 9 : 12, -10] } : { p: [xr + 34 * k, 11, 98 * k], t: [cx + 0.5, low ? 10 : 14, -10] };
+    if (kind === 'front' && sg) { var wd = xr - xl, ds = Math.max(150, (wd + 48) / 0.86); return { p: [cx - wd * 0.36, 58, ds * 0.84], t: [cx - wd * 0.04, 4, -(sg.yb + 30) / 2] }; }      // with the suite: from above the street on the court side, so the court, both garages and the suite show
+    if (kind === 'front') return { p: [xr + 34 * k, 11, 98 * k], t: [cx + 0.5, low ? 10 : 14, -10] };
     if (kind === 'back') return { p: [xr + 54 * k, 15, -(D + 86 * k)], t: [cx + 2, low ? 9 : 13, -(pool ? D + 24 : 24)] };
     if (kind === 'above') return { p: [cx, 150 * k + z, -(D / 2 - 30)], t: [cx, z, -(D / 2 + 3)] };
     if (kind === 'look') return { p: [(t[0] + t[2]) / 2 + 26, z + 24, -(t[1] + t[3]) / 2 + 34], t: [(t[0] + t[2]) / 2, z + 2, -(t[1] + t[3]) / 2] };
@@ -267,6 +268,7 @@
   }
   function go(kind, instant) {
     var v = view(kind), asp = camera.aspect || 1, k = kind === 'above' ? Math.min(Math.max(1.0 / asp, 1), 2.2) : Math.min(Math.max(1.5 / asp, 1), 3.2);
+    if (kind === 'front' && suiteOn()) k = Math.min(k, 2.3);                             // the pair is framed from above already
     if (optsOpen && mode === 'orbit' && kind !== 'front') k *= 1.4;                       // less room above the open options panel: stand farther back
     var t = new THREE.Vector3(v.t[0], v.t[1], v.t[2]), p = new THREE.Vector3(v.p[0], v.p[1], v.p[2]).sub(t).multiplyScalar(k).add(t);
     if (instant || reduce) { tween = null; camera.position.copy(p); controls.target.copy(t); controls.update(); dirty = true; return; }
