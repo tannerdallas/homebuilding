@@ -1,4 +1,5 @@
-/* Walkable map of each floor: decodes the exported grids and plans routes through doorways and up the stairs. No DOM or 3D code here. */
+/* Walkable map of each floor: decodes the exported grids and plans routes through doorways and up the stairs. No DOM or 3D code here.
+   Some areas, stairs and room outlines depend on the options chosen (lookout add-on, garage entry, basement finish): setState picks the set that applies. */
 (function (root) {
   'use strict';
   function bytes(b64) {
@@ -9,16 +10,42 @@
   }
   function Nav(d) {
     this.c = d.c; this.x0 = d.x0; this.y0 = d.y0; this.nx = d.nx; this.ny = d.ny; this.eye = d.eye;
-    this.stairs = d.stairs; this.zones = d.zones;
+    this.links = d.links; this.zones = d.zones;
     var n = d.nx * d.ny;
-    this.floors = d.floors.map(function (f) {
-      var bits = bytes(f.grid), free = new Uint8Array(n);
+    function unpack(g) {
+      var bits = bytes(g), free = new Uint8Array(n);
       for (var k = 0; k < n; k++) free[k] = (bits[k >> 3] >> (k & 7)) & 1;
-      return { key: f.key, z: f.z, free: free, spots: f.spots, rooms: f.rooms, seed: f.seed };
+      return free;
+    }
+    this._unpack = unpack;
+    this.floors = d.areas.map(function (f) {
+      var base = { free: unpack(f.grid), spots: f.spots, rooms: f.rooms };
+      return { key: f.key, name: f.name, z: f.z, seed: f.seed, when: f.when || '', on: true, base: base, free: base.free, spots: base.spots, rooms: base.rooms,
+        alt: (f.alt || []).map(function (a) { return { when: a[0], grid: a[1], free: null, spots: a[2] || f.spots, rooms: a[3] || f.rooms }; }) };
     });
+    this.allLinks = d.links;
     this._g = new Float32Array(n); this._from = new Int32Array(n); this._state = new Uint8Array(n);
   }
+  /* Does a condition such as "g=s&st=farm|col" hold for the chosen options? An empty condition always holds. */
+  function holds(cond, st) {
+    if (!cond) return true;
+    var terms = cond.split('&');
+    for (var i = 0; i < terms.length; i++) {
+      var kv = terms[i].split('=');
+      if (kv[1].split('|').indexOf(String(st[kv[0]])) < 0) return false;
+    }
+    return true;
+  }
   var P = Nav.prototype;
+  P.setState = function (st) {
+    var F = this.floors, un = this._unpack;
+    F.forEach(function (f) {
+      var v = f.base;
+      for (var i = 0; i < f.alt.length; i++) if (holds(f.alt[i].when, st)) { v = f.alt[i]; if (!v.free) v.free = un(v.grid); break; }
+      f.on = holds(f.when, st); f.free = v.free; f.spots = v.spots; f.rooms = v.rooms;
+    });
+    this.links = this.allLinks.filter(function (L) { return holds(L.when || '', st) && F[L.a].on && F[L.b].on; });
+  };
   P.cell = function (x, y) {
     var i = Math.floor((x - this.x0) / this.c), j = Math.floor((y - this.y0) / this.c);
     return (i < 0 || j < 0 || i >= this.nx || j >= this.ny) ? -1 : j * this.nx + i;
@@ -149,21 +176,38 @@
     }
     return out;
   };
-  /* Route between two places that may be on different floors. Points carry z (floor height) and r (true where a stair flight starts). */
+  /* The stairs to take, in order, to get from one area to another: [{ link, fwd }], or null. */
+  P.chain = function (a, b) {
+    if (a === b) return [];
+    var prev = {}, q = [a], seen = {}; seen[a] = true;
+    while (q.length) {
+      var u = q.shift();
+      for (var i = 0; i < this.links.length; i++) {
+        var L = this.links[i], v = L.a === u ? L.b : (L.b === u ? L.a : -1);
+        if (v < 0 || seen[v]) continue;
+        seen[v] = true; prev[v] = { from: u, link: L, fwd: L.a === u }; q.push(v);
+      }
+    }
+    if (!seen[b]) return null;
+    var out = [];
+    for (var c = b; c !== a; c = prev[c].from) out.unshift({ link: prev[c].link, fwd: prev[c].fwd });
+    return out;
+  };
+  /* Route between two places that may be in different areas. Points carry z (standing height), f (area) and r (true while on a stair). */
   P.route = function (from, to) {
-    var self = this, S = this.stairs, pts = [], cur = { f: from.f, x: from.x, y: from.y }, guard = 0;
+    var self = this, pts = [], cur = { f: from.f, x: from.x, y: from.y }, seq = this.chain(from.f, to.f);
+    if (!seq) return null;
     function flat(f, ax, ay, bx, by) {
       var p = self.path(f, ax, ay, bx, by);
       if (!p) return false;
-      for (var i = 0; i < p.length; i++) pts.push({ x: p[i][0], y: p[i][1], z: self.floors[f].z, f: f, r: false });
+      for (var i = 0; i < p.length; i++) pts.push({ x: p[i][0], y: p[i][1], z: self.floors[f].z, f: f, r: false, k: 1 });
       return true;
     }
-    while (cur.f !== to.f && guard++ < 4) {
-      var up = to.f > cur.f, st = up ? (cur.f === 0 ? S.main : S.look) : (cur.f === 1 ? S.main : S.look);
-      var a = up ? st.a : st.b, b = up ? st.b : st.a, nf = cur.f + (up ? 1 : -1);
+    for (var s = 0; s < seq.length; s++) {
+      var L = seq[s].link, fwd = seq[s].fwd, a = fwd ? L.pa : L.pb, b = fwd ? L.pb : L.pa, nf = fwd ? L.b : L.a;
+      var P2 = fwd ? L.pts : L.pts.slice().reverse(), n = P2.length, slow = n > 4 ? 0.5 : 1;       // a spiral is walked at half pace
       if (!flat(cur.f, cur.x, cur.y, a[0], a[1])) return null;
-      pts.push({ x: S.x, y: up ? st.y0 : st.y1, z: up ? st.z0 : st.z1, f: cur.f, r: true });
-      pts.push({ x: S.x, y: up ? st.y1 : st.y0, z: up ? st.z1 : st.z0, f: nf, r: false });
+      for (var i = 0; i < n; i++) pts.push({ x: P2[i][0], y: P2[i][1], z: P2[i][2], f: i < n / 2 ? cur.f : nf, r: i < n - 1, k: slow });
       cur = { f: nf, x: b[0], y: b[1] };
     }
     if (!flat(cur.f, cur.x, cur.y, to.x, to.y)) return null;
@@ -187,6 +231,6 @@
     }
     return '';
   };
-  root.NAV = { Nav: Nav };
+  root.NAV = { Nav: Nav, holds: holds };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.NAV;
 })(typeof window !== 'undefined' ? window : globalThis);
