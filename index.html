@@ -443,7 +443,7 @@
       var nf = Math.min(13 / k, l.w * 0.5); s.appendChild(r); s.appendChild(sv('text', { x: l.x + l.w / 2, y: y + l.d / 2 + nf * 0.36, 'class': 'lotn' + (sel ? ' sel' : cls === 'open' ? '' : ' dim'), 'font-size': nf }, String(l.n)));
     });
     var k = $('key'); k.textContent = '';
-    [['#cfdccb', 'Open, fits your home'], ['#1f3d32', 'Your lot'], ['#e4e6e1', 'Does not fit'], ['#e9dcc5', 'On hold'], ['#dcdedb', 'Sold']].forEach(function (q) { var i = el('i'); i.style.background = q[0]; k.appendChild(el('span', {}, [i, q[1]])); });
+    [['#cfdccb', 'Open, fits your home'], ['#121416', 'Your lot'], ['#e4e6e1', 'Does not fit'], ['#e9dcc5', 'On hold'], ['#dcdedb', 'Sold']].forEach(function (q) { var i = el('i'); i.style.background = q[0]; k.appendChild(el('span', {}, [i, q[1]])); });
   }
   /* the home drawn on its lot, to scale */
   function plot(c, lt) {
@@ -561,7 +561,7 @@
     if (from === to) { a.textContent = usd(to); return; }
     (function tick(now) { var k = Math.min(1, (now - t0) / 380), e = 1 - Math.pow(1 - k, 3); a.textContent = usd(Math.round((from + (to - from) * e) / 100) * 100); if (k < 1) cnt = requestAnimationFrame(tick); else a.textContent = usd(to); })(t0);
   }
-  function go(step) { if (!canGo(step)) return; S.step = step; if (step !== 'summary' && step !== 'options' && step !== 'look' && step !== 'home') S.shot = 'ext'; try { history.replaceState(null, '', '#' + step); } catch (e) { /* fine without it */ } render(); window.scrollTo(0, 0); }
+  function go(step) { if (!canGo(step)) return; S.step = step; if (step !== 'summary' && step !== 'options' && step !== 'look' && step !== 'home') S.shot = 'ext'; if (step === 'summary' && S.suite) S.shot = 'pair'; try { history.replaceState(null, '', '#' + step); } catch (e) { /* fine without it */ } render(); window.scrollTo(0, 0); }
   $('next').addEventListener('click', function () { var i = STEPS.map(function (s) { return s[0]; }).indexOf(S.step); if (STEPS[i + 1]) go(STEPS[i + 1][0]); });
   $('back').addEventListener('click', function () { var i = STEPS.map(function (s) { return s[0]; }).indexOf(S.step); if (i > 0) go(STEPS[i - 1][0]); });
   var rz = 0; window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(function () { if (S.step === 'community' || S.step === 'lot') stage(); }, 150); });
