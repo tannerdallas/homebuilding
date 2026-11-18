@@ -646,8 +646,8 @@
   }
   function stageHash(key) {                         // the 3D view behind each picture of the home being configured
     var h = H(), o = { st: S.look, lk: S.top ? 1 : 0, g: sideEntry(h) ? 's' : 'f', b: S.bsmt, su: S.suite ? 1 : 0 };
-    if (key === 'great') { o.walk = 1; o.room = 'Living room'; } else if (key === 'kit') { o.walk = 1; o.room = 'Kitchen'; }
-    else if (key === 'dine') { o.walk = 1; o.room = 'Dining room'; } else if (key === 'bed') { o.walk = 1; o.room = 'Primary bedroom'; } else if (key === 'bath') { o.walk = 1; o.room = 'Primary bath'; }
+    if (key === 'great') { o.walk = 1; o.room = 'Living room|Great room|Living'; } else if (key === 'kit') { o.walk = 1; o.room = 'Kitchen'; }
+    else if (key === 'dine') { o.walk = 1; o.room = 'Dining room|Dining|Kitchen'; } else if (key === 'bed') { o.walk = 1; o.room = 'Primary bedroom|Bedroom|Bedroom 1'; } else if (key === 'bath') { o.walk = 1; o.room = 'Primary bath|Bath'; }
     else if (key === 'gs') { o.lv = 'exterior'; o.v = 'garage'; } else if (key === 'fpm') o.lv = 'main'; else if (key === 'fpu') o.lv = 'upper'; else if (key === 'fpl') o.lv = 'lookout'; else if (key === 'fpb') o.lv = 'basement';
     else if (key === 'suite') { o.model = 'suite'; o.lv = 'exterior'; } else if (key === 'suitein') { o.model = 'suite'; o.walk = 1; o.room = 'Living room'; }
     else if (key === 'suitekit') { o.model = 'suite'; o.walk = 1; o.room = 'Kitchen'; } else if (key === 'suitebed') { o.model = 'suite'; o.walk = 1; o.room = 'Bedroom'; }
@@ -667,7 +667,9 @@
   function warm(m) {                                // on the site, the selected home's 3D model is fetched ahead of time, so the 3D view opens without a wait
     if (!EMBED || !/\/$/.test(VIEWER) || WARM[m] || !$('intro').classList.contains('gone')) return; WARM[m] = 1;
     var c = navigator.connection; if (c && c.saveData) return;
-    setTimeout(function () { try { fetch(VIEWER + 'model-' + m + '.js').then(null, function () { /* a warm-up that fails costs nothing */ }); } catch (e) { /* no fetch: the model loads when asked for */ } }, 2500);
+    setTimeout(function () {                          // the model comes in two files: the house from outside, then what is indoors
+      ['.js', '-in.js'].forEach(function (sfx) { try { fetch(VIEWER + 'model-' + m + sfx).then(null, function () { /* a warm-up that fails costs nothing */ }); } catch (e) { /* no fetch: the model loads when asked for */ } });
+    }, 2500);
   }
   function openV3(list, i) { if (!list.length) return; V3.list = list; V3.i = Math.max(0, Math.min(list.length - 1, i)); V3.still = false; $('v3').hidden = false; document.body.style.overflow = 'hidden'; drawV3(); }
   function closeV3(quiet) { if ($('v3').hidden) return; $('v3').hidden = true; $('v3-frame').setAttribute('src', 'about:blank'); V3.live = false; if (!quiet && $('fp').hidden && $('cmp').hidden) document.body.style.overflow = ''; }
