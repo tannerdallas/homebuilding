@@ -71,6 +71,7 @@
         '  gl_FragColor = vec4(c * uGain, 1.0);', '  #include <tonemapping_fragment>', '  #include <encodings_fragment>', '}'].join('\n') });
   }
   var dome = new THREE.Mesh(new THREE.SphereGeometry(4200, 32, 16), skyMat(new THREE.Vector3(0.04, 0.135, 0.43))); dome.renderOrder = -1; dome.frustumCulled = false; scene.add(dome);
+  function makeEnv() {                                  // the reflection maps: the sky for outdoors, a stand-in room for indoors
   try {
     var pm = new THREE.PMREMGenerator(renderer), es = new THREE.Scene(); es.add(new THREE.Mesh(new THREE.SphereGeometry(50, 24, 12), skyMat(new THREE.Vector3(0.16, 0.24, 0.40))));
     ENV = pm.fromScene(es, 0.03).texture;
@@ -82,6 +83,8 @@
         '  gl_FragColor = vec4(c, 1.0);', '  #include <tonemapping_fragment>', '  #include <encodings_fragment>', '}'].join('\n') })));
     ENVIN = pm.fromScene(es2, 0.05).texture; pm.dispose();
   } catch (e) { /* no reflection map: the plain sky light stays as it was */ }
+  }
+  makeEnv();
   var ground = new THREE.Mesh(new THREE.PlaneGeometry(8000, 8000), new THREE.MeshLambertMaterial({ color: new THREE.Color(0.095, 0.175, 0.06) }));       // linear colour: a full green under the sun, not a pale one
   patch(ground.material, 7);
   ground.rotation.x = -Math.PI / 2; ground.position.y = -2.02; ground.receiveShadow = true;
@@ -123,6 +126,15 @@
       x.strokeStyle = 'rgba(110,110,100,0.5)'; x.lineWidth = 1; x.beginPath(); x.moveTo(-L, 0); x.lineTo(L, 0); x.stroke(); x.restore();
     }
     var t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; t.anisotropy = 4; return t;
+  })();
+  var BLOBGEO = new THREE.PlaneGeometry(1, 1), blobMat = (function () {       // the shadow under a car: dark under the body, fading out a little beyond it
+    var n = 64, c = document.createElement('canvas'); c.width = c.height = n; var x = c.getContext('2d'), im = x.createImageData(n, n), k = 0;
+    for (var j = 0; j < n; j++) for (var i = 0; i < n; i++) {
+      var u = Math.abs((i + 0.5) / n * 2 - 1), v = Math.abs((j + 0.5) / n * 2 - 1), qx = Math.max(u - 0.5, 0), qy = Math.max(v - 0.56, 0), a = 1 - Math.min(Math.sqrt(qx * qx + qy * qy) / 0.44, 1);
+      a = a * a * (3 - 2 * a); im.data[k++] = 0; im.data[k++] = 0; im.data[k++] = 0; im.data[k++] = Math.round(255 * 0.62 * a);
+    }
+    x.putImageData(im, 0, 0);
+    return new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, fog: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
   })();
   var CARD = new THREE.PlaneGeometry(1, 0.62), cardMat = new THREE.MeshLambertMaterial({ color: 0xffffff, side: THREE.DoubleSide, map: leafTex, alphaTest: 0.4 }), cardDepth = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: leafTex, alphaTest: 0.4 }), cM = new THREE.Matrix4(), cQ = new THREE.Quaternion(), cE = new THREE.Euler(), cP = new THREE.Vector3(), cS = new THREE.Vector3(), cC = new THREE.Color();
   /* Surface patterns, drawn in the shader from world position so no textures are needed: brick, lap siding, stone, shingles, floor planks, tile, lawn, concrete, wood grain.
@@ -301,7 +313,7 @@
       });
     }
     function addParts(mm) {                                                     // the parts of one file: geometry, material, and their place in the model
-    var buf = mm.enc === 4 ? decode4(mm.bin) : decode(mm.bin), planar = mm.enc === 2 || mm.enc === 4, uq = mm.uq || 0, fresh = {};
+    var buf = mm.enc === 4 ? decode4(mm.bin) : decode(mm.bin), planar = mm.enc === 2 || mm.enc === 4, uq = mm.uq || 0, fresh = {}, carBoxes = [];
     mm.bin = null;                                                              // (the text is no longer needed once its bytes are out)
     mm.parts.forEach(function (p) {
       var g = new THREE.BufferGeometry(), n = p.pn / 3, q = new Uint16Array(buf, p.po, p.pn), pos = new Float32Array(p.pn), o = p.q, stp = o[3], i;
@@ -344,8 +356,14 @@
       if (p.mat === 'cap') caps.push({ m: mat, c: mat.color.clone() });                   // dark wall tops for the cutaway views
       if (p.mat === 'ember') { g.computeBoundingBox(); var eb = g.boundingBox; if (Math.max(eb.max.x - eb.min.x, eb.max.z - eb.min.z) < 9) fires.push({ x: (eb.min.x + eb.max.x) / 2, y: -(eb.min.z + eb.max.z) / 2, z: eb.min.y }); }      // a fireplace: what its room is viewed toward
       if (p.mat === 'wall' && !wallColor) wallColor = mat.color.clone();
+      if ((lb === 'CF' || lb === 'CS') && /^car[A-Z]$/.test(p.mat)) { g.computeBoundingBox(); carBoxes.push({ layer: p.layer, b: g.boundingBox.clone() }); }      // a car's painted body
     });
     (m.meta.lm || []).forEach(function (pg) { if (lmt[pg.g] && fresh[pg.g]) lmApply(pg, fresh[pg.g]); });      // pages already here light the new parts at once
+    if (m.meta.carshadow) carBoxes.forEach(function (c) {                       // its shadow lies on the garage floor, in the same layer, so it comes and goes with the car (only where the light page has no car shadows)
+      var b = c.b, sh = new THREE.Mesh(BLOBGEO, blobMat);
+      sh.rotation.x = -Math.PI / 2; sh.position.set((b.min.x + b.max.x) / 2, b.min.y - 0.76, (b.min.z + b.max.z) / 2); sh.scale.set((b.max.x - b.min.x) * 1.5, (b.max.z - b.min.z) * 1.32, 1); sh.renderOrder = 1;
+      layer(c.layer).add(sh);
+    });
     }
     addParts(m);
     var waiting = false;
@@ -357,7 +375,6 @@
         lmPending--;
         if (gen !== lmGen) { t.dispose(); return; }                             // the plan was put away while this page was on its way
         t.encoding = THREE.sRGBEncoding; t.generateMipmaps = false; t.minFilter = THREE.LinearFilter; t.magFilter = THREE.LinearFilter; t.needsUpdate = true;
-        t.onUpdate = function () { t.image = null; t.onUpdate = null; };        // once it is on the graphics card the picture itself is let go (phones are short of memory)
         lmt[pg.g] = t; lmApply(pg, lmw[pg.g] || []);
         dirty = true; if (then) then();
       }, undefined, function () { lmPending--; if (then && gen === lmGen) then(); });          // a page that does not arrive leaves its parts lit the plain way
@@ -1182,6 +1199,18 @@
     requestAnimationFrame(frame);
   }
   controls.addEventListener('change', function () { dirty = true; });
+  renderer.domElement.addEventListener('webglcontextrestored', function () {      // the graphics context came back: new reflection maps, and a fresh picture
+    setTimeout(function () {
+      var oe = ENV, oi = ENVIN;
+      makeEnv();
+      function swap(mt) { if (mt && mt.envMap) { if (mt.envMap === oe) { mt.envMap = ENV; mt.needsUpdate = true; } else if (mt.envMap === oi) { mt.envMap = ENVIN; mt.needsUpdate = true; } } }
+      Object.keys(built).map(function (k) { return built[k]; }).concat(side ? [side] : []).forEach(function (B) {
+        B.root.traverse(function (o) { swap(o.material); });
+        Object.keys(B.sty).forEach(function (k) { B.sty[k].forEach(function (e) { if (e.env === oe) e.env = ENV; else if (e.env === oi) e.env = ENVIN; }); });
+      });
+      dirty = true;
+    }, 60);
+  });
   controls.addEventListener('start', function () { tween = null; });
   window.addEventListener('resize', resize);
   if (window.ResizeObserver) new ResizeObserver(resize).observe(stage);
