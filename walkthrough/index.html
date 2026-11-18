@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>3D walkthrough | Design Your Home</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&amp;family=Figtree:wght@400;500;600&amp;display=swap" rel="stylesheet">
 <style>
 :root {
   /* One daylight scene, single theme by choice. Layout: full-bleed 3D stage, a title plate top left with the plan's live numbers, a control dock along the bottom.
@@ -89,6 +86,17 @@ button:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
   /* embedded in the design page: the model and its level, view and walk controls only */
   body.embed header, body.embed #b-opts, body.embed #opts { display: none !important; }
 </style>
+<script id="early-model">
+(function () {                                           // start fetching the plan's model while the 3D library loads
+  var m = /^#(?:plan|walk)-(3928v2|2792v2|3560v2|ranchv2|3928|2792|3560|ranch|1856|1420|suite)(-with-suite)?/.exec(location.hash || '');
+  var N = { '3928': 'big', '2792': 'small', '3560': 'half', 'ranch': 'ranch', '3928v2': 'big2', '2792v2': 'small2', '3560v2': 'half2', 'ranchv2': 'ranch2', '1856': 'p18', '1420': 'p14', 'suite': 'suite' };
+  function pre(href, as) { var l = document.createElement('link'); l.rel = 'preload'; l.as = as; if (as === 'image') l.crossOrigin = 'anonymous'; l.href = href; document.head.appendChild(l); }      // (the light pages are fetched the way the 3D library asks for pictures)
+  var n = m ? N[m[1]] : 'big';
+  pre('model-' + n + '.js', 'script');
+  if (/^#walk-/.test(location.hash || '')) pre('model-' + n + '-in.js', 'script'); else pre('lm-' + n + '-0.webp', 'image');      // indoors first: the furniture; outdoors first: the outside light
+  if (m && m[2]) pre('model-suitea.js', 'script');
+})();
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23121416%27/%3E%3Cpath d=%27M6 17 16 8l10 9v8H6z%27 fill=%27%23fff%27/%3E%3C/svg%3E">
 </head>
 <body>
@@ -191,9 +199,10 @@ button:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
   </div>
   <div id="fallback" hidden><p id="fallback-msg"></p></div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="three.min.js"></script>
+<script src="OrbitControls.js"></script>
 <script src="nav.js"></script>
 <script src="app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600&amp;family=Figtree:wght@400;500;600&amp;display=swap" rel="stylesheet">
 </body>
 </html>
