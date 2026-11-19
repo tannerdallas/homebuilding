@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>document.write('<base href="' + (location.pathname.indexOf("/st-james/tour") === 0 ? "/st-james/tour/" : location.pathname.replace(/[^\/]*$/, "")) + '">');</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>The St. James: walk-through</title>
+<style>
+html,body{margin:0;height:100%;background:#111;color:#fff;font:15px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;overflow:hidden;overscroll-behavior:none}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}canvas:active{cursor:grabbing}
+#hs{position:fixed;inset:0;pointer-events:none}
+#hs button{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;border:0;background:none;color:#fff;cursor:pointer;padding:0;text-align:center;font:600 12.5px/1.2 inherit;text-shadow:0 1px 4px rgba(0,0,0,.9)}
+#hs button i{display:block;margin:0 auto 4px;width:46px;height:46px;border-radius:50%;border:3px solid #fff;background:rgba(255,255,255,.22);box-shadow:0 2px 12px rgba(0,0,0,.5);transition:transform .15s}
+#hs button:hover i{transform:scale(1.12);background:rgba(255,255,255,.4)}
+#top{position:fixed;left:0;right:0;top:0;padding:max(10px,env(safe-area-inset-top)) 12px 26px;background:linear-gradient(rgba(0,0,0,.6),transparent);display:flex;gap:10px;align-items:center;pointer-events:none}
+#top b{font:600 17px/1.2 "Iowan Old Style",Georgia,serif;margin-right:auto}#top span{opacity:.85;font-size:13px}
+#lv{position:fixed;left:0;right:0;bottom:0;padding:26px 10px max(10px,env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(0,0,0,.72))}
+#lvs{display:flex;gap:6px;margin-bottom:8px}#lvs button{border:1px solid rgba(255,255,255,.5);background:rgba(0,0,0,.35);color:#fff;border-radius:999px;padding:7px 13px;font:600 13px/1 inherit;cursor:pointer}#lvs button.on{background:#fff;color:#111}
+#rooms{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}#rooms::-webkit-scrollbar{display:none}
+#rooms button{flex:none;border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:10px;padding:9px 12px;font:13.5px/1 inherit;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}#rooms button.on{background:#fff;color:#111;font-weight:600}
+#mapb{position:fixed;right:12px;top:max(46px,calc(env(safe-area-inset-top) + 40px));border:1px solid rgba(255,255,255,.5);background:rgba(0,0,0,.4);color:#fff;border-radius:999px;padding:8px 14px;font:600 13px/1 inherit;cursor:pointer;z-index:3}
+#mapb.on{background:#fff;color:#111}
+#map{position:fixed;right:12px;top:max(86px,calc(env(safe-area-inset-top) + 80px));width:min(360px,calc(100vw - 24px));background:rgba(255,255,255,.96);border-radius:12px;padding:6px;box-shadow:0 6px 24px rgba(0,0,0,.45);display:none;z-index:3}
+#map.on{display:block}#map svg{display:block;width:100%;height:auto}#map .st{fill:#1f3a34;stroke:#fff;stroke-width:.25;cursor:pointer}#map .st.cur{fill:#c0492b}#map .wd{fill:rgba(192,73,43,.35);pointer-events:none}
+#load{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.6);padding:10px 16px;border-radius:999px;font-size:13.5px;transition:opacity .25s;pointer-events:none}
+#hint{position:fixed;left:50%;top:64px;transform:translateX(-50%);background:rgba(0,0,0,.55);padding:8px 14px;border-radius:999px;font-size:13px;white-space:nowrap;transition:opacity .6s;pointer-events:none}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas><div id="hs"></div>
+<div id="top"><b>The St. James</b><span id="where"></span></div>
+<div id="hint">Drag to look around. Tap a circle to walk there.</div>
+<div id="lv"><div id="lvs"></div><div id="rooms"></div></div>
+<button id="mapb">Plan</button><div id="map"></div>
+<div id="load">Loading</div>
+<script src="three.min.js"></script>
+<script src="tour.js"></script>
+<script>
+/* Every stop is a full panorama, path-traced from the same model as the pictures. Stops link to their neighbours; the circles show where you can walk. */
+(function () {
+  var T = window.TOUR, P = {}, cur = null, lon = 0, lat = 0, fov = 78, busy = false;
+  T.pts.forEach(function (p) { P[p.id] = p; });
+  var cv = document.getElementById("c"), R = new THREE.WebGLRenderer({ canvas: cv, antialias: true }), scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(fov, 1, 0.1, 100);
+  R.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  var geo = new THREE.SphereGeometry(50, 64, 40); geo.scale(-1, 1, 1);
+  var mA = new THREE.MeshBasicMaterial({ transparent: true }), mB = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }), sA = new THREE.Mesh(geo, mA), sB = new THREE.Mesh(geo, mB); sB.renderOrder = 2; scene.add(sA); scene.add(sB);
+  var loader = new THREE.TextureLoader(), tex = {};
+  function load(id, hi) { var k = id + (hi ? "" : "-s"); if (tex[k]) return tex[k]; return tex[k] = new Promise(function (res, rej) { loader.load("p/" + k + ".jpg", function (t) { t.minFilter = THREE.LinearFilter; t.generateMipmaps = false; if (THREE.sRGBEncoding) t.encoding = THREE.LinearEncoding; res(t); }, undefined, rej); }); }
+  /* world bearing (from +Y toward +X, radians) -> the viewer's longitude (degrees): fixed by how the panoramas were rendered */
+  function lonOf(b) { return T.lon0 + T.sgn * b * 180 / Math.PI; }
+  function dirOf(lo, la) { var ph = (90 - la) * Math.PI / 180, th = lo * Math.PI / 180; return new THREE.Vector3(Math.sin(ph) * Math.cos(th), Math.cos(ph), Math.sin(ph) * Math.sin(th)); }
+  function size() { var w = innerWidth, h = innerHeight; R.setSize(w, h, false); cam.aspect = w / h; cam.fov = w < h ? Math.min(100, fov * 1.25) : fov; cam.updateProjectionMatrix(); }
+  addEventListener("resize", size); size();
+  var hs = document.getElementById("hs"), marks = [];
+  function hotspots() {
+    hs.innerHTML = ""; marks = [];
+    cur.links.forEach(function (id) {
+      var q = P[id]; if (!q) return; var dx = q.x - cur.x, dy = q.y - cur.y, dz = q.z - cur.z, d = Math.hypot(dx, dy), b = Math.atan2(dx, dy);      /* dz: how much higher the next stop's eye is */
+      var la = Math.atan2(Math.abs(dz) > 3 ? dz * 0.5 - 2.4 : -4.6, Math.max(4.5, Math.min(d, 16))) * 180 / Math.PI, btn = document.createElement("button"); btn.innerHTML = "<i></i>" + q.name;
+      btn.onclick = function () { go(id); }; hs.appendChild(btn); marks.push({ el: btn, v: dirOf(lonOf(b), la) });
+    });
+  }
+  function place() {
+    var w = innerWidth, h = innerHeight, f = new THREE.Vector3(); cam.getWorldDirection(f);
+    marks.forEach(function (m) { var p = m.v.clone().multiplyScalar(40).project(cam), on = m.v.dot(f) > 0.15 && Math.abs(p.x) < 1.1 && Math.abs(p.y) < 1.1; m.el.style.display = on ? "" : "none"; if (on) { m.el.style.left = ((p.x + 1) / 2 * w) + "px"; m.el.style.top = ((1 - p.y) / 2 * h) + "px"; } });
+  }
+  function ui() {
+    var L = document.getElementById("lvs"), Rm = document.getElementById("rooms"); L.innerHTML = ""; Rm.innerHTML = "";
+    T.levels.forEach(function (lv) { var b = document.createElement("button"); b.textContent = lv.name; b.className = lv.id === cur.level ? "on" : ""; b.onclick = function () { go(lv.first, true); }; L.appendChild(b); });
+    T.pts.filter(function (p) { return p.level === cur.level; }).forEach(function (p) { var b = document.createElement("button"); b.textContent = p.name; b.className = p.id === cur.id ? "on" : ""; b.onclick = function () { go(p.id, true); }; Rm.appendChild(b); if (p.id === cur.id) setTimeout(function () { b.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" }); }, 50); });
+    document.getElementById("where").textContent = cur.name;
+  }
+  function go(id, first) {
+    if (busy || (cur && cur.id === id)) return; var q = P[id], from = cur; busy = true; document.getElementById("load").style.opacity = 1;
+    load(id, false).then(function (t) {
+      mB.map = t; mB.needsUpdate = true; var t0 = performance.now();
+      (function fade() {
+        var k = Math.min(1, (performance.now() - t0) / 420); mB.opacity = k;
+        if (k < 1) return requestAnimationFrame(fade);
+        mA.map = t; mA.needsUpdate = true; mB.opacity = 0; cur = q; if (first && q.look != null) lon = lonOf(q.look * Math.PI / 180); lat = Math.max(-25, Math.min(25, lat));      /* every panorama has the same compass, so walking on keeps your heading */ hotspots(); ui(); drawMap(); busy = false; document.getElementById("load").style.opacity = 0;
+        load(id, true).then(function (th) { if (cur === q) { mA.map = th; mA.needsUpdate = true; } });
+        q.links.forEach(function (n) { load(n, false); });
+      })();
+    }, function () { busy = false; document.getElementById("load").textContent = "This stop could not be loaded"; });
+  }
+  /* the plan of the level you are on: a dot for every stop (tap one to go there) and a wedge for where you are looking */
+  var mapEl = document.getElementById("map"), mapB = document.getElementById("mapb"), wedge = null;
+  mapB.onclick = function () { var on = !mapEl.classList.contains("on"); mapEl.classList.toggle("on", on); mapB.classList.toggle("on", on); };
+  function drawMap() {
+    var svg = T.maps && T.maps[cur.level]; wedge = null; mapB.style.display = svg ? "" : "none"; if (!svg) { mapEl.innerHTML = ""; mapEl.classList.remove("on"); mapB.classList.remove("on"); return; }
+    mapEl.innerHTML = svg; var el = mapEl.querySelector("svg"), NS = "http://www.w3.org/2000/svg";
+    T.pts.filter(function (p) { return p.level === cur.level; }).forEach(function (p) {
+      var px = p.x, py = 50 - p.y;
+      if (p.id === cur.id) { wedge = document.createElementNS(NS, "path"); wedge.setAttribute("d", "M0 0 L-3.2 -6.5 A7.2 7.2 0 0 1 3.2 -6.5 Z"); wedge.setAttribute("class", "wd"); wedge.dataset.x = px; wedge.dataset.y = py; el.appendChild(wedge); }
+      var c = document.createElementNS(NS, "circle"); c.setAttribute("cx", px); c.setAttribute("cy", py); c.setAttribute("r", p.id === cur.id ? 1.15 : 0.95); c.setAttribute("class", "st" + (p.id === cur.id ? " cur" : ""));
+      var tt = document.createElementNS(NS, "title"); tt.textContent = p.name; c.appendChild(tt); c.addEventListener("click", function () { go(p.id, true); }); el.appendChild(c);
+    });
+  }
+  var drag = null, pts = {}, pinch = 0;
+  cv.addEventListener("pointerdown", function (e) { cv.setPointerCapture(e.pointerId); pts[e.pointerId] = [e.clientX, e.clientY]; drag = [e.clientX, e.clientY, lon, lat]; document.getElementById("hint").style.opacity = 0; });
+  cv.addEventListener("pointermove", function (e) {
+    if (!pts[e.pointerId]) return; pts[e.pointerId] = [e.clientX, e.clientY]; var ids = Object.keys(pts);
+    if (ids.length === 2) { var a = pts[ids[0]], b = pts[ids[1]], d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch) { fov = Math.max(35, Math.min(95, fov * pinch / d)); size(); } pinch = d; return; }
+    if (drag) { var k = cam.fov / innerHeight; lon = drag[2] - (e.clientX - drag[0]) * k; lat = Math.max(-85, Math.min(85, drag[3] + (e.clientY - drag[1]) * k)); }
+  });
+  function up(e) { delete pts[e.pointerId]; pinch = 0; drag = null; var ids = Object.keys(pts); if (ids.length === 1) drag = [pts[ids[0]][0], pts[ids[0]][1], lon, lat]; }
+  cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
+  cv.addEventListener("wheel", function (e) { e.preventDefault(); fov = Math.max(35, Math.min(95, fov + e.deltaY * 0.04)); size(); }, { passive: false });
+  addEventListener("keydown", function (e) { if (e.key === "ArrowLeft") lon -= 8; if (e.key === "ArrowRight") lon += 8; if (e.key === "ArrowUp") lat = Math.min(85, lat + 5); if (e.key === "ArrowDown") lat = Math.max(-85, lat - 5); });
+  (function loop() { requestAnimationFrame(loop); cam.lookAt(dirOf(lon, lat)); R.render(scene, cam); place(); if (wedge) wedge.setAttribute("transform", "translate(" + wedge.dataset.x + " " + wedge.dataset.y + ") rotate(" + ((lon - T.lon0) * T.sgn) + ")"); })();
+  var want = (location.hash || "").slice(1); go(P[want] ? want : T.start, true);
+})();
+</script>
+</body>
+</html>
