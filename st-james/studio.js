@@ -39,7 +39,8 @@
   var cv = $("cv"), ctx = cv.getContext("2d", { willReadFrequently: true });
   var D = S.defaults, state = {}, view = null, man = null, seq = 0, cache = {}, tab = "ext", last = null, baseImg = null;
   Object.keys(D).forEach(function (k) { state[k] = D[k]; });
-  (location.hash.match(/d=([^&]+)/) || ["", ""])[1].split(",").forEach(function (kv) { var p = kv.split("."); if (p.length === 2 && D[p[0]] != null && S.opts.some(function (o) { return o.key === p[0] && o.ch.some(function (c) { return c.id === p[1]; }); })) state[p[0]] = p[1]; });
+  var qv = (location.search.match(/[?&]v=([\w-]+)/) || [])[1];      /* ?v=<id> opens one view directly (used to check new layer sets; there, any known choice key is taken from the link) */
+  (location.hash.match(/d=([^&]+)/) || ["", ""])[1].split(",").forEach(function (kv) { var p = kv.split("."); if (p.length === 2 && D[p[0]] != null && (qv || S.opts.some(function (o) { return o.key === p[0] && o.ch.some(function (c) { return c.id === p[1]; }); }))) state[p[0]] = p[1]; });
   function busy(on) { $("busy").classList.toggle("on", !!on); }
   function vurl(f) { return "v/" + view + "/" + f; }
   function img(url) { return new Promise(function (res, rej) { var im = new Image(); im.onload = function () { res(im); }; im.onerror = function () { rej(new Error(url)); }; im.src = url; }); }
@@ -188,7 +189,6 @@
   $("bSave").onclick = function () { cv.toBlob(function (bl) { var a = document.createElement("a"); a.href = URL.createObjectURL(bl); a.download = "st-james-" + view + ".jpg"; a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000); }, "image/jpeg", 0.92); };
   $("bLink").onclick = function () { var t = location.href; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { $("bLink").textContent = "Link copied"; }, function () { prompt("Copy this link", t); }); };
   summary();
-  var qv = (location.search.match(/[?&]v=([\w-]+)/) || [])[1];      /* ?v=<id> opens one view directly (used to check new layer sets) */
   if (qv) setView(qv); else
   if (S.views.length) { var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); setView(S.views[0].id); } }, { rootMargin: "600px" }); io.observe($("studio")); }
   else $("studio").style.display = "none";
