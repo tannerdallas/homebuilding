@@ -38,7 +38,6 @@
   /* ---------- design studio ---------- */
   var cv = $("cv"), ctx = cv.getContext("2d", { willReadFrequently: true });
   var D = S.defaults, state = {}, view = null, man = null, seq = 0, cache = {}, tab = "ext", last = null, baseImg = null;
-  var REG = ["sc", "pst", "dr", "fp", "sr"], REGKEYS = { sc: 1, pp: 1, pn: 1, dr: 1, fp: 1, sr: 1 };
   Object.keys(D).forEach(function (k) { state[k] = D[k]; });
   (location.hash.match(/d=([^&]+)/) || ["", ""])[1].split(",").forEach(function (kv) { var p = kv.split("."); if (p.length === 2 && D[p[0]] != null && S.opts.some(function (o) { return o.key === p[0] && o.ch.some(function (c) { return c.id === p[1]; }); })) state[p[0]] = p[1]; });
   function busy(on) { $("busy").classList.toggle("on", !!on); }
@@ -61,6 +60,7 @@
   function key(ks, st) { return ks.map(function (k) { return st[k]; }).join("-"); }
   async function render() {
     if (!man) return; var my = ++seq, m = man, W = m.w, H = m.h, G = m.groups; busy(true);
+    var REG = m.regs || ["sc", "pst", "dr", "fp", "sr"].filter(function (k) { return G[k]; }), REGKEYS = {}; REG.forEach(function (k) { G[k].keys.forEach(function (q) { REGKEYS[q] = 1; }); });
     try {
       var base = await pix(vurl(m.base), W, H); if (my !== seq) return;
       var out = new Uint8ClampedArray(base), patches = [], g, d, i, x, y;
@@ -140,7 +140,7 @@
     if (my === seq) busy(false);
   }
   async function setView(id) {
-    view = id; Array.prototype.forEach.call($("views").children, function (b) { b.classList.toggle("on", b.dataset.v === id); }); busy(true);
+    view = id; Array.prototype.forEach.call($("views").children, function (b) { b.classList.toggle("on", b.dataset.v === id); if (b.dataset.v === id) { var vs = $("views"); vs.scrollLeft = Math.max(0, b.offsetLeft - (vs.clientWidth - b.offsetWidth) / 2); } }); busy(true);
     var vw = S.views.filter(function (v) { return v.id === id; })[0]; if (vw && vw.kind !== tab) { tab = vw.kind; }
     var im = await img(vurl("base-s.jpg")).catch(function () { return null; }); if (view !== id) return;
     man = await (await fetch(vurl("m.json"))).json(); if (view !== id) return;
@@ -148,6 +148,7 @@
     panel(); render();
   }
   function uses(k) { if (!man) return true; for (var g in man.groups) if (man.groups[g].keys.indexOf(k) >= 0 || (man.groups[g].deps || []).indexOf(k) >= 0) return true; return false; }
+  function shownIn(k) { return S.views.filter(function (v) { return (v.keys || []).indexOf(k) >= 0; }); }      /* the views whose picture a choice changes */
   function panel() {
     var T = $("tabs"); T.innerHTML = "";[["ext", "Outside"], ["int", "Inside"]].forEach(function (t) { var b = el("button", t[0] === tab ? "on" : "", t[1]); b.onclick = function () { tab = t[0]; panel(); }; T.appendChild(b); });
     var O = $("opts"); O.innerHTML = "";
@@ -157,13 +158,15 @@
       b.onclick = function () { S.opts.forEach(function (o) { if (o.cat === tab) state[o.key] = l.set[o.key] || D[o.key]; }); panel(); summary(); render(); }; lr.appendChild(b);
     });
     lk.appendChild(lr); O.appendChild(lk);
-    S.opts.filter(function (o) { return o.cat === tab; }).forEach(function (o) {
+    S.opts.filter(function (o) { return o.cat === tab; }).sort(function (a, b) { return (uses(b.key) ? 1 : 0) - (uses(a.key) ? 1 : 0); }).forEach(function (o) {      /* what this view shows comes first */
       var cur = o.ch.filter(function (c) { return c.id === state[o.key]; })[0] || o.ch[0], box = el("div", "opt" + (uses(o.key) ? "" : " off"), "<h4>" + o.name + "<em>" + cur.name + "</em></h4>"), row = el("div", o.ch[0].css ? "sw" : "chips");
       o.ch.forEach(function (c) {
         var b = el("button", c.id === state[o.key] ? "on" : "", c.css ? "" : c.name); b.title = c.name; b.setAttribute("aria-label", o.name + ": " + c.name); if (c.css) b.style.background = c.css;
-        b.onclick = function () { state[o.key] = c.id; panel(); summary(); render(); }; row.appendChild(b);
+        b.onclick = function () { state[o.key] = c.id; summary(); var w = shownIn(o.key); if (!uses(o.key) && w.length && c.id !== D[o.key]) { setView(w[0].id); return; } panel(); render(); }; row.appendChild(b);      /* a choice this view cannot show opens a view that can */
       });
-      box.appendChild(row); O.appendChild(box);
+      box.appendChild(row);
+      if (!uses(o.key)) { var w = shownIn(o.key); if (w.length) box.appendChild(el("p", "where", "Shown in: " + w.map(function (v) { return "<b>" + v.name + "</b>"; }).join(", "))); }
+      O.appendChild(box);
     });
   }
   function summary() {
@@ -185,6 +188,8 @@
   $("bSave").onclick = function () { cv.toBlob(function (bl) { var a = document.createElement("a"); a.href = URL.createObjectURL(bl); a.download = "st-james-" + view + ".jpg"; a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000); }, "image/jpeg", 0.92); };
   $("bLink").onclick = function () { var t = location.href; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { $("bLink").textContent = "Link copied"; }, function () { prompt("Copy this link", t); }); };
   summary();
+  var qv = (location.search.match(/[?&]v=([\w-]+)/) || [])[1];      /* ?v=<id> opens one view directly (used to check new layer sets) */
+  if (qv) setView(qv); else
   if (S.views.length) { var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); setView(S.views[0].id); } }, { rootMargin: "600px" }); io.observe($("studio")); }
   else $("studio").style.display = "none";
 })();
