@@ -209,6 +209,7 @@
       });
       box.appendChild(row);
       if (bath && !allBaths) box.appendChild(el("p", "where", "Only in the " + v.name.toLowerCase()));
+      else if (sc && !bath) box.appendChild(el("p", "where", "Not a bathroom choice: it applies to the whole home"));
       else if (o.note) box.appendChild(el("p", "where", o.note));
       O.appendChild(box);
     });
