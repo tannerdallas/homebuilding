@@ -488,7 +488,7 @@
     groups.forEach(function (g) { var ks = g[1].filter(function (k) { return !here || here.indexOf(k) < 0; }); if (!ks.length) return; B.appendChild(el('h4', '', g[0])); ks.forEach(function (k) { B.appendChild(house(k)); }); });
     if (!bathHere) baths();
   }
-  function changed() { applyVis(); applyStyles(); var h = hashOf(); try { history.replaceState(null, '', location.pathname + location.search + (h ? '#d=' + h : '')); localStorage.setItem('sj-design', h); } catch (e) { } if (window.parent !== window) window.parent.postMessage({ sj3d: h }, '*'); }
+  function changed() { applyVis(); applyStyles(); var h = hashOf(); try { history.replaceState(null, '', location.pathname + location.search + (h ? '#d=' + h : '')); localStorage.setItem('sj-design', h); } catch (e) { } if (window.parent !== window) window.parent.postMessage({ sj3d: h, known: Object.keys(D) }, '*'); }
   $('bChoices').onclick = function () { var d = $('drawer'); d.hidden = !d.hidden; if (!d.hidden) drawer(); };
   $('bClose').onclick = function () { $('drawer').hidden = true; };
   if (window.parent === window) { $('back').hidden = false; $('back').onclick = function () { $('back').href = '../#d=' + hashOf(); }; }      /* on its own page: a way back to the design studio, choices and all */

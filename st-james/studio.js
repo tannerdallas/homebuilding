@@ -43,7 +43,8 @@
     $("b3d").hidden = false; $("b3d").onclick = function () { open3d(); $("model3d").scrollIntoView({ behavior: "smooth", block: "start" }); };
     $("m3dfull").onclick = function () { $("m3dfull").href = S.model3d.src + "#d=" + hashOf(); };
     window.addEventListener("message", function (e) {
-      if (!e.data || typeof e.data.sj3d !== "string") return; Object.keys(state).forEach(function (k) { if (k.indexOf(":") > 0) delete state[k]; else state[k] = D[k]; }); readHash(e.data.sj3d);
+      if (!e.data || typeof e.data.sj3d !== "string") return; var kn = e.data.known, has = function (k) { return !kn || kn.indexOf(k) >= 0; };      /* a choice the 3D model does not know (it was baked before the choice existed) keeps its value */
+      Object.keys(state).forEach(function (k) { var q = k.indexOf(":"); if (q > 0) { if (has(k.slice(q + 1))) delete state[k]; } else if (has(k)) state[k] = D[k]; }); readHash(e.data.sj3d);
       panel(); summary(true); render();
     });
   } else { $("model3d").style.display = "none"; $("nav3d").style.display = "none"; }
