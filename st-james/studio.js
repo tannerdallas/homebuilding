@@ -108,15 +108,24 @@
       var ck = key(d.keys, state); if (ck === key(d.keys, D)) continue;
       var L = d.layers[ck + (d.deps.length ? "@" + key(d.deps, state) : "")]; if (!L) continue;
       var b = d.box, bw = b[2] - b[0], bh = b[3] - b[1], p = await pix(vurl(L.img), bw, bh); if (!alive()) return null;
-      var F = 10;
+      var F = 10, al = null;
+      if (L.chg) for (var pk = 0; pk < patches.length; pk++) {      /* its rectangle runs into one already laid down: deep inside that one, only what this picture really changes goes over it (the bookcase beside the stair stays) */
+        var pb = patches[pk].box, ix0 = Math.max(b[0], pb[0]), iy0 = Math.max(b[1], pb[1]), ix1 = Math.min(b[2], pb[2]), iy1 = Math.min(b[3], pb[3]); if (ix1 <= ix0 || iy1 <= iy0) continue;
+        if (!al) { al = new Uint8Array(bw * bh).fill(255); var CH = (await chans(vurl(L.chg), bw, bh))[0]; if (!alive()) return null; }
+        for (y = iy0; y < iy1; y++) for (x = ix0; x < ix1; x++) {
+          var dp = Math.min(pb[0] > 0 ? x - pb[0] : 1e9, pb[2] < W ? pb[2] - 1 - x : 1e9, pb[1] > 0 ? y - pb[1] : 1e9, pb[3] < H ? pb[3] - 1 - y : 1e9), e1 = dp >= 40 ? 0 : 255 * (1 - dp / 40), qi = (y - b[1]) * bw + x - b[0];
+          al[qi] = Math.min(al[qi], Math.max(CH[qi], e1));
+        }
+      }
       for (y = 0; y < bh; y++) {
         var fy = Math.min(b[1] > 0 ? (y + 1) / F : 1, b[3] < H ? (bh - y) / F : 1, 1);
         for (x = 0; x < bw; x++) {
           var f = Math.min(fy, b[0] > 0 ? (x + 1) / F : 1, b[2] < W ? (bw - x) / F : 1), o = ((y + b[1]) * W + x + b[0]) * 4, q = (y * bw + x) * 4;
+          if (al) f *= al[y * bw + x] / 255;
           if (f >= 1) { out[o] = p[q]; out[o + 1] = p[q + 1]; out[o + 2] = p[q + 2]; } else { out[o] += (p[q] - out[o]) * f; out[o + 1] += (p[q + 1] - out[o + 1]) * f; out[o + 2] += (p[q + 2] - out[o + 2]) * f; }
         }
       }
-      patches.push({ box: b, masks: L.masks });
+      patches.push({ box: b, masks: L.masks, al: al });
     }
     var PM = null; if (patches.length) { PM = new Uint8Array(W * H); patches.forEach(function (pt) { var bq = pt.box; for (var yq = bq[1]; yq < bq[3]; yq++) PM.fill(1, yq * W + bq[0], yq * W + bq[2]); }); }
     /* 2. the mask of a group for the shapes now chosen */
@@ -127,7 +136,11 @@
       for (var k = 0; k < patches.length; k++) {
         var pm = patches[k].masks[gg]; if (!pm) continue; var bb = patches[k].box, w2 = bb[2] - bb[0], h2 = bb[3] - bb[1], c = (await chans(vurl(pm[0]), w2, h2))[pm[1]];
         if (!cp) { a = a.slice(); cp = true; }
-        for (var yy = 0; yy < h2; yy++) a.set(c.subarray(yy * w2, yy * w2 + w2), (yy + bb[1]) * W + bb[0]);
+        var pa = patches[k].al;
+        for (var yy = 0; yy < h2; yy++) {
+          if (!pa) { a.set(c.subarray(yy * w2, yy * w2 + w2), (yy + bb[1]) * W + bb[0]); continue; }
+          for (var xx = 0; xx < w2; xx++) { var ai = pa[yy * w2 + xx], gi = (yy + bb[1]) * W + bb[0] + xx; a[gi] = ai === 255 ? c[yy * w2 + xx] : (c[yy * w2 + xx] * ai + a[gi] * (255 - ai)) / 255; }
+        }
       }
       return (mc[gg] = a);
     };
