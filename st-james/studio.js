@@ -10,7 +10,6 @@
   /* links inside the page scroll, they do not navigate (the page has a base address) */
   document.addEventListener("click", function (e) { var a = e.target.closest && e.target.closest('a[href^="#"]'); if (!a) return; var t = document.getElementById(a.getAttribute("href").slice(1)); if (t) { e.preventDefault(); t.scrollIntoView({ behavior: "smooth", block: "start" }); } });
   /* ---------- hero, stats, gallery, plans, lot, specifications ---------- */
-  $("sub").textContent = S.sub;
   var hero = $("hero"); hero.querySelector("img.a").src = S.hero.day; var nb = hero.querySelector("img.b");
   Array.prototype.forEach.call(hero.querySelectorAll(".tog button"), function (b) {
     b.onclick = function () { if (!nb.src) nb.src = S.hero.night; hero.classList.toggle("night", b.dataset.m === "night"); Array.prototype.forEach.call(hero.querySelectorAll(".tog button"), function (x) { x.classList.toggle("on", x === b); }); };
@@ -175,11 +174,27 @@
     if (!man) return; var my = ++seq, m = man, v = vw(view); busy(true);
     try {
       var r = await compose(view, m, eff(v && v.scope), function () { return my === seq; });
-      if (r) { last = new ImageData(r.out, m.w, m.h); baseImg = new ImageData(new Uint8ClampedArray(r.base), m.w, m.h); ctx.putImageData(last, 0, 0); }
+      if (r) { last = new ImageData(r.out, m.w, m.h); baseImg = new ImageData(new Uint8ClampedArray(r.base), m.w, m.h); ctx.putImageData(last, 0, 0); if (view === "hero") topShow(last); }
     } catch (e) { console.error(e); }
     if (my === seq) busy(false);
   }
   async function manOf(id) { return mans[id] || (mans[id] = await (await fetch("v/" + id + "/m.json")).json()); }
+  /* The picture at the top of the page wears the design too: the street view, drawn in the choices made. It is drawn again when a choice it shows has changed and the picture is on screen
+     (the studio's own street view hands its picture over as it is). The dusk picture stays the home as first drawn. */
+  var topCv = $("heroCv"), topSeq = 0, topDirty = false, topSeen = true, topT = 0, topKey = "";
+  function topKeys() { var v = vw("hero"); return (v && v.keys) || []; }
+  function topSig() { return topKeys().map(function (k) { return state[k]; }).join("."); }
+  function topShow(im) { topSeq++; topKey = topSig(); topDirty = false; if (!topKeys().some(function (k) { return state[k] !== D[k]; })) { hero.classList.remove("mine"); return; }
+    if (topCv.width !== im.width) { topCv.width = im.width; topCv.height = im.height; } topCv.getContext("2d").putImageData(im, 0, 0); hero.classList.add("mine"); }
+  function topPaint() {
+    if (!vw("hero") || topSig() === topKey) return; topDirty = true; if (!topSeen) return;
+    clearTimeout(topT); topT = setTimeout(async function () {
+      if (!topKeys().some(function (k) { return state[k] !== D[k]; })) { topSeq++; topKey = topSig(); topDirty = false; hero.classList.remove("mine"); return; }
+      var my = ++topSeq, sig = topSig();
+      try { var m = await manOf("hero"), r = await compose("hero", m, eff(""), function () { return my === topSeq; }); if (r && my === topSeq && sig === topSig()) topShow(new ImageData(r.out, m.w, m.h)); } catch (e) { console.error(e); }
+    }, 220);
+  }
+  if (window.IntersectionObserver) { topSeen = false; new IntersectionObserver(function (es) { topSeen = es[es.length - 1].isIntersecting; if (topSeen && topDirty) topPaint(); }, { rootMargin: "200px 0px" }).observe(hero); }
   async function setView(id) {
     view = id; Array.prototype.forEach.call($("views").children, function (b) { b.classList.toggle("on", b.dataset.v === id); if (b.dataset.v === id) { var vs = $("views"); vs.scrollLeft = Math.max(0, b.offsetLeft - (vs.clientWidth - b.offsetWidth) / 2); } }); busy(true);
     var im = await img("v/" + id + "/base-s.jpg").catch(function () { return null; }); if (view !== id) return;
@@ -241,6 +256,7 @@
     var h = hashOf(); history.replaceState(null, "", location.pathname + location.search + (h ? "#d=" + h : ""));
     try { localStorage.setItem("sj-design", h); } catch (e) { }
     var f3 = $("f3d"); if (f3 && f3.contentWindow && from3d !== true) f3.contentWindow.postMessage({ sj: h }, "*");
+    if (view !== "hero") topPaint();
   }
   S.views.forEach(function (v) { var b = el("button", "", '<img loading="lazy" alt="" src="v/' + v.id + '/base-s.jpg"><span>' + v.name + "</span>"); b.dataset.v = v.id; b.onclick = function () { setView(v.id); }; $("views").appendChild(b); });
   /* hold to see the home as the plans draw it, release to come back to your choices */
