@@ -498,12 +498,13 @@
   /* ---------- load ---------- */
   var GZ = typeof DecompressionStream !== 'undefined' && typeof Response !== 'undefined' && !!(window.Blob && Blob.prototype.stream);
   function prog(f) { $('bar').style.width = Math.round(f * 100) + '%'; }
-  fetch('model.json').then(function (r) { if (!r.ok) throw new Error('model'); return r.json(); }).then(function (m) {
+  var VQ = '';                                             /* the model's files carry the stamp of their bake in their address: a new bake is never mixed with pieces of the last one kept by the browser */
+  fetch('model.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error('model'); return r.json(); }).then(function (m) {
     M = m; D = m.meta.defaults; (m.meta.bathkeys || []).forEach(function (k) { BK[k] = 1; }); SUNDIR.set(m.meta.sun[0], m.meta.sun[2], -m.meta.sun[1]).normalize(); dome.material.uniforms.uSun.value = SUNDIR;
     sun.position.copy(SUNDIR).multiplyScalar(300); makeEnv();
     Object.keys(m.meta.table).forEach(function (k) { Object.keys(m.meta.table[k]).forEach(function (c) { Object.keys(m.meta.table[k][c]).forEach(function (mt) { if (mt !== 'carpet' && mt !== 'proof') OWN[mt] = k; }); }); });
     var h = (location.hash.match(/d=([^&]+)/) || [])[1]; if (h == null) { try { h = localStorage.getItem('sj-design') || ''; } catch (e) { h = ''; } } readHash(h);
-    prog(0.08); return fetch(GZ ? 'model.bin.gz' : 'model.bin');
+    VQ = m.meta.stamp ? '?v=' + m.meta.stamp : ''; prog(0.08); return fetch((GZ ? 'model.bin.gz' : 'model.bin') + VQ);
   }).then(function (r) {
     if (!r.ok) throw new Error('model'); var total = +r.headers.get('Content-Length') || 2.4e6, rd = r.body && r.body.getReader ? r.body.getReader() : null; if (!rd) return r.arrayBuffer();
     var chunks = [], got = 0; return (function pump() { return rd.read().then(function (x) { if (x.done) { var u = new Uint8Array(got), o = 0; chunks.forEach(function (c) { u.set(c, o); o += c.length; }); return u.buffer; } chunks.push(x.value); got += x.value.length; prog(0.08 + 0.8 * Math.min(1, got / total)); return pump(); }); })();
@@ -514,7 +515,7 @@
     build(M.meta, M.parts, buf); plants(M.meta.plants || []);
     var far = new THREE.Mesh(new THREE.PlaneGeometry(12000, 12000), new THREE.MeshLambertMaterial({ color: new THREE.Color(0.075, 0.13, 0.045) })); far.rotation.x = -Math.PI / 2; far.position.y = -24.5; scene.add(far);
     applyVis(); applyStyles(); resize(); homeView(); ui(); loadingEl.hidden = true; requestAnimationFrame(step);
-    (M.meta.lm || []).forEach(function (pg) { new THREE.TextureLoader().load(pg.f, function (t) { t.encoding = THREE.sRGBEncoding; t.generateMipmaps = false; t.minFilter = THREE.LinearFilter; t.magFilter = THREE.LinearFilter; lmTex[pg.g] = t; lmApply(pg.g, t); }); });
+    (M.meta.lm || []).forEach(function (pg) { new THREE.TextureLoader().load(pg.f + VQ, function (t) { t.encoding = THREE.sRGBEncoding; t.generateMipmaps = false; t.minFilter = THREE.LinearFilter; t.magFilter = THREE.LinearFilter; lmTex[pg.g] = t; lmApply(pg.g, t); }); });
     if (/[?&]walk=([\w-]+)/.test(location.search)) { var id = RegExp.$1; enterWalk(M.meta.stops.filter(function (s) { return s.id === id; })[0]); }
     var qc = (location.search.match(/[?&]cut=(\w+)/) || [])[1]; if (qc && HIDE[qc] != null) { cut = qc; applyVis(); homeView(); ui(); }
     var qm = (location.search.match(/[?&]cam=([-\d.,]+)/) || [])[1]; if (qm) { var c6 = qm.split(',').map(Number); camera.position.set(c6[0], c6[2], -c6[1]); controls.target.set(c6[3], c6[5], -c6[4]); controls.update(); }
