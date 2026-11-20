@@ -205,7 +205,7 @@
       var box = el("div", "opt" + (off ? " off" : ""), "<h4>" + oname(o, sc) + "<em>" + cur.name + "</em></h4>"), row = el("div", o.ch[0].css ? "sw" : "chips");
       o.ch.forEach(function (c) {
         var b = el("button", c.id === e[o.key] ? "on" : "", c.css ? "" : c.name); b.title = c.name; b.setAttribute("aria-label", oname(o, sc) + ": " + c.name); if (c.css) b.style.background = c.css;
-        b.onclick = function () { choose(sc, o.key, c.id); summary(); panel(); render(); }; row.appendChild(b);
+        b.onclick = function () { if (o.only) Object.keys(o.only).forEach(function (k) { choose(sc, k, o.only[k]); }); choose(sc, o.key, c.id); summary(); panel(); render(); }; row.appendChild(b);      /* (a carpet colour brings the carpet back) */
       });
       box.appendChild(row);
       if (bath && !allBaths) box.appendChild(el("p", "where", "Only in the " + v.name.toLowerCase()));

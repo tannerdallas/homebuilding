@@ -200,7 +200,7 @@
   }
   /* ---------- the model ---------- */
   var BASEPAT = { lap: 2, st1: 3, st2: 3, st3: 3, st4: 3, st5: 3, ws1: 3, ws2: 3, ws3: 3, ws4: 3, ws5: 3, brickr: 1, brickw: 1, shingle: 4, shingle90: 4, proof: 4, floor1: 5, lvp: 5, deckw: 9, deckf: 9, tile: 6, tiled: 6, fptile: 6,
-    marbt: 11, quartz: 11, tgrass: 7, tmulch: 8, tsoil: 8, drive: 8, walk: 8, conc: 8, found: 8, road: 8, gslab: 8, bslab: 8, coping: 8, wcap: 0, scap: 8, mortar: 8, wmortar: 8, oakf: 9, clwood: 9, timber: 9, cedar: 9, fcedar: 9,
+    marbt: 11, quartz: 11, tgrass: 7, tmulch: 8, tsoil: 8, drive: 8, walk: 8, conc: 8, found: 8, road: 8, gslab: 8, bslab: 8, coping: 8, wcap: 0, scap: 8, mortar: 8, wmortar: 8, oakf: 9, sttread: 9, strail: 9, runner: 12, runnerb: 12, clwood: 9, timber: 9, cedar: 9, fcedar: 9,
     lumber: 9, stud: 9, osb: 9, walnut: 9, linen: 12, linen2: 12, slate: 12, sage: 12, rust: 12, bedding: 12, towel: 12, drape: 12, carpet: 12, rugc: 13, rugb: 13, jute: 13, bsplash: 14 };
   var C2 = { ws1: [0.66, 0.63, 0.57], ws2: [0.7, 0.67, 0.6], ws3: [0.62, 0.6, 0.54], ws4: [0.7, 0.68, 0.62], ws5: [0.6, 0.57, 0.5], brickr: [0.48, 0.45, 0.4], brickw: [0.62, 0.6, 0.56], marbt: [0.36, 0.35, 0.33], fptile: [0.42, 0.41, 0.39], tiled: [0.47, 0.46, 0.43], lvp: [0.1, 0.08, 0.06], tgrass: [0.1, 0.2, 0.05] };
   var EMIT = { bulb: [1.6, 1.5, 1.3], lshade: [1.25, 1.18, 1.05], ember: [1.6, 0.7, 0.2], screen: [0.02, 0.02, 0.025] };
@@ -458,21 +458,35 @@
   }
   Array.prototype.forEach.call($('modes').children, function (b) { b.onclick = function () { if (b.dataset.m === mode) return; if (b.dataset.m === 'walk') enterWalk(); else exitWalk(); }; });
   /* the choices, in a drawer: every group as a list; the bathrooms as a group of their own, all together or one at a time */
+  var BED = ['uf', 'cpt', 'wal', 'cr2', 'win', 'wg', 'idc', 'clb'], ROOMKEYS = { 'Great room': ['fp', 'bi', 'sf', 'cr1', 'flr', 'wal', 'win', 'wg', 'hwc'], 'Kitchen': ['cab', 'isl', 'ctr', 'bsp', 'ch', 'cr1', 'flr', 'wal', 'hwc'], 'Breakfast': ['flr', 'wal', 'cr1', 'win', 'wg'],
+    'Dining room': ['flr', 'wal', 'cr1', 'win', 'wg'], 'Foyer': ['od', 'flr', 'wal', 'cr1', 'fd', 'fdc', 'idc'], 'Office': ['od', 'flr', 'wal', 'cr1', 'win', 'wg'], 'Hall': ['sf', 'flr', 'wal', 'cr1', 'idc', 'hwc'], 'Laundry': ['flr', 'wal', 'idc', 'hwc'], 'Pantry': ['flr', 'wal', 'idc'],
+    'Powder room': ['flr', 'cr1', 'idc'], 'Garage': ['gs', 'gdc'], 'Stairs': ['sf', 'sr', 'flr', 'wal'], 'Stair hall': ['sf', 'sr', 'uf', 'cpt', 'wal', 'cr2'], 'Upstairs hall': ['sf', 'sr', 'uf', 'cpt', 'wal', 'cr2', 'idc'], 'Primary bedroom': ['uf', 'cpt', 'wal', 'cr2', 'win', 'wg', 'idc', 'clp'],
+    'Primary bath': ['cr2', 'win', 'wg', 'idc'], 'Primary closet': ['clp', 'uf', 'cpt', 'wal', 'cr2'], 'Hall bath': ['cr2', 'idc'], 'Bedroom 2': BED, 'Bedroom 3': BED, 'Bedroom 4': BED, 'Bedroom 2 closet': ['clb', 'uf', 'cpt', 'wal'], 'Bedroom 3 closet': ['clb', 'uf', 'cpt'],
+    'Bedroom 4 closet': ['clb', 'uf', 'cpt'], 'Lower level': ['bf', 'wal', 'idc', 'cab', 'ctr', 'hwc'] }, BATHOF = { 'Primary bath': 'pb', 'Hall bath': 'hb', 'Powder room': 'pw' };
+  /* the choices, in a drawer: first those of the room the walker stands in, then every group as a list; the bathrooms as a group of their own, all together or one at a time */
   function drawer() {
-    var B = $('choices'), sc = $('bscope') ? $('bscope').value : 'ba'; B.innerHTML = '';
-    function row(name, k, cur, on) { var r = el('label', 'row', '<span>' + name + '</span>'), s = el('select'); M.meta.opts[k].ch.forEach(function (c) { var o = el('option', '', c[1]); o.value = c[0]; if (c[0] === cur) o.selected = true; s.appendChild(o); }); s.onchange = function () { on(s.value); changed(); }; r.appendChild(s); return r; }
-    var groups = [['Outside', []], ['Inside', []]], EXT = { shape: 1 };
+    var B = $('choices'), rm = mode === 'walk' ? roomAt() : null, sc = $('bscope') ? $('bscope').value : 'ba'; B.innerHTML = '';
+    function row(name, k, cur, on) { var r = el('label', 'row', '<span>' + name + '</span>'), s = el('select'); M.meta.opts[k].ch.forEach(function (c) { var o = el('option', '', c[1]); o.value = c[0]; if (c[0] === cur) o.selected = true; s.appendChild(o); }); s.onchange = function () { on(s.value); changed(); drawer(); }; r.appendChild(s); return r; }
+    function house(k) { return row(M.meta.opts[k].name, k, state[k], function (v) { state[k] = v; }); }
+    function baths() {
+      B.appendChild(el('h4', '', 'Bathrooms'));
+      var r0 = el('label', 'row', '<span>Choices go to</span>'), s0 = el('select'); s0.id = 'bscope'; [['ba', 'All bathrooms']].concat(Object.keys(M.meta.baths).map(function (b) { return [b, M.meta.baths[b] + ' only']; })).forEach(function (t) { var o = el('option', '', t[1]); o.value = t[0]; if (t[0] === sc) o.selected = true; s0.appendChild(o); }); s0.onchange = drawer; r0.appendChild(s0); B.appendChild(r0);
+      M.meta.bathkeys.forEach(function (k) {
+        var cur = sc === 'ba' ? (state['ba:' + k] == null ? D[k] : state['ba:' + k]) : bathVal(sc, k);
+        B.appendChild(row(M.meta.bathnames[k] || M.meta.opts[k].name, k, cur, function (v) {
+          if (sc === 'ba') { Object.keys(M.meta.baths).forEach(function (b) { delete state[b + ':' + k]; }); if (v === D[k]) delete state['ba:' + k]; else state['ba:' + k] = v; }
+          else { var inh = state['ba:' + k] == null ? D[k] : state['ba:' + k]; if (v === inh) delete state[sc + ':' + k]; else state[sc + ':' + k] = v; }
+        }));
+      });
+    }
+    var here = rm === 'Outside' ? M.meta.ext : ROOMKEYS[rm], bathHere = !!BATHOF[rm];
+    if (bathHere) baths();
+    if (here) { B.appendChild(el('h4', '', rm === 'Outside' ? 'Outside' : 'In this room: ' + rm.toLowerCase())); here.forEach(function (k) { if (M.meta.opts[k]) B.appendChild(house(k)); }); }
+    var groups = [['Outside', []], ['Inside', []]];
     (M.meta.order || Object.keys(M.meta.opts)).forEach(function (k) { if (!M.meta.opts[k] || M.meta.bathonly.indexOf(k) >= 0) return; groups[M.meta.ext.indexOf(k) >= 0 ? 0 : 1][1].push(k); });
-    groups.forEach(function (g) { B.appendChild(el('h4', '', g[0])); g[1].forEach(function (k) { B.appendChild(row(M.meta.opts[k].name, k, state[k], function (v) { state[k] = v; })); }); });
-    B.appendChild(el('h4', '', 'Bathrooms'));
-    var r0 = el('label', 'row', '<span>Choices go to</span>'), s0 = el('select'); s0.id = 'bscope'; [['ba', 'All bathrooms']].concat(Object.keys(M.meta.baths).map(function (b) { return [b, M.meta.baths[b] + ' only']; })).forEach(function (t) { var o = el('option', '', t[1]); o.value = t[0]; if (t[0] === sc) o.selected = true; s0.appendChild(o); }); s0.onchange = drawer; r0.appendChild(s0); B.appendChild(r0);
-    M.meta.bathkeys.forEach(function (k) {
-      var cur = sc === 'ba' ? (state['ba:' + k] == null ? D[k] : state['ba:' + k]) : bathVal(sc, k);
-      B.appendChild(row(M.meta.bathnames[k] || M.meta.opts[k].name, k, cur, function (v) {
-        if (sc === 'ba') { Object.keys(M.meta.baths).forEach(function (b) { delete state[b + ':' + k]; }); if (v === D[k]) delete state['ba:' + k]; else state['ba:' + k] = v; }
-        else { var inh = state['ba:' + k] == null ? D[k] : state['ba:' + k]; if (v === inh) delete state[sc + ':' + k]; else state[sc + ':' + k] = v; }
-      }));
-    });
+    if (here) B.appendChild(el('h4', 'all', 'Everything else'));
+    groups.forEach(function (g) { var ks = g[1].filter(function (k) { return !here || here.indexOf(k) < 0; }); if (!ks.length) return; B.appendChild(el('h4', '', g[0])); ks.forEach(function (k) { B.appendChild(house(k)); }); });
+    if (!bathHere) baths();
   }
   function changed() { applyVis(); applyStyles(); var h = hashOf(); try { history.replaceState(null, '', location.pathname + location.search + (h ? '#d=' + h : '')); localStorage.setItem('sj-design', h); } catch (e) { } if (window.parent !== window) window.parent.postMessage({ sj3d: h }, '*'); }
   $('bChoices').onclick = function () { var d = $('drawer'); d.hidden = !d.hidden; if (!d.hidden) drawer(); };
