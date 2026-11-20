@@ -32,7 +32,7 @@
   S.specs.forEach(function (s) { $("spec").appendChild(el("div", "", "<h3>" + s.h + "</h3><ul>" + s.items.map(function (i) { return "<li>" + i + "</li>"; }).join("") + "</ul>")); });
   $("foot").innerHTML = S.foot.map(function (p) { return "<p>" + p + "</p>"; }).join("");
   var tb = $("tourbox");
-  if (S.tour) { var go = el("div", "go", "<b>Walk through the house</b><span>Start the 3D walk-through</span>"); go.style.backgroundImage = "url(" + S.tour.poster + ")"; go.onclick = function () { tb.innerHTML = '<iframe allowfullscreen src="' + S.tour.src + '"></iframe>'; }; tb.appendChild(go); }
+  if (S.tour) { var go = el("div", "go", "<b>Walk through the house</b><span>Start the 360&deg; walk-through</span>"); go.style.backgroundImage = "url(" + S.tour.poster + ")"; go.onclick = function () { tb.innerHTML = '<iframe allowfullscreen src="' + S.tour.src + '"></iframe>'; }; tb.appendChild(go); }
   else tb.parentNode.parentNode.style.display = "none";
 
   /* ---------- the 3D model: opened in place with the choices made so far, and kept in step with them both ways ---------- */
@@ -59,7 +59,7 @@
   function readHash(h) {
     (h || "").split(",").forEach(function (kv) {
       var p = kv.split("."); if (p.length !== 2) return; var q = p[0].split(":"), k = q[q.length - 1], sc = q.length === 2 ? q[0] : "";
-      if (D[k] == null || !(qv || (OPT[k] && OPT[k].ch.some(function (c) { return c.id === p[1]; })))) return;
+      if (D[k] == null || (OPT[k] && !OPT[k].ch.some(function (c) { return c.id === p[1]; }))) return;      /* (a choice the page does not list yet, made in the 3D model, is kept as it came) */
       if (!sc) state[k] = p[1]; else if (BK[k] && (sc === "ba" || BATHS.some(function (b) { return b.id === sc; }))) state[sc + ":" + k] = p[1];
     });
   }
@@ -261,12 +261,12 @@
     function pic(p, sh, x, y, w) { var h = w * sh.h / sh.w, id = add("<< /Type /XObject /Subtype /Image /Width " + sh.w + " /Height " + sh.h + " /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length " + sh.data.length + " >>", sh.data), nm = "Im" + id;
       p.im[nm] = id; p.ops.push("q " + w.toFixed(2) + " 0 0 " + h.toFixed(2) + " " + x.toFixed(2) + " " + (y - h).toFixed(2) + " cm /" + nm + " Do Q"); return h; }
     function list(p, items, y, cols) {                      /* [name, value, changed] in columns; returns the y below the list */
-      var gw = 18, cw = (CW - gw * (cols - 1)) / cols, size = 9.2, lh = 12, blocks = items.map(function (it) { var n = clean(it[0]) + ":", nw = tw(n + " ", size, true), ls = wrap(it[1], size, false, cw - 10 - nw); if (!ls.length) ls = [""]; return { n: n, nw: nw, ls: ls, chg: it[2], h: ls.length * lh + 4 }; });
+      var gw = 18, cw = (CW - gw * (cols - 1)) / cols, size = 10, lh = 13, blocks = items.map(function (it) { var n = clean(it[0]) + ":", nw = tw(n + " ", size, true), ls = wrap(it[1], size, false, cw - 10 - nw); if (!ls.length) ls = [""]; return { n: n, nw: nw, ls: ls, chg: it[2], h: ls.length * lh + 4 }; });
       var total = blocks.reduce(function (a, b) { return a + b.h; }, 0), per = Math.ceil(total / cols), c = 0, yy = y, used = 0, ymin = y;
       blocks.forEach(function (b) {
         if (used + b.h > per + 6 && c < cols - 1) { c++; yy = y; used = 0; }
         var x = MG + c * (cw + gw);
-        if (b.chg) p.ops.push(acc + " rg " + x.toFixed(2) + " " + (yy - 7.4).toFixed(2) + " 4.2 4.2 re f");
+        if (b.chg) p.ops.push(acc + " rg " + x.toFixed(2) + " " + (yy - 7.8).toFixed(2) + " 4.6 4.6 re f");
         T(p, x + 9, yy - 8, size, true, b.n); b.ls.forEach(function (l, i) { T(p, x + 9 + (i ? 0 : b.nw), yy - 8 - i * lh, size, false, l, soft); });
         yy -= b.h; used += b.h; ymin = Math.min(ymin, yy);
       });
@@ -281,7 +281,8 @@
     if (link) { y = Math.max(MG + 30, y - 16); T(p, MG, y, 9.5, true, "Open this design:"); var ls = wrap(link.replace(/([\/#,&])/g, "$1 "), 9.5, false, CW - 96).map(function (l) { return l.replace(/ /g, ""); }); ls.slice(0, 4).forEach(function (l, i) { T(p, MG + 92, y - i * 12, 9.5, false, l, acc); }); p.links.push([MG, y - 12 * Math.min(4, ls.length) + 6, PW - MG, y + 10, link]); }
     /* one page per view */
     shots.forEach(function (sh) {
-      var p = page(), y = PH - MG, v = sh.v, items = S.opts.filter(function (o) { return v.keys.indexOf(o.key) >= 0; }).map(function (o) { return [oname(o, v.scope), cname(o.key, sh.st[o.key]), sh.st[o.key] !== D[o.key]]; });
+      var p = page(), y = PH - MG, v = sh.v, rk = function (o) { return (v.scope && BK[o.key] ? 0 : 2) + (o.cat === v.kind ? 0 : 1); };
+      var items = S.opts.filter(function (o) { return v.keys.indexOf(o.key) >= 0; }).map(function (o, i) { return [rk(o), i, o]; }).sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; }).map(function (t) { var o = t[2]; return [oname(o, v.scope), cname(o.key, sh.st[o.key]), sh.st[o.key] !== D[o.key]]; });
       T(p, MG, y - 20, 22, true, v.name); var t = "The St. James"; T(p, PW - MG - tw(t, 10, false), y - 20, 10, false, t, soft); y -= 34;
       y -= pic(p, sh, MG, y, CW) + 22; T(p, MG, y, 12, true, items.length ? "Selections in this " + (v.kind === "ext" ? "view" : "room") : ""); y -= 10;
       if (items.length) y = list(p, items, y, 2);
