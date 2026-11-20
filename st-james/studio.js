@@ -110,6 +110,7 @@
       var b = d.box, bw = b[2] - b[0], bh = b[3] - b[1], p = await pix(vurl(L.img), bw, bh); if (!alive()) return null;
       var F = 10, al = null;
       if (L.chg) for (var pk = 0; pk < patches.length; pk++) {      /* its rectangle runs into one already laid down: deep inside that one, only what this picture really changes goes over it (the bookcase beside the stair stays) */
+        if (G[patches[pk].g].keys.every(function (k) { return d.deps.indexOf(k) >= 0; })) continue;      /* (this picture was made for that choice too: it simply goes over it) */
         var pb = patches[pk].box, ix0 = Math.max(b[0], pb[0]), iy0 = Math.max(b[1], pb[1]), ix1 = Math.min(b[2], pb[2]), iy1 = Math.min(b[3], pb[3]); if (ix1 <= ix0 || iy1 <= iy0) continue;
         if (!al) { al = new Uint8Array(bw * bh).fill(255); var CH = (await chans(vurl(L.chg), bw, bh))[0]; if (!alive()) return null; }
         for (y = iy0; y < iy1; y++) for (x = ix0; x < ix1; x++) {
@@ -125,7 +126,7 @@
           if (f >= 1) { out[o] = p[q]; out[o + 1] = p[q + 1]; out[o + 2] = p[q + 2]; } else { out[o] += (p[q] - out[o]) * f; out[o + 1] += (p[q + 1] - out[o + 1]) * f; out[o + 2] += (p[q + 2] - out[o + 2]) * f; }
         }
       }
-      patches.push({ box: b, masks: L.masks, al: al });
+      patches.push({ box: b, masks: L.masks, al: al, g: g });
     }
     var PM = null; if (patches.length) { PM = new Uint8Array(W * H); patches.forEach(function (pt) { var bq = pt.box; for (var yq = bq[1]; yq < bq[3]; yq++) PM.fill(1, yq * W + bq[0], yq * W + bq[2]); }); }
     /* 2. the mask of a group for the shapes now chosen */
