@@ -15,9 +15,15 @@
     b.onclick = function () { if (!nb.src) nb.src = S.hero.night; hero.classList.toggle("night", b.dataset.m === "night"); Array.prototype.forEach.call(hero.querySelectorAll(".tog button"), function (x) { x.classList.toggle("on", x === b); }); };
   });
   S.stats.forEach(function (s) { $("stats").appendChild(el("div", "", "<b>" + s[0] + "</b><span>" + s[1] + "</span>")); });
-  var lb = $("lb"), lbi = 0;
-  function show(i) { lbi = (i + S.gallery.length) % S.gallery.length; lb.querySelector("img").src = S.gallery[lbi].full; lb.querySelector("p").textContent = S.gallery[lbi].cap; lb.classList.add("on"); }
-  S.gallery.forEach(function (g, i) { var f = el("figure", "", '<img loading="lazy" alt="' + g.cap + '" src="' + g.src + '"><figcaption>' + g.cap + "</figcaption>"); f.onclick = function () { show(i); }; $("grid").appendChild(f); });
+  /* The pictures further down the page are the studio's own views, each drawn in the choices made (see "every room" below, after the compositor). The large view shows one of them. */
+  var lb = $("lb"), lbi = 0, lbSeq = 0;
+  function show(i) {
+    var n = S.views.length, v = S.views[lbi = (i + n) % n], my = ++lbSeq, im = lb.querySelector("img");
+    lb.querySelector("p").textContent = v.name; im.src = "v/" + v.id + "/base.jpg"; lb.classList.add("on");
+    if (roomDefault(v)) return;
+    roomPicture(v, function () { return my === lbSeq; }).then(function (c) { if (c && my === lbSeq) im.src = c.toDataURL("image/jpeg", 0.9); });
+  }
+  lb.querySelector(".go").onclick = function (e) { e.stopPropagation(); var v = S.views[lbi]; lb.classList.remove("on"); setView(v.id); var t = $("studio"); window.scrollTo({ top: t.getBoundingClientRect().top + window.pageYOffset - 46, behavior: "smooth" }); };
   lb.querySelector(".x").onclick = function () { lb.classList.remove("on"); }; lb.querySelector(".p").onclick = function (e) { e.stopPropagation(); show(lbi - 1); }; lb.querySelector(".n").onclick = function (e) { e.stopPropagation(); show(lbi + 1); };
   lb.onclick = function (e) { if (e.target === lb) lb.classList.remove("on"); };
   document.addEventListener("keydown", function (e) { if (!lb.classList.contains("on")) return; if (e.key === "Escape") lb.classList.remove("on"); if (e.key === "ArrowLeft") show(lbi - 1); if (e.key === "ArrowRight") show(lbi + 1); });
@@ -112,6 +118,7 @@
       }
       patches.push({ box: b, masks: L.masks });
     }
+    var PM = null; if (patches.length) { PM = new Uint8Array(W * H); patches.forEach(function (pt) { var bq = pt.box; for (var yq = bq[1]; yq < bq[3]; yq++) PM.fill(1, yq * W + bq[0], yq * W + bq[2]); }); }
     /* 2. the mask of a group for the shapes now chosen */
     var mc = {};
     var mask = async function (gg) {
@@ -126,6 +133,10 @@
     };
     /* 3. parts in another finish: add (new - as first shown) wherever the part shows. Where the layers hold nothing for a pixel the part now covers
           (another arrangement of the house shows more of it), a transfer learned from the layers recolours what is there. */
+    var cval = function (C, r8, g8, b8, res) {              /* the transfer's value for one colour */
+      var NB = C.length, R = r8 / 255, Gc = g8 / 255, Bc = b8 / 255, tt = (0.3 * R + 0.59 * Gc + 0.11 * Bc) * NB - 0.5, i0 = Math.max(0, Math.min(NB - 1, Math.floor(tt))), i1 = Math.min(NB - 1, i0 + 1), ff = Math.max(0, Math.min(1, tt - i0)), a0 = C[i0], a1 = C[i1];
+      for (var c2 = 0; c2 < 3; c2++) { var k0 = c2 * 4; res[c2] = ((a0[k0] * R + a0[k0 + 1] * Gc + a0[k0 + 2] * Bc + a0[k0 + 3]) * (1 - ff) + (a1[k0] * R + a1[k0 + 1] * Gc + a1[k0 + 2] * Bc + a1[k0 + 3]) * ff) * 255; }
+    };
     var curve = function (C, o3, tm) {
       var NB = C.length, R = out[o3] / 255, Gc = out[o3 + 1] / 255, Bc = out[o3 + 2] / 255, tt = (0.3 * R + 0.59 * Gc + 0.11 * Bc) * NB - 0.5, i0 = Math.max(0, Math.min(NB - 1, Math.floor(tt))), i1 = Math.min(NB - 1, i0 + 1), ff = Math.max(0, Math.min(1, tt - i0)), a0 = C[i0], a1 = C[i1];
       for (var c2 = 0; c2 < 3; c2++) { var k0 = c2 * 4, v = (a0[k0] * R + a0[k0 + 1] * Gc + a0[k0 + 2] * Bc + a0[k0 + 3]) * (1 - ff) + (a1[k0] * R + a1[k0 + 1] * Gc + a1[k0 + 2] * Bc + a1[k0 + 3]) * ff; out[o3 + c2] += (v * 255 - out[o3 + c2]) * tm; }
@@ -136,7 +147,7 @@
       var ref = key(d.keys, D) + (d.deps.length ? "@" + key(d.deps, rs) : ""), tgt = key(d.keys, state) + (d.deps.length ? "@" + key(d.deps, state) : "");
       if (key(d.keys, state) === key(d.keys, D) && ref === tgt) continue;
       var M = await mask(g); if (!alive()) return null; if (!M) continue;
-      var Cv = d.curves && d.curves[key(d.keys, state)], done = Cv ? new Uint8Array(W * H) : null;
+      var Cv = d.curves && d.curves[key(d.keys, state)], done = Cv ? new Uint8Array(W * H) : null, pre = Cv && ref !== tgt ? out.slice() : null;
       if (ref !== tgt && d.layers[ref] && d.layers[tgt]) {
         var bx = d.box, w3 = bx[2] - bx[0], h3 = bx[3] - bx[1], A = await pix(vurl(d.layers[ref]), w3, h3), T = await pix(vurl(d.layers[tgt]), w3, h3);
         var vf = d.valid && d.valid[ref.indexOf("@") >= 0 ? ref.split("@")[1] : ""], V = vf ? (await chans(vurl(vf), w3, h3))[0] : null; if (!alive()) return null;
@@ -146,12 +157,39 @@
           if (done) done[pi] = 1;
           var dr = T[q2] - A[q2], dg = T[q2 + 1] - A[q2 + 1], db = T[q2 + 2] - A[q2 + 2];
           if (mi > 249) {                                /* fully this part: where the finish really differs, the new layer itself; where it does not (glass in a window whose frame changed), the picture stays as it is */
-            var dm = Math.max(Math.abs(dr), Math.abs(dg), Math.abs(db)), w = dm <= 4 ? 0 : dm >= 14 ? 1 : (dm - 4) / 10; w = w * w * (3 - 2 * w);
-            out[o2] += dr + (T[q2] - out[o2] - dr) * w; out[o2 + 1] += dg + (T[q2 + 1] - out[o2 + 1] - dg) * w; out[o2 + 2] += db + (T[q2 + 2] - out[o2 + 2] - db) * w;
+            var dm = Math.max(Math.abs(dr), Math.abs(dg), Math.abs(db)), w = dm <= 4 ? 0 : dm >= 14 ? 1 : (dm - 4) / 10, kk = 1; w = w * w * (3 - 2 * w);
+            if (PM && PM[pi] && ref.indexOf("@") < 0) {     /* inside a changed shape's rectangle the light itself may have changed (a wall gone): the new layer takes the light of the picture as it now is */
+              kk = (0.3 * out[o2] + 0.59 * out[o2 + 1] + 0.11 * out[o2 + 2] + 6) / (0.3 * A[q2] + 0.59 * A[q2 + 1] + 0.11 * A[q2 + 2] + 6); kk = Math.max(0.6, Math.min(1.6, kk));
+              var ka = Math.abs(kk - 1), ks = ka <= 0.025 ? 0 : ka >= 0.07 ? 1 : (ka - 0.025) / 0.045; kk = 1 + (kk - 1) * ks;
+            }
+            out[o2] += dr + (T[q2] * kk - out[o2] - dr) * w; out[o2 + 1] += dg + (T[q2 + 1] * kk - out[o2 + 1] - dg) * w; out[o2 + 2] += db + (T[q2 + 2] * kk - out[o2 + 2] - db) * w;
           } else { var t = mi / 255; out[o2] += dr * t; out[o2 + 1] += dg * t; out[o2 + 2] += db * t; }
         }
       }
-      if (Cv) for (i = 0; i < W * H; i++) { if (M[i] && !done[i]) curve(Cv, i * 4, M[i] / 255); }
+      if (Cv) {                                          /* (the transfer is learned over the whole picture: around each place it fills, it is first matched to what the layers gave there, so the two meet without a step) */
+        var CE = 8, gw = Math.ceil(W / CE), gh = Math.ceil(H / CE), S4 = [new Float32Array(gw * gh), new Float32Array(gw * gh), new Float32Array(gw * gh), new Float32Array(gw * gh)], any = false, cv3 = [0, 0, 0];
+        for (i = 0; i < W * H; i++) if (M[i] && !done[i]) { any = true; break; }
+        if (any && pre) {
+          for (y = 0; y < H; y++) for (x = 0; x < W; x++) {
+            i = y * W + x; if (!done[i] || M[i] < 250) continue; var o4 = i * 4, ci = (y / CE | 0) * gw + (x / CE | 0);
+            cval(Cv, pre[o4], pre[o4 + 1], pre[o4 + 2], cv3); S4[0][ci] += out[o4] - cv3[0]; S4[1][ci] += out[o4 + 1] - cv3[1]; S4[2][ci] += out[o4 + 2] - cv3[2]; S4[3][ci] += 1;
+          }
+          var tmpB = new Float32Array(gw * gh), RB = 3;
+          S4.forEach(function (a4) {                       /* (a wide, soft average: three passes each way) */
+            for (var ps = 0; ps < 3; ps++) {
+              var X, Y, k4, acc;
+              for (Y = 0; Y < gh; Y++) for (X = 0; X < gw; X++) { acc = 0; for (k4 = Math.max(0, X - RB); k4 <= Math.min(gw - 1, X + RB); k4++) acc += a4[Y * gw + k4]; tmpB[Y * gw + X] = acc; }
+              for (Y = 0; Y < gh; Y++) for (X = 0; X < gw; X++) { acc = 0; for (k4 = Math.max(0, Y - RB); k4 <= Math.min(gh - 1, Y + RB); k4++) acc += tmpB[k4 * gw + X]; a4[Y * gw + X] = acc; }
+            }
+          });
+        }
+        if (any) for (y = 0; y < H; y++) for (x = 0; x < W; x++) {
+          i = y * W + x; if (!M[i] || done[i]) continue; var o5 = i * 4, t5 = M[i] / 255, c5 = (y / CE | 0) * gw + (x / CE | 0), n5 = S4[3][c5];
+          cval(Cv, out[o5], out[o5 + 1], out[o5 + 2], cv3);
+          if (n5 > 1e-3) { cv3[0] += Math.max(-40, Math.min(40, S4[0][c5] / n5)); cv3[1] += Math.max(-40, Math.min(40, S4[1][c5] / n5)); cv3[2] += Math.max(-40, Math.min(40, S4[2][c5] / n5)); }
+          out[o5] += (cv3[0] - out[o5]) * t5; out[o5 + 1] += (cv3[1] - out[o5 + 1]) * t5; out[o5 + 2] += (cv3[2] - out[o5 + 2]) * t5;
+        }
+      }
     }
     /* 4. paint colours: the transfer learned from real renders of that colour, band by band of brightness */
     for (g in G) {
@@ -174,7 +212,7 @@
     if (!man) return; var my = ++seq, m = man, v = vw(view); busy(true);
     try {
       var r = await compose(view, m, eff(v && v.scope), function () { return my === seq; });
-      if (r) { last = new ImageData(r.out, m.w, m.h); baseImg = new ImageData(new Uint8ClampedArray(r.base), m.w, m.h); ctx.putImageData(last, 0, 0); if (view === "hero") topShow(last); }
+      if (r) { last = new ImageData(r.out, m.w, m.h); baseImg = new ImageData(new Uint8ClampedArray(r.base), m.w, m.h); ctx.putImageData(last, 0, 0); if (view === "hero") topShow(last); roomShow(v, last); }
     } catch (e) { console.error(e); }
     if (my === seq) busy(false);
   }
@@ -194,6 +232,40 @@
       try { var m = await manOf("hero"), r = await compose("hero", m, eff(""), function () { return my === topSeq; }); if (r && my === topSeq && sig === topSig()) topShow(new ImageData(r.out, m.w, m.h)); } catch (e) { console.error(e); }
     }, 220);
   }
+  /* ---------- every room: the pictures at the foot of the page are these same views in the choices made. A view no choice has touched shows its picture as first drawn;
+     the others are drawn when they come on screen, one at a time, and again when a choice they show changes. ---------- */
+  var ROOM = {}, roomQ = [], roomBusy = false;
+  function roomSig(v) { var e = eff(v.scope || ""); return (v.keys || []).map(function (k) { return e[k]; }).join("."); }
+  function roomDefault(v) { var e = eff(v.scope || ""); return (v.keys || []).every(function (k) { return e[k] === D[k]; }); }
+  async function roomPicture(v, alive) {                  /* a canvas with the view in the choices made */
+    var m = await manOf(v.id), r = await compose(v.id, m, eff(v.scope || ""), alive); if (!r) return null;
+    var c = document.createElement("canvas"); c.width = m.w; c.height = m.h; c.getContext("2d").putImageData(new ImageData(r.out, m.w, m.h), 0, 0); return c;
+  }
+  function roomDraw(t, src) { var x = t.cv.getContext("2d"); x.drawImage(src, 0, 0, t.cv.width, t.cv.height); t.fig.classList.add("mine"); }
+  function roomShow(v, im) {                               /* the studio has just drawn this view: its small picture takes it over */
+    var t = v && ROOM[v.id]; if (!t) return; t.sig = roomSig(v); t.dirty = false;
+    if (roomDefault(v)) { t.fig.classList.remove("mine"); return; }
+    var c = document.createElement("canvas"); c.width = im.width; c.height = im.height; c.getContext("2d").putImageData(im, 0, 0); roomDraw(t, c);
+  }
+  async function roomNext() {
+    if (roomBusy) return; roomBusy = true;
+    while (roomQ.length) {
+      var t = roomQ.shift(), v = t.v, sig = roomSig(v); t.queued = false;
+      if (sig === t.sig && !t.dirty) continue;
+      if (roomDefault(v)) { t.fig.classList.remove("mine"); t.sig = sig; t.dirty = false; continue; }
+      t.fig.classList.add("work");
+      try { var c = await roomPicture(v, function () { return roomSig(v) === sig; }); if (c) { roomDraw(t, c); t.sig = sig; t.dirty = false; } else if (t.seen && !t.queued) { t.queued = true; roomQ.push(t); } } catch (e) { console.error(e); }
+      t.fig.classList.remove("work");
+      await new Promise(function (res) { setTimeout(res, 30); });      /* (the page stays responsive between two pictures) */
+    }
+    roomBusy = false;
+  }
+  function roomsPaint() { Object.keys(ROOM).forEach(function (id) { var t = ROOM[id]; if (roomSig(t.v) !== t.sig) { t.dirty = true; if (t.seen && !t.queued) { t.queued = true; roomQ.push(t); } } }); roomNext(); }
+  var roomIO = window.IntersectionObserver ? new IntersectionObserver(function (es) { es.forEach(function (e) { var t = ROOM[e.target.dataset.v]; if (!t) return; t.seen = e.isIntersecting; if (t.seen && t.dirty && !t.queued) { t.queued = true; roomQ.push(t); } }); roomNext(); }, { rootMargin: "300px 0px" }) : null;
+  S.views.forEach(function (v, i) {
+    var f = el("figure", "", '<img loading="lazy" alt="' + v.name + '" src="v/' + v.id + '/base-s.jpg"><canvas width="800" height="500"></canvas><figcaption>' + v.name + "</figcaption>"); f.dataset.v = v.id; f.onclick = function () { show(i); };
+    $("grid").appendChild(f); ROOM[v.id] = { v: v, fig: f, cv: f.querySelector("canvas"), seen: !roomIO, dirty: true, sig: null, queued: false }; if (roomIO) roomIO.observe(f);
+  });
   if (window.IntersectionObserver) { topSeen = false; new IntersectionObserver(function (es) { topSeen = es[es.length - 1].isIntersecting; if (topSeen && topDirty) topPaint(); }, { rootMargin: "200px 0px" }).observe(hero); }
   async function setView(id) {
     view = id; Array.prototype.forEach.call($("views").children, function (b) { b.classList.toggle("on", b.dataset.v === id); if (b.dataset.v === id) { var vs = $("views"); vs.scrollLeft = Math.max(0, b.offsetLeft - (vs.clientWidth - b.offsetWidth) / 2); } }); busy(true);
@@ -258,6 +330,7 @@
     try { localStorage.setItem("sj-design", h); } catch (e) { }
     var f3 = $("f3d"); if (f3 && f3.contentWindow && from3d !== true) f3.contentWindow.postMessage({ sj: h }, "*");
     if (view !== "hero") topPaint();
+    roomsPaint();
   }
   S.views.forEach(function (v) { var b = el("button", "", '<img loading="lazy" alt="" src="v/' + v.id + '/base-s.jpg"><span>' + v.name + "</span>"); b.dataset.v = v.id; b.onclick = function () { setView(v.id); }; $("views").appendChild(b); });
   /* hold to see the home as the plans draw it, release to come back to your choices */
