@@ -333,7 +333,7 @@
     for (var i = 0; i < hit.length; i++) if (hit[i].face && hit[i].face.normal.y > 0.5) return hit[i].point.y;
     return z;
   }
-  var STAIRBLOCK = { '1': [[9.9, 30.77, 10.43, 34.29], [10.55, 26.96, 11.15, 30.48]], '2': [[9.9, 26.96, 10.43, 30.48], [10.43, 30.6, 10.7, 34.29]], b: [[1.5, 26.96, 11.6, 30.48, 'bf=u'], [0.67, 27.0, 11.6, 30.48, 'bf=f'], [0.67, 30.46, 4.03, 31.45, 'bf=f']] };      /* feet do not wander onto the stairs: a tap on them takes the stairs */
+  var STAIRBLOCK = { '1': [[9.9, 30.77, 10.43, 34.29], [10.55, 26.96, 11.15, 30.48]], '2': [[9.9, 26.96, 10.43, 30.48], [10.43, 30.6, 10.7, 34.29]], b: [[0.67, 26.96, 11.6, 30.48], [0.67, 30.48, 8.0, 34.19]] };      /* feet do not wander onto the stairs: a tap on them takes the stairs */
   function blocked(x, y, z) {
     var set = M.meta.walls[inPoly(M.meta.foot.house, x, y) || z > -4 ? levelOf(z) : 'b'] || [], i, w;
     if (!inPoly(M.meta.foot.house, x, y) && !inPoly(M.meta.foot.garage, x, y)) set = M.meta.walls[z < -4 ? 'b' : '1'];
@@ -370,8 +370,8 @@
   function exitWalk() { mode = 'model'; applyVis(); homeView(); ui(); }
   function goTo(x, y) { var r = route(x, y); if (r && r.length) { W.way = r; W.tgt = W.way.shift(); } else { W.way = null; W.tgt = [x, y]; } dirty = true; }
   function stairPath(from, to) {                           /* the way between two levels, by the stairs: a line of points the eye glides along */
-    var Z = M.meta.z, up = [[13.2, 32.5, 0], [10.6, 32.5, 0], [4.3, 32.5, 5.04], [2.4, 30.6, 5.04], [4.3, 28.7, 5.04], [10.4, 28.7, Z.f2], [13.4, 28.3, Z.f2]], dn = [[13.6, 28.7, 0], [11.6, 28.7, 0], [1.0, 28.7, Z.b], [2.4, 25.6, Z.b]], hb = -Z.b / 14;
-    if (state.bf === 'f') dn = [[13.6, 28.7, 0], [11.6, 28.7, 0], [4.45, 28.7, -9 * hb], [2.4, 28.75, -11 * hb], [2.37, 30.9, -13 * hb], [2.37, 32.4, Z.b], [3.1, 36.0, Z.b]];      /* (the finished lower level's stair: nine treads, three winders round to the rear, one more tread, into the hall and on into the rec room) */
+    var Z = M.meta.z, up = [[13.2, 32.5, 0], [10.6, 32.5, 0], [4.3, 32.5, 5.04], [2.4, 30.6, 5.04], [4.3, 28.7, 5.04], [10.4, 28.7, Z.f2], [13.4, 28.3, Z.f2]], hb = -Z.b / 14, dn = [[13.6, 28.7, 0], [11.6, 28.8, 0], [4.94, 28.8, -8 * hb], [2.6, 28.8, -9 * hb], [2.6, 32.5, -9 * hb], [4.5, 32.5, -9 * hb], [7.56, 32.5, -13 * hb], [8.9, 32.5, Z.b], state.bf === 'f' ? [9.7, 36.3, Z.b] : [10.3, 32.5, Z.b]];
+    /* (the stair to the lower level turns back on itself like the main stair: eight treads down under the upper flight, the landing, four treads back under the lower flight; finished, it ends in the rec room) */
     if (from === '1' && to === '2') return up; if (from === '2' && to === '1') return up.slice().reverse();
     if (from === '1' && to === 'b') return dn; if (from === 'b' && to === '1') return dn.slice().reverse();
     if (from === '2' && to === 'b') return up.slice().reverse().concat(dn); if (from === 'b' && to === '2') return dn.slice().reverse().concat(up);
@@ -424,7 +424,7 @@
       var r = cvs.getBoundingClientRect(), v = new THREE.Vector2((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1); ray.setFromCamera(v, camera); ray.far = 90;
       var hit = ray.intersectObjects(solid.filter(function (m) { return m.parent.visible; }), false)[0]; if (!hit) return;
       var hx = hit.point.x, hy = -hit.point.z, n = hit.face ? hit.face.normal : null, cur = levelOf(W.z), ORD = ['b', '1', '2'];
-      var onSt = hx > 0.3 && hx < 11.6 && hy > 26.9 && hy < 34.35; if (cur === 'b' && state.bf === 'f') onSt = hx > 0.3 && hx < 11.6 && hy > 26.9 && (hy < 30.5 || (hx < 4.1 && hy < 31.45));      /* (on the finished lower level the stair's hall is a room of its own) */
+      var onSt = hx > 0.3 && hx < 11.6 && hy > 26.9 && hy < 34.35; if (cur === 'b') onSt = hx > 0.3 && hy > 26.9 && ((hx < 11.6 && hy < 30.5) || (hx < 8.05 && hy < 34.25));      /* (on the lower level: the two flights and the landing) */
       if (inPoly(M.meta.foot.house, W.x, W.y) && onSt && Math.abs(hit.point.y - W.z) > 0.5 && Math.abs(hit.point.y - W.z) < 11) {      /* a tap on the stairs: up or down them */
         var to = ORD[ORD.indexOf(cur) + (hit.point.y > W.z ? 1 : -1)]; if (to) { goLevel(to); return; }
       }
@@ -464,7 +464,7 @@
     'Dining room': ['flr', 'wal', 'cr1', 'win', 'wg'], 'Foyer': ['od', 'flr', 'wal', 'cr1', 'fd', 'fdc', 'idc'], 'Office': ['od', 'flr', 'wal', 'cr1', 'win', 'wg'], 'Hall': ['so', 'sf', 'sr', 'flr', 'wal', 'cr1', 'idc', 'hwc'], 'Laundry': ['flr', 'wal', 'idc', 'hwc'], 'Pantry': ['flr', 'wal', 'idc'],
     'Powder room': ['flr', 'cr1', 'idc'], 'Garage': ['gs', 'gdc'], 'Stairs': ['so', 'sf', 'sr', 'flr', 'wal'], 'Stair hall': ['so', 'sf', 'sr', 'uf', 'cpt', 'wal', 'cr2'], 'Upstairs hall': ['so', 'sf', 'sr', 'uf', 'cpt', 'wal', 'cr2', 'idc'], 'Primary bedroom': ['uf', 'cpt', 'wal', 'cr2', 'win', 'wg', 'idc', 'clp'],
     'Primary bath': ['cr2', 'win', 'wg', 'idc'], 'Primary closet': ['clp', 'uf', 'cpt', 'wal', 'cr2'], 'Hall bath': ['cr2', 'idc'], 'Bedroom 2': BED, 'Bedroom 3': BED, 'Bedroom 4': BED, 'Bedroom 2 closet': ['clb', 'uf', 'cpt', 'wal'], 'Bedroom 3 closet': ['clb', 'uf', 'cpt'],
-    'Bedroom 4 closet': ['clb', 'uf', 'cpt'], 'Lower level': ['bf', 'sf', 'wal', 'idc', 'cab', 'ctr', 'hwc'] }, BATHOF = { 'Primary bath': 'pb', 'Hall bath': 'hb', 'Powder room': 'pw' };
+    'Bedroom 4 closet': ['clb', 'uf', 'cpt'], 'Lower level': ['bf', 'sf', 'sr', 'wal', 'idc', 'cab', 'ctr', 'hwc'] }, BATHOF = { 'Primary bath': 'pb', 'Hall bath': 'hb', 'Powder room': 'pw' };
   /* the choices, in a drawer: first those of the room the walker stands in, then every group as a list; the bathrooms as a group of their own, all together or one at a time */
   function drawer() {
     var B = $('choices'), rm = mode === 'walk' ? roomAt() : null, sc = $('bscope') ? $('bscope').value : 'ba'; B.innerHTML = '';
