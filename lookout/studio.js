@@ -176,7 +176,7 @@
           if (done) done[pi] = 1;
           var dr = T[q2] - A[q2], dg = T[q2 + 1] - A[q2 + 1], db = T[q2 + 2] - A[q2 + 2];
           if (mi > 249) {                                /* fully this part: where the finish really differs, the new layer itself; where it does not (glass in a window whose frame changed), the picture stays as it is */
-            var dm = Math.max(Math.abs(dr), Math.abs(dg), Math.abs(db)), w = dm <= 4 ? 0 : dm >= 14 ? 1 : (dm - 4) / 10, kk = 1; w = w * w * (3 - 2 * w);
+            var dm = Math.max(Math.abs(dr), Math.abs(dg), Math.abs(db)), w = d.whole ? 1 : dm <= 4 ? 0 : dm >= 14 ? 1 : (dm - 4) / 10, kk = 1; w = w * w * (3 - 2 * w);
             if (PM && PM[pi] && ref.indexOf("@") < 0) {     /* inside a changed shape's rectangle the light itself may have changed (a wall gone): the new layer takes the light of the picture as it now is */
               kk = (0.3 * out[o2] + 0.59 * out[o2 + 1] + 0.11 * out[o2 + 2] + 6) / (0.3 * A[q2] + 0.59 * A[q2 + 1] + 0.11 * A[q2 + 2] + 6); kk = Math.max(0.6, Math.min(1.6, kk));
               var ka = Math.abs(kk - 1), ks = ka <= 0.025 ? 0 : ka >= 0.07 ? 1 : (ka - 0.025) / 0.045; kk = 1 + (kk - 1) * ks;
