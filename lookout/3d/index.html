@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>The Lookout 3500 2.0 in 3D</title>
+<style>
+:root{--ink:#17181a;--soft:#5d6066;--line:#e3dfd6;--paper:#f7f5f0;--card:#fff;--accent:#1f3a34}
+html,body{height:100%;margin:0}body{background:#dfe7ee;color:var(--ink);font:15px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}#app{position:relative;height:100%}#stage{position:absolute;inset:0;touch-action:none}#stage canvas{display:block}
+#plate{position:absolute;left:12px;top:12px;background:rgba(255,255,255,.92);border-radius:12px;padding:9px 13px;box-shadow:0 4px 18px rgba(0,0,0,.12)}#plate b{display:block;font:600 17px/1.15 "Iowan Old Style","Palatino Linotype",Georgia,serif}#plate span{font-size:12.5px;color:var(--soft)}
+#bChoices{position:absolute;right:12px;top:12px;border:0;background:var(--accent);color:#fff;font:600 14px/1 inherit;padding:12px 16px;border-radius:999px;box-shadow:0 4px 18px rgba(0,0,0,.18);cursor:pointer}
+#dock{position:absolute;left:0;right:0;bottom:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px;background:linear-gradient(transparent,rgba(0,0,0,.28));pointer-events:none}#dock>*{pointer-events:auto}
+.seg{display:inline-flex;align-self:flex-start;background:rgba(255,255,255,.94);border-radius:999px;padding:3px;box-shadow:0 4px 18px rgba(0,0,0,.14)}.seg button{border:0;background:none;border-radius:999px;padding:10px 16px;font:600 14px/1 inherit;color:var(--soft);cursor:pointer}.seg button.on{background:var(--ink);color:#fff}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}.chips button{flex:none;border:0;background:rgba(255,255,255,.94);border-radius:999px;padding:9px 13px;font:600 13px/1 inherit;color:var(--ink);cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.1)}.chips button.on{background:var(--accent);color:#fff}
+#hint{position:absolute;left:50%;top:14px;transform:translateX(-50%);background:rgba(0,0,0,.55);color:#fff;font-size:12.5px;padding:6px 11px;border-radius:999px;white-space:nowrap;pointer-events:none;transition:opacity .6s}#hint.off{opacity:0}
+#loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#e9eef2}#loading b{display:block;font:600 19px/1.2 "Iowan Old Style",Georgia,serif;margin-bottom:12px;text-align:center}.bar{width:220px;height:5px;background:#cfd6dc;border-radius:3px;overflow:hidden}.bar i{display:block;height:100%;width:3%;background:var(--accent);transition:width .25s}
+#fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#e9eef2;padding:24px;text-align:center}
+#drawer{position:absolute;right:0;top:0;bottom:0;width:min(360px,92vw);background:var(--card);box-shadow:-8px 0 30px rgba(0,0,0,.2);display:flex;flex-direction:column;z-index:5}
+#drawer header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}#drawer header b{font:600 18px/1.2 "Iowan Old Style",Georgia,serif}#bClose{border:0;background:var(--paper);border-radius:999px;padding:9px 14px;font:600 13px/1 inherit;cursor:pointer}
+#choices{overflow:auto;padding:4px 16px 24px;-webkit-user-select:auto;user-select:auto}#choices h4.all{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink)}#choices h4{margin:18px 0 6px;font:600 12px/1 inherit;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.row{display:block;padding:7px 0}.row span{display:block;font-size:12.5px;color:var(--soft);margin-bottom:3px}.row select{width:100%;font:15px/1.2 inherit;padding:9px 8px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink)}
+#back{display:block;padding:14px 16px;border-top:1px solid var(--line);font:600 14px/1 inherit;color:var(--accent)}
+@media (max-width:640px){#hint{top:70px}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage"></div>
+  <div id="plate"><b id="title">The Lookout 3500 2.0</b><span id="where">Your design in 3D</span></div>
+  <button id="bChoices">Choices</button>
+  <div id="hint"></div>
+  <div id="dock"><div class="chips" id="rooms" hidden></div><div class="chips" id="levels"></div><div class="seg" id="modes"><button data-m="model" class="on">Model</button><button data-m="walk">Walk through</button></div></div>
+  <div id="drawer" hidden><header><b>Choices</b><button id="bClose">Done</button></header><div id="choices"></div><a id="back" href="../" hidden>Back to the design studio</a></div>
+  <div id="loading"><div><b>Loading the model</b><div class="bar"><i id="bar"></i></div></div></div>
+  <div id="fallback" hidden><p id="fallback-msg"></p></div>
+</div>
+<script src="three.min.js"></script>
+<script src="OrbitControls.js"></script>
+<script src="app.js?v=25"></script>
+</body>
+</html>
