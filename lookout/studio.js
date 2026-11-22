@@ -180,6 +180,7 @@
             if (PM && PM[pi] && ref.indexOf("@") < 0) {     /* inside a changed shape's rectangle the light itself may have changed (a wall gone): the new layer takes the light of the picture as it now is */
               kk = (0.3 * out[o2] + 0.59 * out[o2 + 1] + 0.11 * out[o2 + 2] + 6) / (0.3 * A[q2] + 0.59 * A[q2 + 1] + 0.11 * A[q2 + 2] + 6); kk = Math.max(0.6, Math.min(1.6, kk));
               var ka = Math.abs(kk - 1), ks = ka <= 0.025 ? 0 : ka >= 0.07 ? 1 : (ka - 0.025) / 0.045; kk = 1 + (kk - 1) * ks;
+              var la = 0.3 * A[q2] + 0.59 * A[q2 + 1] + 0.11 * A[q2 + 2]; kk = 1 + (kk - 1) * Math.max(0, Math.min(1, (la - 24) / 56));      /* (a dark part as first drawn, a black window frame, says nothing reliable about the light: the ratio of two dark, grainy values would only mottle the new finish) */
             }
             out[o2] += dr + (T[q2] * kk - out[o2] - dr) * w; out[o2 + 1] += dg + (T[q2 + 1] * kk - out[o2 + 1] - dg) * w; out[o2 + 2] += db + (T[q2 + 2] * kk - out[o2 + 2] - db) * w;
           } else { var t = mi / 255; out[o2] += dr * t; out[o2 + 1] += dg * t; out[o2 + 2] += db * t; }
