@@ -111,7 +111,8 @@
       var ck = key(d.keys, state); if (ck === key(d.keys, D)) continue;
       var L = d.layers[ck + (d.deps.length ? "@" + key(d.deps, state) : "")]; if (!L) continue;
       var b = d.box, bw = b[2] - b[0], bh = b[3] - b[1], p = await pix(vurl(L.img), bw, bh); if (!alive()) return null;
-      var F = 10, al = null;
+      var F = d.soft || 10, al = null, KP = null;      /* (a choice that changes the room's light fades in over a wide band; what really changed stays whole) */
+      if (d.soft && L.keep) { KP = (await chans(vurl(L.keep), bw, bh))[0]; if (!alive()) return null; }
       if (L.chg) for (var pk = 0; pk < patches.length; pk++) {      /* its rectangle runs into one already laid down: deep inside that one, only what this picture really changes goes over it (the bookcase beside the stair stays) */
         if (G[patches[pk].g].keys.every(function (k) { return d.deps.indexOf(k) >= 0; })) continue;      /* (this picture was made for that choice too: it simply goes over it) */
         var pb = patches[pk].box, ix0 = Math.max(b[0], pb[0]), iy0 = Math.max(b[1], pb[1]), ix1 = Math.min(b[2], pb[2]), iy1 = Math.min(b[3], pb[3]); if (ix1 <= ix0 || iy1 <= iy0) continue;
@@ -125,6 +126,7 @@
         var fy = Math.min(b[1] > 0 ? (y + 1) / F : 1, b[3] < H ? (bh - y) / F : 1, 1);
         for (x = 0; x < bw; x++) {
           var f = Math.min(fy, b[0] > 0 ? (x + 1) / F : 1, b[2] < W ? (bw - x) / F : 1), o = ((y + b[1]) * W + x + b[0]) * 4, q = (y * bw + x) * 4;
+          if (KP && f < 1) { f = f * f * (3 - 2 * f); f = Math.max(f, KP[y * bw + x] / 255); }
           if (al) f *= al[y * bw + x] / 255;
           if (f >= 1) { out[o] = p[q]; out[o + 1] = p[q + 1]; out[o + 2] = p[q + 2]; } else { out[o] += (p[q] - out[o]) * f; out[o + 1] += (p[q + 1] - out[o + 1]) * f; out[o + 2] += (p[q + 2] - out[o + 2]) * f; }
         }
