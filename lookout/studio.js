@@ -73,6 +73,7 @@
     });
   }
   readHash((location.hash.match(/d=([^&]+)/) || ["", ""])[1]);
+  if (BATHS.length) Object.keys(D).forEach(function (k) { if (OPT[k] && OPT[k].bathonly && state[k] !== D[k] && state["ba:" + k] == null) { state["ba:" + k] = state[k]; state[k] = D[k]; } });      /* (a link made before the bathrooms had choices of their own: a bathroom finish given plainly goes to all bathrooms) */
   function bathVal(sc, k) { var v = state[sc + ":" + k]; if (v == null) v = state["ba:" + k]; return v == null ? D[k] : v; }
   function eff(sc) { var e = {}; Object.keys(D).forEach(function (k) { e[k] = sc && BK[k] ? bathVal(sc, k) : state[k]; }); return e; }      /* the choices one view is drawn with */
   function vw(id) { return S.views.filter(function (v) { return v.id === id; })[0]; }
