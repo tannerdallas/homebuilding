@@ -444,7 +444,7 @@
     b.disabled = false;
   }
   $("bPdf").onclick = makePDF;
-  (function () { var n = 1, c = 0; S.opts.forEach(function (o) { n *= o.ch.length; c += o.ch.length; }); var t = n >= 1e15 ? Math.floor(n / 1e15) + " quadrillion" : n >= 1e12 ? (n / 1e12).toFixed(1) + " trillion" : n >= 1e9 ? (n / 1e9).toFixed(1) + " billion" : n >= 1e6 ? Math.round(n / 1e6) + " million" : String(n);
+  (function () { var n = 1, c = 0; S.opts.forEach(function (o) { n *= o.ch.length; c += o.ch.length; }); var t = n >= 1e21 ? Math.floor(n / 1e21) + " sextillion" : n >= 1e18 ? Math.floor(n / 1e18) + " quintillion" : n >= 1e15 ? Math.floor(n / 1e15) + " quadrillion" : n >= 1e12 ? (n / 1e12).toFixed(1) + " trillion" : n >= 1e9 ? (n / 1e9).toFixed(1) + " billion" : n >= 1e6 ? Math.round(n / 1e6) + " million" : String(n);
     $("combos").textContent = S.opts.length + " choices to make, " + c + " finishes and shapes to choose from: more than " + t + " combinations" + (S.baths && S.baths.length ? " before the bathrooms are counted one by one" : "") + ", each shown as a picture built from real renders."; })();
   $("bReset").onclick = function () { Object.keys(state).forEach(function (k) { if (k.indexOf(":") > 0) delete state[k]; else state[k] = D[k]; }); panel(); summary(); render(); };
   $("bSave").onclick = function () { cv.toBlob(function (bl) { var a = document.createElement("a"); a.href = URL.createObjectURL(bl); a.download = S.slug + "-" + view + ".jpg"; a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000); }, "image/jpeg", 0.92); };
