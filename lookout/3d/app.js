@@ -207,7 +207,7 @@
   var LEVEL = { ROOF: 'r', WROOF: 'r', L2: '2', F2: '2', L1: '1', F1: '1', C1: '1', DECK: '1', B0: 'b', BU: 'b', BF: 'b', SITE: 's' };
   var M = null, layers = {}, mats = {}, lmTex = {}, state = {}, D = {}, BK = {}, OWN = {}, cut = 'all', mode = 'model', solid = [], groundM = [], root = new THREE.Group(); scene.add(root);
   function condOk(layer, st) { var cs = layer.split('@'), i, j; for (i = 1; i < cs.length; i++) { var ts = cs[i].split('&'); for (j = 0; j < ts.length; j++) { var kv = ts[j].split('='); if (kv[1].split('|').indexOf(String(st[kv[0]])) < 0) return false; } } return true; }
-  function bathVal(sc, k) { var v = state[sc + ':' + k]; if (v == null) v = state['ba:' + k]; return v == null ? D[k] : v; }
+  function bathVal(sc, k) { var v = state[sc + ':' + k]; if (v == null) v = state['ba:' + k]; if (v == null && M && (M.meta.bathonly || []).indexOf(k) >= 0) v = state[k]; return v == null ? D[k] : v; }      /* (a finish only bathrooms have, chosen on the page for the house: every bathroom takes it) */
   function eff(sc) { if (!sc) return state; var e = {}; Object.keys(D).forEach(function (k) { e[k] = BK[k] ? bathVal(sc, k) : state[k]; }); return e; }
   function readHash(h) {
     Object.keys(state).forEach(function (k) { delete state[k]; }); Object.keys(D).forEach(function (k) { state[k] = D[k]; });
@@ -520,7 +520,7 @@
   function prog(f) { $('bar').style.width = Math.round(f * 100) + '%'; }
   var VQ = '';                                             /* the model's files carry the stamp of their bake in their address: a new bake is never mixed with pieces of the last one kept by the browser */
   fetch('model.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error('model'); return r.json(); }).then(function (m) {
-    M = m; D = m.meta.defaults; CFG = m.meta.cfg; NAV = m.meta.nav; LV = CFG.levels; navInit(); LV.forEach(function (l) { LVN[l.id] = l.name; }); ROOMKEYS = CFG.roomkeys || {}; CUTS = CFG.cuts; CUTS.forEach(function (c) { HIDE[c[0]] = c[2]; });
+    M = m; D = m.meta.defaults; CFG = m.meta.cfg; NAV = m.meta.nav; LV = CFG.levels; navInit(); LV.forEach(function (l) { LVN[l.id] = l.name; }); ROOMKEYS = CFG.roomkeys || {}; BATHOF = CFG.bathof || {}; CUTS = CFG.cuts; CUTS.forEach(function (c) { HIDE[c[0]] = c[2]; });
     Object.keys(CFG.layerlv).forEach(function (k) { LEVEL[k] = CFG.layerlv[k]; }); Object.keys(CFG.pat || {}).forEach(function (k) { BASEPAT[k] = CFG.pat[k]; }); Object.keys(CFG.c2 || {}).forEach(function (k) { C2[k] = CFG.c2[k]; }); VIEW = CFG.view; $('title').textContent = CFG.title; document.title = CFG.title + ' in 3D'; (m.meta.bathkeys || []).forEach(function (k) { BK[k] = 1; }); SUNDIR.set(m.meta.sun[0], m.meta.sun[2], -m.meta.sun[1]).normalize(); dome.material.uniforms.uSun.value = SUNDIR;
     sun.position.copy(SUNDIR).multiplyScalar(300); makeEnv();
     Object.keys(m.meta.table).forEach(function (k) { Object.keys(m.meta.table[k]).forEach(function (c) { Object.keys(m.meta.table[k][c]).forEach(function (mt) { if (mt !== 'carpet' && mt !== 'proof') OWN[mt] = k; }); }); });
