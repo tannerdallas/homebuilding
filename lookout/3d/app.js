@@ -15,7 +15,7 @@
   stage.appendChild(renderer.domElement); var cvs = renderer.domElement;
   var scene = new THREE.Scene(); scene.background = new THREE.Color(SKY); scene.fog = new THREE.Fog(SKY, 900, 2800);
   var camera = new THREE.PerspectiveCamera(36, 1, 1, 6000), controls = new THREE.OrbitControls(camera, cvs);
-  controls.enableDamping = false; controls.maxPolarAngle = Math.PI / 2 - 0.03; controls.minDistance = 14; controls.maxDistance = 520; controls.addEventListener('change', function () { dirty = true; });
+  controls.enableDamping = false; controls.maxPolarAngle = Math.PI / 2 - 0.03; controls.minDistance = 14; controls.maxDistance = 640; controls.addEventListener('change', function () { dirty = true; });
   var hemi = new THREE.HemisphereLight(0xe6eef7, 0x8b8f7c, 0.78), sun = new THREE.DirectionalLight(0xfff3df, 1.3); scene.add(hemi); scene.add(sun); scene.add(sun.target);
   function skyMat(zen) {                                   // colours are worked in linear light and encoded like every other material, so the reflection map reads them correctly
     return new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, toneMapped: false,
@@ -321,8 +321,9 @@
   var VIEW = { x: 28, y: 24, z: 6, cam: [-44, 36, 74], top: [12, 86, 34] };
   function homeView() {
     camera.fov = 36; camera.near = 2; camera.updateProjectionMatrix(); controls.enabled = true;
-    var top = cut === 'all' ? 0 : 1; var cy = VIEW.z; CUTS.forEach(function (c) { if (c[0] === cut) cy = c[3]; }); controls.target.set(VIEW.x, cy, -VIEW.y);
-    if (top) camera.position.set(VIEW.top[0], VIEW.top[1], VIEW.top[2]); else camera.position.set(VIEW.cam[0], VIEW.cam[1], VIEW.cam[2]);
+    var top = cut === 'all' ? 0 : 1, V = (state.su === '1' && CFG && CFG.view_su) || VIEW; var cy = V.z; CUTS.forEach(function (c) { if (c[0] === cut) cy = c[3]; }); controls.target.set(V.x, cy, -V.y);
+    if (top) camera.position.set(V.top[0], V.top[1], V.top[2]); else camera.position.set(V.cam[0], V.cam[1], V.cam[2]);
+    if (camera.aspect < 1.3) camera.position.sub(controls.target).multiplyScalar(Math.min(1.3 / camera.aspect, 3.2)).add(controls.target);      /* an upright phone: stand back until the home fits the width again */
     controls.update(); dirty = true;
   }
   /* ---------- walking through it ---------- */
@@ -488,7 +489,7 @@
   function drawer() {
     var B = $('choices'), rm = mode === 'walk' ? roomAt() : null, sc = $('bscope') ? $('bscope').value : 'ba'; B.innerHTML = '';
     function row(name, k, cur, on) { var r = el('label', 'row', '<span>' + name + '</span>'), s = el('select'); M.meta.opts[k].ch.forEach(function (c) { var o = el('option', '', c[1]); o.value = c[0]; if (c[0] === cur) o.selected = true; s.appendChild(o); }); s.onchange = function () { on(s.value); changed(); drawer(); }; r.appendChild(s); return r; }
-    function house(k) { return row(M.meta.opts[k].name, k, state[k], function (v) { state[k] = v; if (k === 'g' && v !== 's' && state.su === '1') state.su = D.su; norm(); }); }      /* (the in-law suite comes with the side-entry garage; front entry takes the suite away again) */
+    function house(k) { return row(M.meta.opts[k].name, k, state[k], function (v) { var su0 = state.su; state[k] = v; if (k === 'g' && v !== 's' && state.su === '1') state.su = D.su; norm(); if (state.su !== su0 && mode === 'model') homeView(); }); }      /* (the in-law suite comes with the side-entry garage; front entry takes the suite away again) */
     function baths() {
       if (!M.meta.bathkeys.length) return;
       B.appendChild(el('h4', '', 'Bathrooms'));
@@ -501,7 +502,7 @@
         }));
       });
     }
-    var here = (rm === 'Outside' || rm === 'Covered porch' || rm === 'Covered deck') ? M.meta.ext : (ROOMKEYS[rm] || (CFG.lvkeys || {})[levelOf(W.z)]), bathHere = !!BATHOF[rm];
+    var here = (rm === 'Outside' || rm === 'Covered porch' || rm === 'Covered deck') ? M.meta.ext : (rm ? (ROOMKEYS[rm] || (CFG.lvkeys || {})[levelOf(W.z)]) : null), bathHere = !!BATHOF[rm];
     if (bathHere) baths();
     if (here) { B.appendChild(el('h4', '', here === M.meta.ext ? 'Outside' : 'In this room: ' + rm.toLowerCase())); here.forEach(function (k) { if (M.meta.opts[k]) B.appendChild(house(k)); }); }
     var groups = [['Outside', []], ['Inside', []]];
