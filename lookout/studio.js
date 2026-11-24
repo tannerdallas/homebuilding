@@ -51,8 +51,8 @@
     $("b3d").hidden = false; $("b3d").onclick = function () { open3d(); $("model3d").scrollIntoView({ behavior: "smooth", block: "start" }); };
     $("m3dfull").onclick = function () { $("m3dfull").href = S.model3d.src + "#d=" + hashOf(); };
     window.addEventListener("message", function (e) {
-      if (!e.data || typeof e.data.sj3d !== "string") return; var kn = e.data.known, has = function (k) { return !kn || kn.indexOf(k) >= 0; };      /* a choice the 3D model does not know (it was baked before the choice existed) keeps its value */
-      Object.keys(state).forEach(function (k) { var q = k.indexOf(":"); if (q > 0) { if (has(k.slice(q + 1))) delete state[k]; } else if (has(k)) state[k] = D[k]; }); readHash(e.data.sj3d);
+      if (!e.data || typeof e.data.sj3d !== "string") return; var kn = e.data.known, has = function (k) { return (!kn || kn.indexOf(k) >= 0) && !(k === "su" && !S.model3d.su); };      /* a choice the 3D model does not know (it was baked before the choice existed) keeps its value */
+      Object.keys(state).forEach(function (k) { var q = k.indexOf(":"); if (q > 0) { if (has(k.slice(q + 1))) delete state[k]; } else if (has(k)) state[k] = D[k]; }); readHash(e.data.sj3d); norm();
       panel(); summary(true); render();
     });
   } else { $("model3d").style.display = "none"; $("nav3d").style.display = "none"; }
@@ -72,13 +72,16 @@
       if (!sc) state[k] = p[1]; else if (BK[k] && (sc === "ba" || BATHS.some(function (b) { return b.id === sc; }))) state[sc + ":" + k] = p[1];
     });
   }
-  readHash((location.hash.match(/d=([^&]+)/) || ["", ""])[1]);
+  readHash((location.hash.match(/d=([^&]+)/) || ["", ""])[1]); norm();
   if (BATHS.length) Object.keys(D).forEach(function (k) { if (OPT[k] && OPT[k].bathonly && state[k] !== D[k] && state["ba:" + k] == null) { state["ba:" + k] = state[k]; state[k] = D[k]; } });      /* (a link made before the bathrooms had choices of their own: a bathroom finish given plainly goes to all bathrooms) */
   function bathVal(sc, k) { var v = state[sc + ":" + k]; if (v == null) v = state["ba:" + k]; return v == null ? D[k] : v; }
   function eff(sc) { var e = {}; Object.keys(D).forEach(function (k) { e[k] = sc && BK[k] ? bathVal(sc, k) : state[k]; }); return e; }      /* the choices one view is drawn with */
+  function effv(v) { var e = eff((v && v.scope) || ""); if (v && v.pin) Object.keys(v.pin).forEach(function (k) { e[k] = v.pin[k]; }); return e; }      /* (a view of something that only comes with a choice, the in-law suite's rooms, is drawn with that choice standing) */
+  function pinned(v) { return !v.pin || Object.keys(v.pin).every(function (k) { return state[k] === v.pin[k]; }); }      /* is what a pinned view shows part of the design as it stands? */
+  function norm() { if (state.su === "1" && D.g != null) state.g = "s"; }      /* the in-law suite comes with the side-entry garage: both garages open onto one court */
   function vw(id) { return S.views.filter(function (v) { return v.id === id; })[0]; }
   function choose(sc, k, id) {
-    if (!(sc && BK[k])) { state[k] = id; return; }
+    if (!(sc && BK[k])) { state[k] = id; if (k === "g" && id !== "s" && state.su === "1") state.su = D.su; norm(); return; }
     if (allBaths) { BATHS.forEach(function (b) { delete state[b.id + ":" + k]; }); if (id === D[k]) delete state["ba:" + k]; else state["ba:" + k] = id; }
     else { var inh = state["ba:" + k] == null ? D[k] : state["ba:" + k]; if (id === inh) delete state[sc + ":" + k]; else state[sc + ":" + k] = id; }
   }
@@ -232,7 +235,7 @@
   async function render() {
     if (!man) return; var my = ++seq, m = man, v = vw(view); busy(true);
     try {
-      var r = await compose(view, m, eff(v && v.scope), function () { return my === seq; });
+      var r = await compose(view, m, effv(v), function () { return my === seq; });
       if (r) { last = new ImageData(r.out, m.w, m.h); baseImg = new ImageData(new Uint8ClampedArray(r.base), m.w, m.h); ctx.putImageData(last, 0, 0); if (view === "hero") topShow(last); roomShow(v, last); }
     } catch (e) { console.error(e); }
     if (my === seq) busy(false);
@@ -256,10 +259,10 @@
   /* ---------- every room: the pictures at the foot of the page are these same views in the choices made. A view no choice has touched shows its picture as first drawn;
      the others are drawn when they come on screen, one at a time, and again when a choice they show changes. ---------- */
   var ROOM = {}, roomQ = [], roomBusy = false;
-  function roomSig(v) { var e = eff(v.scope || ""); return (v.keys || []).map(function (k) { return e[k]; }).join("."); }
-  function roomDefault(v) { var e = eff(v.scope || ""); return (v.keys || []).every(function (k) { return e[k] === D[k]; }); }
+  function roomSig(v) { var e = effv(v); return (v.keys || []).map(function (k) { return e[k]; }).join("."); }
+  function roomDefault(v) { var e = effv(v); return (v.keys || []).every(function (k) { return e[k] === D[k]; }); }
   async function roomPicture(v, alive) {                  /* a canvas with the view in the choices made */
-    var m = await manOf(v.id), r = await compose(v.id, m, eff(v.scope || ""), alive); if (!r) return null;
+    var m = await manOf(v.id), r = await compose(v.id, m, effv(v), alive); if (!r) return null;
     var c = document.createElement("canvas"); c.width = m.w; c.height = m.h; c.getContext("2d").putImageData(new ImageData(r.out, m.w, m.h), 0, 0); return c;
   }
   function roomDraw(t, src) { var x = t.cv.getContext("2d"); x.drawImage(src, 0, 0, t.cv.width, t.cv.height); t.fig.classList.add("mine"); }
@@ -307,18 +310,25 @@
       [[true, "All bathrooms"], [false, "This bathroom only"]].forEach(function (t) { var b = el("button", allBaths === t[0] ? "on" : "", t[1]); b.onclick = function () { allBaths = t[0]; panel(); }; seg.appendChild(b); });
       sw.appendChild(seg); O.appendChild(sw);
     }
-    var e = eff(sc), rank = function (o) { return (sc && BK[o.key] ? 0 : 2) + (o.cat === (v.kind || "int") ? 0 : 1); };
+    if (v.pin && v.pin.su && OPT.su) {
+      var on = state.su === "1", sb = el("div", "opt scope", "<h4>" + OPT.su.name + "<em>" + (on ? "Part of your home" : "Not added yet") + "</em></h4>"), sg = el("div", "seg");
+      [["0", "Leave it out"], ["1", "Add it to my home"]].forEach(function (t) { var b = el("button", state.su === t[0] ? "on" : "", t[1]); b.onclick = function () { choose("", "su", t[0]); summary(); panel(); render(); }; sg.appendChild(b); });
+      sb.appendChild(sg); sb.appendChild(el("p", "where", S.suite_note || "")); O.appendChild(sb);
+    }
+    var e = effv(v), rank = function (o) { return (sc && BK[o.key] ? 0 : 2) + (o.cat === (v.kind || "int") ? 0 : 1); };
     var shown = S.opts.filter(function (o) { return uses(o.key); }).map(function (o, i) { return [rank(o), i, o]; }).sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; }).map(function (t) { return t[2]; });      /* the room's own choices first */
     shown.forEach(function (o) {
       var bath = sc && BK[o.key], cur = o.ch.filter(function (c) { return c.id === e[o.key]; })[0] || o.ch[0], off = o.only && !Object.keys(o.only).every(function (k) { return e[k] === o.only[k]; });
       var box = el("div", "opt" + (off ? " off" : ""), "<h4>" + oname(o, sc) + "<em>" + cur.name + "</em></h4>"), row = el("div", o.ch[0].css ? "sw" : "chips");
       o.ch.forEach(function (c) {
         var b = el("button", c.id === e[o.key] ? "on" : "", c.css ? "" : c.name); b.title = c.name; b.setAttribute("aria-label", oname(o, sc) + ": " + c.name); if (c.css) b.style.background = c.css;
+        if (o.key === "g" && c.id !== "s" && state.su === "1") { b.disabled = true; b.title = "With the in-law suite the garage is entered from the side"; }
         b.onclick = function () { if (o.only) Object.keys(o.only).forEach(function (k) { choose(sc, k, o.only[k]); }); choose(sc, o.key, c.id); summary(); panel(); render(); }; row.appendChild(b);      /* (a carpet colour brings the carpet back) */
       });
       box.appendChild(row);
       if (bath && !allBaths) box.appendChild(el("p", "where", "Only in the " + v.name.toLowerCase()));
       else if (sc && !bath) box.appendChild(el("p", "where", "Not a bathroom choice: it applies to the whole home"));
+      else if (o.key === "g" && state.su === "1") box.appendChild(el("p", "where", "With the in-law suite the garage is entered from the side: both garages open onto one court."));
       else if (v.veil && v.veil.keys.indexOf(o.key) >= 0 && Object.keys(v.veil.when).every(function (k) { return e[k] === v.veil.when[k]; })) box.appendChild(el("p", "where", v.veil.note));      /* (a choice hidden behind another one in this picture) */
       else if (o.note) box.appendChild(el("p", "where", o.note));
       O.appendChild(box);
@@ -326,8 +336,9 @@
     if (!shown.length) O.appendChild(el("div", "opt", "<h4>Nothing to choose in this view</h4>"));
     var lk = el("div", "opt looks", "<h4>Or start from a whole look</h4>"), lr = el("div", "chips"), cat = v.kind || "int";      /* a whole scheme in one tap; every choice can still be changed afterwards */
     (S.looks || []).filter(function (l) { return l.cat === cat; }).forEach(function (l) {
-      var same = S.opts.filter(function (o) { return o.cat === cat; }).every(function (o) { return state[o.key] === (l.set[o.key] || D[o.key]); }), b = el("button", same ? "on" : "", l.name);
-      b.onclick = function () { S.opts.forEach(function (o) { if (o.cat === cat) state[o.key] = l.set[o.key] || D[o.key]; }); panel(); summary(); render(); }; lr.appendChild(b);
+      var inl = function (o) { return o.cat === cat && o.key !== "su" && !(o.key === "g" && state.su === "1"); };      /* (a look leaves the in-law suite, and the garage entry that goes with it, as chosen) */
+      var same = S.opts.filter(inl).every(function (o) { return state[o.key] === (l.set[o.key] || D[o.key]); }), b = el("button", same ? "on" : "", l.name);
+      b.onclick = function () { S.opts.forEach(function (o) { if (inl(o)) state[o.key] = l.set[o.key] || D[o.key]; }); norm(); panel(); summary(); render(); }; lr.appendChild(b);
     });
     lk.appendChild(lr); lk.appendChild(el("p", "where", cat === "ext" ? "Sets every outside choice at once." : "Sets every inside choice at once, except the bathrooms.")); O.appendChild(lk);
   }
@@ -431,9 +442,10 @@
   async function makePDF() {
     var b = $("bPdf"), label = b.textContent, shots = [], oc = document.createElement("canvas"), ox = oc.getContext("2d"); if (b.disabled) return; b.disabled = true;
     try {
-      for (var i = 0; i < S.views.length; i++) {
-        var v = S.views[i]; b.textContent = "Building your PDF: " + (i + 1) + " of " + S.views.length;
-        var m = await manOf(v.id), st = eff(v.scope), r = await compose(v.id, m, st, function () { return true; });
+      var VS = S.views.filter(pinned);                      /* (the in-law suite's own pictures only when the suite is part of the design) */
+      for (var i = 0; i < VS.length; i++) {
+        var v = VS[i]; b.textContent = "Building your PDF: " + (i + 1) + " of " + VS.length;
+        var m = await manOf(v.id), st = effv(v), r = await compose(v.id, m, st, function () { return true; });
         oc.width = m.w; oc.height = m.h; ox.putImageData(new ImageData(r.out, m.w, m.h), 0, 0);
         var jb = await new Promise(function (res) { oc.toBlob(res, "image/jpeg", 0.86); });
         shots.push({ v: v, w: m.w, h: m.h, st: st, data: new Uint8Array(await jb.arrayBuffer()) });
@@ -447,7 +459,7 @@
   $("bPdf").onclick = makePDF;
   (function () { var n = 1, c = 0; S.opts.forEach(function (o) { n *= o.ch.length; c += o.ch.length; }); var t = n >= 1e21 ? Math.floor(n / 1e21) + " sextillion" : n >= 1e18 ? Math.floor(n / 1e18) + " quintillion" : n >= 1e15 ? Math.floor(n / 1e15) + " quadrillion" : n >= 1e12 ? (n / 1e12).toFixed(1) + " trillion" : n >= 1e9 ? (n / 1e9).toFixed(1) + " billion" : n >= 1e6 ? Math.round(n / 1e6) + " million" : String(n);
     $("combos").textContent = S.opts.length + " choices to make, " + c + " finishes and shapes to choose from: more than " + t + " combinations" + (S.baths && S.baths.length ? " before the bathrooms are counted one by one" : "") + ", each shown as a picture built from real renders."; })();
-  $("bReset").onclick = function () { Object.keys(state).forEach(function (k) { if (k.indexOf(":") > 0) delete state[k]; else state[k] = D[k]; }); panel(); summary(); render(); };
+  $("bReset").onclick = function () { Object.keys(state).forEach(function (k) { if (k.indexOf(":") > 0) delete state[k]; else state[k] = D[k]; }); panel(); summary(); render(); };      /* (back to the home as first shown: without the in-law suite) */
   $("bSave").onclick = function () { cv.toBlob(function (bl) { var a = document.createElement("a"); a.href = URL.createObjectURL(bl); a.download = S.slug + "-" + view + ".jpg"; a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000); }, "image/jpeg", 0.92); };
   $("bLink").onclick = function () { var t = location.href; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { $("bLink").textContent = "Link copied"; }, function () { prompt("Copy this link", t); }); };
   summary();
