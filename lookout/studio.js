@@ -330,6 +330,7 @@
       else if (sc && !bath) box.appendChild(el("p", "where", "Not a bathroom choice: it applies to the whole home"));
       else if (o.key === "g" && state.su === "1") box.appendChild(el("p", "where", "With the in-law suite the garage is entered from the side: both garages open onto one court."));
       else if (v.veil && v.veil.keys.indexOf(o.key) >= 0 && Object.keys(v.veil.when).every(function (k) { return e[k] === v.veil.when[k]; })) box.appendChild(el("p", "where", v.veil.note));      /* (a choice hidden behind another one in this picture) */
+      else if (o.key === "fd" && v.pin && v.pin.su) box.appendChild(el("p", "where", "The suite's entry takes the front door's design as a single 3 ft door."));
       else if (o.note) box.appendChild(el("p", "where", o.note));
       O.appendChild(box);
     });
