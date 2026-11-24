@@ -199,7 +199,7 @@
     g.setAttribute('normal', new THREE.BufferAttribute(nr, 3));
   }
   /* ---------- the model ---------- */
-  var BASEPAT = { lap: 2, st1: 3, st2: 3, st3: 3, st4: 3, st5: 3, ws1: 3, ws2: 3, ws3: 3, ws4: 3, ws5: 3, brickr: 1, brickw: 1, shingle: 4, shingle90: 4, proof: 4, floor1: 5, lvp: 5, deckw: 9, deckf: 9, tile: 6, tiled: 6, fptile: 6,
+  var BASEPAT = { lap: 2, st1: 3, st2: 3, st3: 3, st4: 3, st5: 3, ws1: 3, ws2: 3, ws3: 3, ws4: 3, ws5: 3, brickr: 1, brickw: 1, shingle: 4, shingle90: 4, proof: 4, proof90: 4, floor1: 5, lvp: 5, deckw: 9, deckf: 9, tile: 6, tiled: 6, fptile: 6,
     marbt: 11, quartz: 11, tgrass: 7, tmulch: 8, tsoil: 8, drive: 8, walk: 8, conc: 8, found: 8, road: 8, gslab: 8, bslab: 8, coping: 8, wcap: 0, scap: 8, mortar: 8, wmortar: 8, oakf: 9, sttread: 9, strail: 9, runner: 12, runnerb: 12, clwood: 9, timber: 9, cedar: 9, fcedar: 9,
     lumber: 9, stud: 9, osb: 9, walnut: 9, linen: 12, linen2: 12, slate: 12, sage: 12, rust: 12, bedding: 12, towel: 12, drape: 12, carpet: 12, rugc: 13, rugb: 13, jute: 13, bsplash: 14 };
   var C2 = { ws1: [0.66, 0.63, 0.57], ws2: [0.7, 0.67, 0.6], ws3: [0.62, 0.6, 0.54], ws4: [0.7, 0.68, 0.62], ws5: [0.6, 0.57, 0.5], brickr: [0.48, 0.45, 0.4], brickw: [0.62, 0.6, 0.56], marbt: [0.36, 0.35, 0.33], fptile: [0.42, 0.41, 0.39], tiled: [0.47, 0.46, 0.43], lvp: [0.1, 0.08, 0.06], tgrass: [0.1, 0.2, 0.05] };
@@ -209,6 +209,7 @@
   function condOk(layer, st) { var cs = layer.split('@'), i, j; for (i = 1; i < cs.length; i++) { var ts = cs[i].split('&'); for (j = 0; j < ts.length; j++) { var kv = ts[j].split('='); if (kv[1].split('|').indexOf(String(st[kv[0]])) < 0) return false; } } return true; }
   function bathVal(sc, k) { var v = state[sc + ':' + k]; if (v == null) v = state['ba:' + k]; if (v == null && M && (M.meta.bathonly || []).indexOf(k) >= 0) v = state[k]; return v == null ? D[k] : v; }      /* (a finish only bathrooms have, chosen on the page for the house: every bathroom takes it) */
   function eff(sc) { if (!sc) return state; var e = {}; Object.keys(D).forEach(function (k) { e[k] = BK[k] ? bathVal(sc, k) : state[k]; }); return e; }
+  function norm() { if (state.su === '1' && D.g != null) state.g = 's'; }
   function readHash(h) {
     Object.keys(state).forEach(function (k) { delete state[k]; }); Object.keys(D).forEach(function (k) { state[k] = D[k]; });
     (h || '').split(',').forEach(function (kv) {
@@ -216,6 +217,7 @@
       if (D[k] == null || !M.meta.opts[k] || !M.meta.opts[k].ch.some(function (c) { return c[0] === p[1]; })) return;
       if (!sc) state[k] = p[1]; else if (BK[k] && (sc === 'ba' || M.meta.baths[sc])) state[sc + ':' + k] = p[1];
     });
+    norm();
   }
   function hashOf() { var h = Object.keys(D).filter(function (k) { return state[k] !== D[k]; }).map(function (k) { return k + '.' + state[k]; }); Object.keys(state).forEach(function (k) { if (k.indexOf(':') > 0) h.push(k + '.' + state[k]); }); return h.join(','); }
   function layer(k) { if (!layers[k]) { layers[k] = new THREE.Group(); layers[k].userData.lv = LEVEL[k.split('@')[0]] || '1'; root.add(layers[k]); } return layers[k]; }
@@ -259,7 +261,7 @@
   function styleOf(e) {
     var T = M.meta.table, st = eff(e.sc);
     if (e.mat === 'carpet') return st.uf !== 'c' ? T.uf[st.uf].carpet : T.cpt[st.cpt].carpet;
-    if (e.mat === 'proof') return st.prf === 'match' ? T.rof[st.rof].shingle : T.prf[st.prf].proof;
+    if (e.mat === 'proof' || e.mat === 'proof90') return st.prf === 'match' ? T.rof[st.rof].shingle : T.prf[st.prf].proof;
     var k = OWN[e.mat]; return k && T[k][st[k]] ? T[k][st[k]][e.mat] : null;
   }
   function applyStyles() {
@@ -486,7 +488,7 @@
   function drawer() {
     var B = $('choices'), rm = mode === 'walk' ? roomAt() : null, sc = $('bscope') ? $('bscope').value : 'ba'; B.innerHTML = '';
     function row(name, k, cur, on) { var r = el('label', 'row', '<span>' + name + '</span>'), s = el('select'); M.meta.opts[k].ch.forEach(function (c) { var o = el('option', '', c[1]); o.value = c[0]; if (c[0] === cur) o.selected = true; s.appendChild(o); }); s.onchange = function () { on(s.value); changed(); drawer(); }; r.appendChild(s); return r; }
-    function house(k) { return row(M.meta.opts[k].name, k, state[k], function (v) { state[k] = v; }); }
+    function house(k) { return row(M.meta.opts[k].name, k, state[k], function (v) { state[k] = v; if (k === 'g' && v !== 's' && state.su === '1') state.su = D.su; norm(); }); }      /* (the in-law suite comes with the side-entry garage; front entry takes the suite away again) */
     function baths() {
       if (!M.meta.bathkeys.length) return;
       B.appendChild(el('h4', '', 'Bathrooms'));
@@ -523,7 +525,7 @@
     M = m; D = m.meta.defaults; CFG = m.meta.cfg; NAV = m.meta.nav; LV = CFG.levels; navInit(); LV.forEach(function (l) { LVN[l.id] = l.name; }); ROOMKEYS = CFG.roomkeys || {}; BATHOF = CFG.bathof || {}; CUTS = CFG.cuts; CUTS.forEach(function (c) { HIDE[c[0]] = c[2]; });
     Object.keys(CFG.layerlv).forEach(function (k) { LEVEL[k] = CFG.layerlv[k]; }); Object.keys(CFG.pat || {}).forEach(function (k) { BASEPAT[k] = CFG.pat[k]; }); Object.keys(CFG.c2 || {}).forEach(function (k) { C2[k] = CFG.c2[k]; }); VIEW = CFG.view; $('title').textContent = CFG.title; document.title = CFG.title + ' in 3D'; (m.meta.bathkeys || []).forEach(function (k) { BK[k] = 1; }); SUNDIR.set(m.meta.sun[0], m.meta.sun[2], -m.meta.sun[1]).normalize(); dome.material.uniforms.uSun.value = SUNDIR;
     sun.position.copy(SUNDIR).multiplyScalar(300); makeEnv();
-    Object.keys(m.meta.table).forEach(function (k) { Object.keys(m.meta.table[k]).forEach(function (c) { Object.keys(m.meta.table[k][c]).forEach(function (mt) { if (mt !== 'carpet' && mt !== 'proof') OWN[mt] = k; }); }); });
+    Object.keys(m.meta.table).forEach(function (k) { Object.keys(m.meta.table[k]).forEach(function (c) { Object.keys(m.meta.table[k][c]).forEach(function (mt) { if (mt !== 'carpet' && mt !== 'proof' && mt !== 'proof90') OWN[mt] = k; }); }); });
     var h = (location.hash.match(/d=([^&]+)/) || [])[1]; if (h == null) { try { h = localStorage.getItem(CFG.key) || ''; } catch (e) { h = ''; } } readHash(h);
     VQ = m.meta.stamp ? '?v=' + m.meta.stamp : ''; prog(0.08); return fetch((GZ ? 'model.bin.gz' : 'model.bin') + VQ);
   }).then(function (r) {
